@@ -19,13 +19,13 @@ class BaseActionHandler {
   /**
    * From the object passed to handleActions, retrieve an object of block info
    * @param data
-   * @returns {{blockNumber: *, blockHash: *, previousBlockHashdata: *}}
+   * @returns {{blockNumber: *, blockHash: *, previousBlockHash: *}}
    */
   getBlockInfo(data) {
     return {
       blockNumber: data.blockNumber,
       blockHash: data.blockHash,
-      previousBlockHashdata: data.previousBlockHash,
+      previousBlockHash: data.previousBlockHash,
     }
   }
 
@@ -86,17 +86,17 @@ class BaseActionHandler {
     const actions = this.getActions(data)
     const { rollback } = data
     if (rollback) {
-      this.rollbackTo(blockInfo.blockNumber - 1)
+      await this.rollbackTo(blockInfo.blockNumber - 1)
     }
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
     if (blockInfo.blockNumber !== nextBlockNeeded) {
       return { nextBlock: nextBlockNeeded + 1 }
     }
     // Block sequence consistency should be handled by the ChainReader instance
-    if (blockInfo.previousBlockHashdata !== this.lastProcessedBlockHash) {
+    if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
       throw Error("Block hashes do not match; block not part of current chain.")
     }
-    this.handleActions({ state: this.state, actions, blockInfo })
+    await this.handleActions({ state: this.state, actions, blockInfo })
     return null
   }
 

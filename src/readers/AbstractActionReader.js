@@ -1,8 +1,7 @@
-class AbstractChainReader {
-  constructor({ chainInterface, startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600 }) {
-    this.chainInterface = chainInterface
+class AbstractActionReader {
+  constructor({ startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600 }) {
     this.headBlockNumber = null
-    this.currentBlockNumber = startAtBlock - 1 || null
+    this.currentBlockNumber = startAtBlock - 1
     this.currentBlockData = null
     this.onlyIrreversible = onlyIrreversible
     this.blockHistory = []
@@ -10,29 +9,23 @@ class AbstractChainReader {
   }
 
   /**
-   * Loads the head block number info with chainInterface, returning an int.
+   * Loads the head block number, returning an int.
    * If onlyIrreversible is true, return the most recent irreversible block number
+   * @return {number}
    */
   getHeadBlockNumber() {
     throw Error("Must implement `getHeadBlockNumber`; refer to documentation for details.")
   }
 
   /**
-   * Loads the block with chainInterface, returning an object with block data
-   * normalized with normalizeBlockData
+   * Loads a block with the given block number, returning an object with block data
+   * normalized as:
+   * { actions, blockNumber, blockHash, previousBlockHash }
    * @param {number} blockNumber - Number of the block to retrieve
+   * @returns {Object}
    */
   getBlock(blockNumber) {
     throw Error("Must implement `getBlock`; refer to documentation for details.")
-  }
-
-  /**
-   * Given a blockData object, retrieve and return an object containing
-   * actions, blockNumber, blockHash, previousBlockHash, and lastIrreversibleBlock.
-   * @param blockData
-   */
-  normalizeBlockData(blockData) {
-    throw Error("Must implement `normalizeBlockData`; refer to documentation for details.")
   }
 
   /**
@@ -48,6 +41,12 @@ class AbstractChainReader {
       this.headBlockNumber = await this.getHeadBlockNumber()
     }
 
+    // If currentBlockNumber is negative, it means we wrap to the end of the chain (most recent blocks)
+    // This should only ever happen when we first start, so we check that there's no block history
+    if (this.currentBlockNumber < 0 && this.blockHistory.length === 0) {
+      this.currentBlockNumber = this.headBlockNumber + this.currentBlockNumber
+    }
+
     // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
@@ -56,17 +55,19 @@ class AbstractChainReader {
 
       // Continue if the new block is on the same chain as our history, or if we've just started
       if (expectedHash === actualHash || this.blockHistory.length === 0) {
-        blockData = unvalidatedBlockData // Block now validated
-        this.blockHistory.push(this.currentBlockData) // No longer current
+        blockData = unvalidatedBlockData // Block is now validated
+        this.blockHistory.push(this.currentBlockData) // No longer current, belongs on history
         this.blockHistory.splice(0, this.blockHistory.length - this.maxHistoryLength) // Trim history
-        this.currentBlockData = blockData // Replaced with the real current
+        this.currentBlockData = blockData // Replaced with the real current block
         this.currentBlockNumber = this.currentBlockData.blockNumber
       } else {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
-        this.rollback()
+        await this.rollback()
         blockData = this.currentBlockData
-        rollback = true
+        rollback = true // Signal action handler that we must roll back
+        // Reset for safety, as new fork could have less blocks than the previous fork
+        this.headBlockNumber = await this.getHeadBlockNumber()
       }
     }
     return { blockData, rollback }
@@ -77,7 +78,7 @@ class AbstractChainReader {
    * newly fetched blocks. Rollback is finished when either the current block's previous hash
    * matches the previous block's hash, or when history is exhausted.
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async rollback() {
     console.info("!! Fork detected !!")
@@ -144,4 +145,4 @@ class AbstractChainReader {
   }
 }
 
-export { AbstractChainReader }
+export { AbstractActionReader }
