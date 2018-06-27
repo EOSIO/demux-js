@@ -10,7 +10,7 @@
     "jest": "^22.4.3"
   },
   "scripts": {
-    "test": "yarn test"
+    "example": "./run-example.sh"
   },
   "author": "Julien Heller",
   "license": "MIT",

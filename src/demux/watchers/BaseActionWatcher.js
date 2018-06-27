@@ -15,18 +15,18 @@ class BaseActionWatcher {
 
     // Process blocks until we're at the head block
     let { headBlockNumber } = this.actionReader
-    while (this.actionReader.currentBlockNumber <= headBlockNumber) {
-      const { blockData, rollback } = await this.actionReader.nextBlock()
+    while (this.actionReader.currentBlockNumber <= headBlockNumber || !headBlockNumber) {
+      const { blockData, rollback, firstBlock } = await this.actionReader.nextBlock()
 
-      // Handle actions
-      let nextBlock = null
+      // Handle block (and the actions within them)
+      let nextBlockNeeded = null
       if (blockData) {
-        ({ nextBlock } = await this.actionHandler.handleActions({ blockData, rollback }))
+        ({ nextBlockNeeded } = await this.actionHandler.handleBlock({ blockData, rollback, firstBlock }))
       }
 
       // Seek to next needed block at the request of the action handler
-      if (nextBlock) {
-        this.actionReader.seekToBlock(nextBlock - 1)
+      if (nextBlockNeeded) {
+        this.actionReader.seekToBlock(nextBlockNeeded - 1)
       }
 
       // Reset headBlockNumber on rollback for safety, as it may have decreased
@@ -47,8 +47,8 @@ class BaseActionWatcher {
     }
 
     // Schedule next iteration
-    setTimeout(this.watch, waitTime)
+    setTimeout(this.watch.bind(this), waitTime)
   }
 }
 
-export { BaseActionWatcher }
+module.exports = BaseActionWatcher

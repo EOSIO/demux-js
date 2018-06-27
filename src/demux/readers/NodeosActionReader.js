@@ -1,6 +1,6 @@
 const request = require("request-promise-native")
 
-const { AbstractActionReader } = require("./AbstractActionReader")
+const AbstractActionReader = require("./AbstractActionReader")
 
 class NodeosActionReader extends AbstractActionReader {
   constructor({
@@ -20,9 +20,8 @@ class NodeosActionReader extends AbstractActionReader {
     })
     if (this.onlyIrreversible) {
       return blockInfo.last_irreversible_block_num
-    } else {
-      return blockInfo.head_block_num
     }
+    return blockInfo.head_block_num
   }
 
   async getBlock(blockNumber) {
@@ -30,8 +29,9 @@ class NodeosActionReader extends AbstractActionReader {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },
     })
+    const actions = this.collectActionsFromBlock(rawBlock)
     return {
-      actions: this.collectActionsFromBlock(rawBlock),
+      actions,
       blockNumber: rawBlock.block_num,
       blockHash: rawBlock.id,
       previousBlockHash: rawBlock.previous,
@@ -44,8 +44,11 @@ class NodeosActionReader extends AbstractActionReader {
   }
 
   collectActionsFromBlock(rawBlock) {
-    return this.flattenArray(rawBlock.transactions.map(transaction =>
-      transaction.trx.transaction.actions.map((action, actionIndex) => {
+    return this.flattenArray(rawBlock.transactions.map((transaction) => {
+      if (!transaction.trx.transaction) {
+        return [] // Why is trx sometimes not unpacked?
+      }
+      return transaction.trx.transaction.actions.map((action, actionIndex) => {
         // Delete unneeded hex data if we have deserialized data
         if (action.data) {
           delete action.hex_data // eslint-disable-line
@@ -58,8 +61,9 @@ class NodeosActionReader extends AbstractActionReader {
             ...action,
           },
         }
-      })))
+      })
+    }))
   }
 }
 
-module.exports = { NodeosActionReader }
+module.exports = NodeosActionReader

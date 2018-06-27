@@ -3,8 +3,8 @@ class BaseActionHandler {
     this.state = state
     this.updaters = updaters
     this.effects = effects
-    this.lastProcessedBlockNumber = 0
-    this.lastProcessedBlockHash = "0000000000000000000000000000000000000000000000000000000000000000"
+    this._lastProcessedBlockNumber = 0
+    this._lastProcessedBlockHash = null
   }
 
   /**
@@ -23,9 +23,9 @@ class BaseActionHandler {
    */
   getBlockInfo(data) {
     return {
-      blockNumber: data.blockNumber,
-      blockHash: data.blockHash,
-      previousBlockHash: data.previousBlockHash,
+      blockNumber: data.blockData.blockNumber,
+      blockHash: data.blockData.blockHash,
+      previousBlockHash: data.blockData.previousBlockHash,
     }
   }
 
@@ -40,8 +40,9 @@ class BaseActionHandler {
   async runUpdaters({ state, actions, blockInfo, context }) {
     for (const action of actions) {
       for (const updater of this.updaters) {
-        if (action.name === updater.name) {
-          await updater.update({ state, action, blockInfo, context })
+        if (action.type === updater.actionType) {
+          const { payload } = action
+          await updater.updater({ state, payload, blockInfo, context })
         }
       }
     }
@@ -57,8 +58,9 @@ class BaseActionHandler {
   runEffects({ state, actions, blockInfo, context }) {
     for (const action of actions) {
       for (const effect of this.effects) {
-        if (action.name === effect.name) {
-          effect.effect({ state, action, blockInfo, context })
+        if (action.type === effect.actionType) {
+          const { payload } = action
+          effect.effect({ state, payload, blockInfo, context })
         }
       }
     }
@@ -84,29 +86,38 @@ class BaseActionHandler {
   async handleBlock(data) {
     const blockInfo = this.getBlockInfo(data)
     const actions = this.getActions(data)
-    const { rollback } = data
+    const { rollback, firstBlock } = data
     if (rollback) {
       await this.rollbackTo(blockInfo.blockNumber - 1)
     }
-    const nextBlockNeeded = this.lastProcessedBlockNumber + 1
-    if (blockInfo.blockNumber !== nextBlockNeeded) {
-      return { nextBlock: nextBlockNeeded + 1 }
+
+    const nextBlockNeeded = this._lastProcessedBlockNumber + 1
+    // If it's the first block but we've already processed blocks, seek to next block
+    if (firstBlock && this._lastProcessedBlockHash) {
+      return { nextBlockNeeded }
     }
-    // Block sequence consistency should be handled by the ChainReader instance
-    if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-      throw Error("Block hashes do not match; block not part of current chain.")
+    // Only check if this is the block we need if it's not the first block
+    if (!firstBlock) {
+      if (blockInfo.blockNumber !== nextBlockNeeded) {
+        return { nextBlockNeeded }
+      }
+      // Block sequence consistency should be handled by the ActionReader instance
+      if (blockInfo.previousBlockHash !== this._lastProcessedBlockHash) {
+        throw Error("Block hashes do not match; block not part of current chain.")
+      }
     }
+
     await this.handleActions({ state: this.state, actions, blockInfo })
-    return null
+    return {}
   }
 
   async handleActions({ state, actions, blockInfo }) {
     const context = {}
     await this.runUpdaters({ state: this.state, actions, blockInfo, context })
     this.runEffects({ state: this.state, actions, blockInfo, context })
-    this.lastProcessedBlockNumber = blockInfo.blockNumber
-    this.lastProcessedBlockHash = blockInfo.blockHash
+    this._lastProcessedBlockNumber = blockInfo.blockNumber
+    this._lastProcessedBlockHash = blockInfo.blockHash
   }
 }
 
-export { BaseActionHandler }
+module.exports = BaseActionHandler
