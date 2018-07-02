@@ -39,7 +39,6 @@ class BaseActionWatcher {
     const endTime = new Date().getTime()
 
     // Calculate timing for next iteration
-
     const duration = endTime - startTime
     let waitTime = this.pollInterval - duration
     if (waitTime < 0) {

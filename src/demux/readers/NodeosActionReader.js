@@ -7,6 +7,9 @@ const request = require("request-promise-native")
 
 const AbstractActionReader = require("./AbstractActionReader")
 
+/**
+ * Implementation of an ActionReader that polls a node using `get_block`.
+ */
 class NodeosActionReader extends AbstractActionReader {
   constructor({
     nodeosEndpoint = "http://localhost:8888",
