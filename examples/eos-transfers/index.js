@@ -1,7 +1,7 @@
 const {
-  readers: NodeosActionReader,
-  watchers: BaseActionWatcher,
-  handlers: BaseActionHandler,
+  readers: { NodeosActionReader },
+  watchers: { BaseActionWatcher },
+  handlers: { BaseActionHandler },
 } = require("../../src/")
 
 const updaters = require("./updaters")

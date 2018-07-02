@@ -4,7 +4,7 @@ function logUpdate({ state, payload, blockInfo, context }) {
 
 const effects = [
   {
-    actionType: "eosio.token:transfer",
+    actionType: "eosio.token::transfer",
     effect: logUpdate,
   },
 ]

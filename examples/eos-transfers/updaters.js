@@ -16,7 +16,7 @@ function updateTransferData({ state, payload, blockInfo, context }) {
 
 const updaters = [
   {
-    actionType: "eosio.token:transfer",
+    actionType: "eosio.token::transfer",
     updater: updateTransferData,
   },
 ]

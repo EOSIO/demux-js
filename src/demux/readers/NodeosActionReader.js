@@ -1,3 +1,8 @@
+/**
+ * Reads an EOSIO nodeos node to get actions.
+ * It is important to note that deferred tranasactions will not be included, as this are not accessible without plugins.
+ */
+
 const request = require("request-promise-native")
 
 const AbstractActionReader = require("./AbstractActionReader")
@@ -46,7 +51,7 @@ class NodeosActionReader extends AbstractActionReader {
   collectActionsFromBlock(rawBlock) {
     return this.flattenArray(rawBlock.transactions.map((transaction) => {
       if (!transaction.trx.transaction) {
-        return [] // Why is trx sometimes not unpacked?
+        return [] // Deferred transaction, cannot decode
       }
       return transaction.trx.transaction.actions.map((action, actionIndex) => {
         // Delete unneeded hex data if we have deserialized data
@@ -54,7 +59,7 @@ class NodeosActionReader extends AbstractActionReader {
           delete action.hex_data // eslint-disable-line
         }
         return {
-          type: `${action.account}:${action.name}`,
+          type: `${action.account}::${action.name}`,
           payload: {
             transactionId: transaction.trx.id,
             actionIndex,
