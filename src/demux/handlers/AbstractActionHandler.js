@@ -1,6 +1,5 @@
-class BaseActionHandler {
-  constructor({ state, updaters = [], effects = [] }) {
-    this.state = state
+class AbstractActionHandler {
+  constructor({ updaters = [], effects = [] }) {
     this.updaters = updaters
     this.effects = effects
     this._lastProcessedBlockNumber = 0
@@ -107,17 +106,22 @@ class BaseActionHandler {
       }
     }
 
-    await this.handleActions({ state: this.state, actions, blockInfo })
+    const handleWithArgs = async state => this.handleActions({ actions, blockInfo }, state)
+    await this.handleWithState(handleWithArgs)
     return {}
   }
 
-  async handleActions({ state, actions, blockInfo }) {
+  async handleActions({ actions, blockInfo }, state) {
     const context = {}
-    await this.runUpdaters({ state: this.state, actions, blockInfo, context })
-    this.runEffects({ state: this.state, actions, blockInfo, context })
+    await this.runUpdaters({ state, actions, blockInfo, context })
+    this.runEffects({ state, actions, blockInfo, context })
     this._lastProcessedBlockNumber = blockInfo.blockNumber
     this._lastProcessedBlockHash = blockInfo.blockHash
   }
+
+  async handleWithState(handle) {
+    throw Error("Must implement `handleWithState`; refer to documentation for details.")
+  }
 }
 
-module.exports = BaseActionHandler
+module.exports = AbstractActionHandler

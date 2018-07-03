@@ -1,5 +1,5 @@
-const BaseActionHandler = require("./BaseActionHandler")
+const AbstractActionHandler = require("./AbstractActionHandler")
 
 module.exports = {
-  BaseActionHandler,
+  AbstractActionHandler,
 }

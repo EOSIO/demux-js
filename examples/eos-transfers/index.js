@@ -1,15 +1,12 @@
 const {
   readers: { NodeosActionReader },
   watchers: { BaseActionWatcher },
-  handlers: { BaseActionHandler },
 } = require("../../src/")
-
+const ObjectActionHandler = require("./ObjectActionHandler")
 const updaters = require("./updaters")
 const effects = require("./effects")
 
-
-const actionHandler = new BaseActionHandler({
-  state: { volumeBySymbol: {}, totalTransfers: 0 }, // Set initial state
+const actionHandler = new ObjectActionHandler({
   updaters,
   effects,
 })

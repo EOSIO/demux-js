@@ -1,6 +1,6 @@
 /**
  * Reads an EOSIO nodeos node to get actions.
- * It is important to note that deferred tranasactions will not be included, as this are not accessible without plugins.
+ * It is important to note that deferred transactions will not be included, as these are not accessible without plugins.
  */
 
 const request = require("request-promise-native")
