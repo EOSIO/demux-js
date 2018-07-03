@@ -1,5 +1,12 @@
-class AbstractActionReader {
-  constructor({ startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600 }) {
+export default abstract class AbstractActionReader {
+  headBlockNumber: number | null
+  startAtBlock: number
+  currentBlockNumber: number
+  currentBlockData: Block | null
+  onlyIrreversible: boolean
+  blockHistory: Block[]
+  maxHistoryLength: number
+  constructor(startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600) {
     this.headBlockNumber = null
     this.startAtBlock = startAtBlock
     this.currentBlockNumber = startAtBlock - 1
@@ -12,28 +19,23 @@ class AbstractActionReader {
   /**
    * Loads the head block number, returning an int.
    * If onlyIrreversible is true, return the most recent irreversible block number
-   * @return {number}
+   * @return {Promise<number>}
    */
-  getHeadBlockNumber() {
-    throw Error("Must implement `getHeadBlockNumber`; refer to documentation for details.")
-  }
+  abstract async getHeadBlockNumber(): Promise<number>
 
   /**
-   * Loads a block with the given block number, returning an object with block data
-   * normalized as:
-   * { actions, blockNumber, blockHash, previousBlockHash }
+   * Loads a block with the given block number
    * @param {number} blockNumber - Number of the block to retrieve
-   * @returns {Object}
+   * @returns {Block}
    */
-  getBlock(blockNumber) {
-    throw Error("Must implement `getBlock`; refer to documentation for details.")
-  }
+  abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  async nextBlock() {
+  // TODO:
+  async nextBlock(): Promise<[Block | null, boolean, boolean]> {
     let blockData = null
     let rollback = false
     let firstBlock = false
@@ -53,8 +55,8 @@ class AbstractActionReader {
     // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
-      const { blockHash: expectedHash } = this.currentBlockData || {}
-      const { previousBlockHash: actualHash } = unvalidatedBlockData
+      const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockHash : "INVALID"
+      const actualHash = unvalidatedBlockData.previousBlockHash
 
       // Continue if the new block is on the same chain as our history, or if we've just started
       if (expectedHash === actualHash || this.blockHistory.length === 0) {
@@ -81,7 +83,7 @@ class AbstractActionReader {
       firstBlock = true
     }
 
-    return { blockData, rollback, firstBlock }
+    return [blockData, rollback, firstBlock]
   }
 
   /**
@@ -95,7 +97,8 @@ class AbstractActionReader {
     console.info("!! Fork detected !!")
 
     // Rewind at least 1 block back
-    this.currentBlockData = await this.getBlock(this.blockHistory.pop().blockNumber)
+    // TODO:
+    this.currentBlockData = await this.getBlock(this.blockHistory.pop()!.blockNumber)
     let blocksToRewind = 1
 
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
@@ -130,7 +133,7 @@ class AbstractActionReader {
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 
-  seekToBlock(blockNumber) {
+  async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
 
@@ -151,9 +154,7 @@ class AbstractActionReader {
     // Load current block
     this.currentBlockNumber = blockNumber - 1
     if (!this.currentBlockData) {
-      this.currentBlockData = this.getBlock(this.currentBlockNumber)
+      this.currentBlockData = await this.getBlock(this.currentBlockNumber)
     }
   }
 }
-
-module.exports = AbstractActionReader

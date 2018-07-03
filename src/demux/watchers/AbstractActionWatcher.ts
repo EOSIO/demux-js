@@ -1,20 +1,21 @@
-class BaseActionWatcher {
-  constructor({
-    actionReader,
-    actionHandler,
-    pollInterval,
-    stateProvider,
-  }) {
+import AbstractActionHandler from "../handlers/AbstractActionHandler";
+import AbstractActionReader from "../readers/AbstractActionReader";
+
+export default abstract class AbstractActionWatcher {
+  actionReader: AbstractActionReader
+  actionHandler: AbstractActionHandler
+  pollInterval: number
+
+  constructor(actionReader: AbstractActionReader, actionHandler: AbstractActionHandler, pollInterval: number) {
     this.actionReader = actionReader
     this.actionHandler = actionHandler
     this.pollInterval = pollInterval
-    this.stateProvider = stateProvider
   }
 
   /**
    * Gets the state from the stateProvider and passes it to the actionHandler handleBlock method.
    */
-  async handleBlock() {
+  async handleBlock(): Promise<[boolean, number]> {
     throw Error("Must implement `handleBlock`; refer to documentation for details.")
   }
 
@@ -24,24 +25,24 @@ class BaseActionWatcher {
 
     // Process blocks until we're at the head block
     let { headBlockNumber } = this.actionReader
-    while (this.actionReader.currentBlockNumber <= headBlockNumber || !headBlockNumber) {
-      const { blockData, rollback, firstBlock } = await this.actionReader.nextBlock()
+    while (!headBlockNumber || this.actionReader.currentBlockNumber <= headBlockNumber ) {
+      const [blockData, rollback] = await this.actionReader.nextBlock()
 
       // Handle block (and the actions within them)
-      let nextBlockNeeded = null
+      let needToSeek = false
+      let seekBlockNum = 0
       if (blockData) {
-        // Dot notation to avoid https://github.com/eslint/eslint/issues/8579#issuecomment-300850889
-        nextBlockNeeded = await this.handleBlock().nextBlockNeeded
+        [needToSeek, seekBlockNum] = await this.handleBlock()
       }
 
       // Seek to next needed block at the request of the action handler
-      if (nextBlockNeeded) {
-        this.actionReader.seekToBlock(nextBlockNeeded - 1)
+      if (needToSeek) {
+        this.actionReader.seekToBlock(seekBlockNum - 1)
       }
 
       // Reset headBlockNumber on rollback for safety, as it may have decreased
       if (rollback) {
-        ({ headBlockNumber } = this.actionReader)
+        headBlockNumber = this.actionReader.headBlockNumber
       }
     }
 
@@ -59,5 +60,3 @@ class BaseActionWatcher {
     setTimeout(this.watch.bind(this), waitTime)
   }
 }
-
-module.exports = BaseActionWatcher
