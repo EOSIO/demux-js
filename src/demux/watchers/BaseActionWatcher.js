@@ -3,10 +3,19 @@ class BaseActionWatcher {
     actionReader,
     actionHandler,
     pollInterval,
+    stateProvider,
   }) {
     this.actionReader = actionReader
     this.actionHandler = actionHandler
     this.pollInterval = pollInterval
+    this.stateProvider = stateProvider
+  }
+
+  /**
+   * Gets the state from the stateProvider and passes it to the actionHandler handleBlock method.
+   */
+  async handleBlock() {
+    throw Error("Must implement `handleBlock`; refer to documentation for details.")
   }
 
   async watch() {
@@ -21,7 +30,8 @@ class BaseActionWatcher {
       // Handle block (and the actions within them)
       let nextBlockNeeded = null
       if (blockData) {
-        ({ nextBlockNeeded } = await this.actionHandler.handleBlock({ blockData, rollback, firstBlock }))
+        // Dot notation to avoid https://github.com/eslint/eslint/issues/8579#issuecomment-300850889
+        nextBlockNeeded = await this.handleBlock().nextBlockNeeded
       }
 
       // Seek to next needed block at the request of the action handler

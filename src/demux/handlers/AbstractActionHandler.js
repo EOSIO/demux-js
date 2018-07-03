@@ -11,8 +11,8 @@ class AbstractActionHandler {
    * @param data
    * @returns {*}
    */
-  getActions(data) {
-    return data.blockData.actions
+  getActions(blockData) {
+    return blockData.actions
   }
 
   /**
@@ -20,11 +20,11 @@ class AbstractActionHandler {
    * @param data
    * @returns {{blockNumber: *, blockHash: *, previousBlockHash: *}}
    */
-  getBlockInfo(data) {
+  getBlockInfo(blockData) {
     return {
-      blockNumber: data.blockData.blockNumber,
-      blockHash: data.blockData.blockHash,
-      previousBlockHash: data.blockData.previousBlockHash,
+      blockNumber: blockData.blockNumber,
+      blockHash: blockData.blockHash,
+      previousBlockHash: blockData.previousBlockHash,
     }
   }
 
@@ -82,10 +82,9 @@ class AbstractActionHandler {
    * @param data
    * @returns {Promise<*>}
    */
-  async handleBlock(data) {
-    const blockInfo = this.getBlockInfo(data)
-    const actions = this.getActions(data)
-    const { rollback, firstBlock } = data
+  async handleBlock({ state, blockData, rollback, firstBlock }) {
+    const blockInfo = this.getBlockInfo(blockData)
+    const actions = this.getActions(blockData)
     if (rollback) {
       await this.rollbackTo(blockInfo.blockNumber - 1)
     }
