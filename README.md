@@ -18,9 +18,9 @@ npm install demux-js --save
 Taking inspiration from the [Flux Architecture](https://facebook.github.io/flux/docs/in-depth-overview.html#content) pattern and [Redux](https://github.com/reduxjs/redux/), Demux was born out of the following qualifications:
 
 1. A separation of concerns between how state exists on the blockchain and how it is queried by the client front-end
-2. Client front-end not solely responsible for determining derived, reduced, and/or accumulated state
-3. Ability for blockchain events to trigger new transactions, as well as other side effects outside of the blockchain
-4. The blockchain as the single source of truth for all application state
+1. Client front-end not solely responsible for determining derived, reduced, and/or accumulated state
+1. Ability for blockchain events to trigger new transactions, as well as other side effects outside of the blockchain
+1. The blockchain as the single source of truth for all application state
 
 ### Separated Persistence Layer
 
@@ -49,15 +49,15 @@ There are other solutions to the above problems that involve legacy persistence 
 
 <img src='https://i.imgur.com/MFfGOe3.png' height='492' alt='Demux Logo' />
 
-0. Client queries API for data
+1. Client queries API for data
 1. Client sends transaction to blockchain
-2. Action Watcher invokes Action Reader to check for new blocks
-3. Action Reader sees transaction in new block, parses actions
-4. Action Watcher sends actions to Action Handler
-5. Action Handler processes actions through Updaters and Effects
-6. Actions run their corresponding Updaters, updating the state of the Datastore
-7. Actions run their corresponding Effects, triggering external events
-8. Client queries API for (updated) data
+1. Action Watcher invokes Action Reader to check for new blocks
+1. Action Reader sees transaction in new block, parses actions
+1. Action Watcher sends actions to Action Handler
+1. Action Handler processes actions through Updaters and Effects
+1. Actions run their corresponding Updaters, updating the state of the Datastore
+1. Actions run their corresponding Effects, triggering external events
+1. Client queries API for (updated) data
 
 ## Usage
 
