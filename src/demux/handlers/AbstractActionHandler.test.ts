@@ -132,7 +132,7 @@ describe("BaseActionHandler", () => {
     expect(notRunEffect).not.toHaveBeenCalled()
   })
 
-  it("seeks to the next block needed when on first block and other blocks have been processed", async () => {
+  it("seeks to the correct block when we've already processed blocks and are on the first block (replay)", async () => {
     actionHandler.setLastProcessedBlockHash("abcd")
     const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockData, false, true)
     expect(needToSeek).toBe(true)

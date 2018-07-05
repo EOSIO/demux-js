@@ -17,7 +17,7 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "example": "./run-example.sh",
-    "lint": "./node_modules/.bin/tslint -c tslint.json src/**/*.ts",
+    "lint": "tslint -c tslint.json src/**/*.ts",
     "test": "jest"
   },
   "author": "Julien Heller",
