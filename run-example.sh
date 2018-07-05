@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-
-NODE_PATH=./src/ node examples/$1/index.js
+./node_modules/.bin/tsc
+NODE_PATH=./dist/ node examples/$1/index.js

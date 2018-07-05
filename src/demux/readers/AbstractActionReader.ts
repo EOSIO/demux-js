@@ -1,5 +1,15 @@
-class AbstractActionReader {
-  constructor({ startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600 }) {
+export default abstract class AbstractActionReader {
+  public currentBlockNumber: number
+  public headBlockNumber: number | null
+
+  protected onlyIrreversible: boolean
+
+  private startAtBlock: number
+  private currentBlockData: Block | null
+  private blockHistory: Block[]
+  private maxHistoryLength: number
+
+  constructor(startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600) {
     this.headBlockNumber = null
     this.startAtBlock = startAtBlock
     this.currentBlockNumber = startAtBlock - 1
@@ -12,28 +22,22 @@ class AbstractActionReader {
   /**
    * Loads the head block number, returning an int.
    * If onlyIrreversible is true, return the most recent irreversible block number
-   * @return {number}
+   * @return {Promise<number>}
    */
-  getHeadBlockNumber() {
-    throw Error("Must implement `getHeadBlockNumber`; refer to documentation for details.")
-  }
+  public abstract async getHeadBlockNumber(): Promise<number>
 
   /**
-   * Loads a block with the given block number, returning an object with block data
-   * normalized as:
-   * { actions, blockNumber, blockHash, previousBlockHash }
+   * Loads a block with the given block number
    * @param {number} blockNumber - Number of the block to retrieve
-   * @returns {Object}
+   * @returns {Block}
    */
-  getBlock(blockNumber) {
-    throw Error("Must implement `getBlock`; refer to documentation for details.")
-  }
+  public abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  async nextBlock() {
+  public async nextBlock(): Promise<[Block | null, boolean, boolean]> {
     let blockData = null
     let rollback = false
     let firstBlock = false
@@ -53,8 +57,8 @@ class AbstractActionReader {
     // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
-      const { blockHash: expectedHash } = this.currentBlockData || {}
-      const { previousBlockHash: actualHash } = unvalidatedBlockData
+      const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockHash : "INVALID"
+      const actualHash = unvalidatedBlockData.previousBlockHash
 
       // Continue if the new block is on the same chain as our history, or if we've just started
       if (expectedHash === actualHash || this.blockHistory.length === 0) {
@@ -81,7 +85,7 @@ class AbstractActionReader {
       firstBlock = true
     }
 
-    return { blockData, rollback, firstBlock }
+    return [blockData, rollback, firstBlock]
   }
 
   /**
@@ -91,32 +95,46 @@ class AbstractActionReader {
    *
    * @return {Promise<void>}
    */
-  async rollback() {
+  public async rollback() {
     console.info("!! Fork detected !!")
 
+    let blocksToRewind: number
     // Rewind at least 1 block back
-    this.currentBlockData = await this.getBlock(this.blockHistory.pop().blockNumber)
-    let blocksToRewind = 1
+    if (this.blockHistory.length > 0) {
+      // TODO:
+      // check and throw error if undefined
+      const block = this.blockHistory.pop()
+      if (block === undefined) {
+        throw Error ("block history should not have undefined entries.")
+      }
+      this.currentBlockData = await this.getBlock(block.blockNumber)
+      blocksToRewind = 1
+    }
 
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
       const [cachedPreviousBlockData] = this.blockHistory.slice(-1)
       const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockNumber)
-      if (this.currentBlockData.previousBlockHash === previousBlockData.blockHash) {
-        console.info(`✓ BLOCK ${this.currentBlockData.blockNumber} MATCH:`)
-        console.info(`  expected: ${this.currentBlockData.previousBlockHash}`)
+      // TODO:
+      // add null guards
+      const currentBlock = this.currentBlockData
+      if (currentBlock !== null) {
+        if (currentBlock.previousBlockHash === previousBlockData.blockHash) {
+          console.info(`✓ BLOCK ${currentBlock.blockNumber} MATCH:`)
+          console.info(`  expected: ${currentBlock.previousBlockHash}`)
+          console.info(`  received: ${previousBlockData.blockHash}`)
+          console.info(`Rewinding ${blocksToRewind!} blocks to block (${currentBlock.blockNumber})...`)
+          break
+        }
+        console.info(`✕ BLOCK ${currentBlock.blockNumber} MISMATCH:`)
+        console.info(`  expected: ${currentBlock.previousBlockHash}`)
         console.info(`  received: ${previousBlockData.blockHash}`)
-        console.info(`Rewinding ${blocksToRewind} blocks to block (${this.currentBlockData.blockNumber})...`)
-        break
+        console.info("Rollback history has been exhausted!")
       }
-      console.info(`✕ BLOCK ${this.currentBlockData.blockNumber} MISMATCH:`)
-      console.info(`  expected: ${this.currentBlockData.previousBlockHash}`)
-      console.info(`  received: ${previousBlockData.blockHash}`)
-      console.info("Rollback history has been exhausted!")
 
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
-      blocksToRewind += 1
+      blocksToRewind! += 1
     }
     if (this.blockHistory.length === 0) {
       await this.rollbackExhausted()
@@ -126,11 +144,11 @@ class AbstractActionReader {
   /**
    * When history is exhausted in rollback(), this is run to handle the situation.
    */
-  rollbackExhausted() {
+  public rollbackExhausted() {
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 
-  seekToBlock(blockNumber) {
+  public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
 
@@ -151,9 +169,7 @@ class AbstractActionReader {
     // Load current block
     this.currentBlockNumber = blockNumber - 1
     if (!this.currentBlockData) {
-      this.currentBlockData = this.getBlock(this.currentBlockNumber)
+      this.currentBlockData = await this.getBlock(this.currentBlockNumber)
     }
   }
 }
-
-module.exports = AbstractActionReader

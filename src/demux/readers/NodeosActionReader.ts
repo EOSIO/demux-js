@@ -3,23 +3,36 @@
  * It is important to note that deferred transactions will not be included, as these are not accessible without plugins.
  */
 
-const request = require("request-promise-native")
+import AbstractActionReader from "./AbstractActionReader"
 
-const AbstractActionReader = require("./AbstractActionReader")
-
-class NodeosActionReader extends AbstractActionReader {
-  constructor({
+/**
+ * Implementation of an ActionReader that polls a node using `get_block`.
+ */
+export default class NodeosActionReader extends AbstractActionReader {
+  protected nodeosEndpoint: string
+  protected requestInstance: any
+  constructor(
     nodeosEndpoint = "http://localhost:8888",
     startAtBlock = 1,
     onlyIrreversible = false,
     maxHistoryLength = 600,
-  }) {
-    super({ startAtBlock, onlyIrreversible, maxHistoryLength })
+    requestInstance: any,
+  ) {
+    super(startAtBlock, onlyIrreversible, maxHistoryLength)
     this.nodeosEndpoint = nodeosEndpoint.replace(/\/+$/g, "") // Remove trailing slashes
+    this.requestInstance = requestInstance
   }
 
-  async getHeadBlockNumber() {
-    const blockInfo = await request.get({
+  public async httpRequest(method: string, requestParams: any): Promise<any> {
+    if (method === "get") {
+      return await this.requestInstance.get(requestParams)
+    } else if (method === "post") {
+      return await this.requestInstance.post(requestParams)
+    }
+  }
+
+  public async getHeadBlockNumber(): Promise<number> {
+    const blockInfo = await this.httpRequest("get", {
       url: `${this.nodeosEndpoint}/v1/chain/get_info`,
       json: true,
     })
@@ -29,8 +42,8 @@ class NodeosActionReader extends AbstractActionReader {
     return blockInfo.head_block_num
   }
 
-  async getBlock(blockNumber) {
-    const rawBlock = await request.post({
+  public async getBlock(blockNumber: number): Promise<Block> {
+    const rawBlock = await this.httpRequest("post", {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },
     })
@@ -43,17 +56,17 @@ class NodeosActionReader extends AbstractActionReader {
     }
   }
 
-  flattenArray(arr) {
+  public flattenArray(arr: any[]): any[] {
     return arr.reduce((flat, toFlatten) =>
       flat.concat(Array.isArray(toFlatten) ? this.flattenArray(toFlatten) : toFlatten), [])
   }
 
-  collectActionsFromBlock(rawBlock) {
-    return this.flattenArray(rawBlock.transactions.map((transaction) => {
+  public collectActionsFromBlock(rawBlock: any): Action[] {
+    return this.flattenArray(rawBlock.transactions.map((transaction: any) => {
       if (!transaction.trx.transaction) {
         return [] // Deferred transaction, cannot decode
       }
-      return transaction.trx.transaction.actions.map((action, actionIndex) => {
+      return transaction.trx.transaction.actions.map((action: any, actionIndex: number) => {
         // Delete unneeded hex data if we have deserialized data
         if (action.data) {
           delete action.hex_data // eslint-disable-line
