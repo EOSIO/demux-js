@@ -1,4 +1,4 @@
-const { handlers: { AbstractActionHandler } } = require("../../src/")
+const { handlers: { AbstractActionHandler } } = require("../../dist/")
 
 const state = { volumeBySymbol: {}, totalTransfers: 0 } // Initial state
 
