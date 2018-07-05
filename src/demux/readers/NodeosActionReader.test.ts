@@ -10,6 +10,7 @@ const rawBlock = {
   schedule_version: 10,
   new_producers: null,
   header_extensions: [],
+  // tslint:disable-next-line
   producer_signature: "SIG_K1_K9KpBPcbHukPLLqpt27vkLoYHwVnukBSijEvksdWUmN4Boi2EHwd7B6RC7kcBvXCgHptvp1QDyaiAY3FxRiHoapvzCcFAU",
   transactions: [
     {
@@ -19,11 +20,12 @@ const rawBlock = {
       trx: {
         id: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
         signatures: [
-          "SIG_K1_KbzyGju8Ssn16KxRA5nJg1P4X5MfoGgs8MfBi4NuhSCrG7oCuoCGVg8vnSqsocYouDYawxpQ31BrxJGVR5xEfoVpEV5jqV"
+          "SIG_K1_KbzyGju8Ssn16KxRA5nJg1P4X5MfoGgs8MfBi4NuhSCrG7oCuoCGVg8vnSqsocYouDYawxpQ31BrxJGVR5xEfoVpEV5jqV",
         ],
         compression: "none",
         packed_context_free_data: "",
         context_free_data: [],
+        // tslint:disable-next-line
         packed_trx: "c5ae245bf9404eadf12c0000000001a09861f648958566000000000080694a01a09861f64895856600000000a8ed3232141364646f7320656f73212073686f727420656f7300",
         transaction: {
           expiration: "2018-06-16T06:31:33",
@@ -40,13 +42,13 @@ const rawBlock = {
               authorization: [
                 {
                   actor: "testing",
-                  permission: "active"
-                }
+                  permission: "active",
+                },
               ],
               data: {
-                memo: "EOS is awesome!"
+                memo: "EOS is awesome!",
               },
-              hex_data: "1364646f7320656f73212073686f727420656f73"
+              hex_data: "1364646f7320656f73212073686f727420656f73",
             },
             {
               account: "testing",
@@ -54,24 +56,24 @@ const rawBlock = {
               authorization: [
                 {
                   actor: "testing",
-                  permission: "active"
-                }
+                  permission: "active",
+                },
               ],
               data: {
-                memo: "Go EOS!"
+                memo: "Go EOS!",
               },
-              hex_data: "1364646f7320656f73212073686f727420656f73"
-            }
+              hex_data: "1364646f7320656f73212073686f727420656f73",
+            },
           ],
-          transaction_extensions: []
-        }
-      }
-    }
+          transaction_extensions: [],
+        },
+      },
+    },
   ],
   block_extensions: [],
   id: "000f4241873a9aef0daefd47d8821495b6f61c4d1c73544419eb0ddc22a9e906",
   block_num: 20,
-  ref_block_prefix: 1207807501
+  ref_block_prefix: 1207807501,
 }
 
 describe("NodeosActionReader", () => {
@@ -86,7 +88,7 @@ describe("NodeosActionReader", () => {
   beforeAll(() => {
     request = {
       get: async () => blockInfo,
-      post: async () => rawBlock
+      post: async () => rawBlock,
     }
   })
 

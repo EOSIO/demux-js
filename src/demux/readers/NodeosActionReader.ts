@@ -9,21 +9,21 @@ import AbstractActionReader from "./AbstractActionReader"
  * Implementation of an ActionReader that polls a node using `get_block`.
  */
 export default class NodeosActionReader extends AbstractActionReader {
-  nodeosEndpoint: string
-  requestInstance: any
+  protected nodeosEndpoint: string
+  protected requestInstance: any
   constructor(
     nodeosEndpoint = "http://localhost:8888",
     startAtBlock = 1,
     onlyIrreversible = false,
     maxHistoryLength = 600,
-    requestInstance: any
+    requestInstance: any,
   ) {
     super(startAtBlock, onlyIrreversible, maxHistoryLength)
     this.nodeosEndpoint = nodeosEndpoint.replace(/\/+$/g, "") // Remove trailing slashes
     this.requestInstance = requestInstance
   }
 
-  async httpRequest(method: string, requestParams: any): Promise<any> {
+  public async httpRequest(method: string, requestParams: any): Promise<any> {
     if (method === "get") {
       return await this.requestInstance.get(requestParams)
     } else if (method === "post") {
@@ -31,7 +31,7 @@ export default class NodeosActionReader extends AbstractActionReader {
     }
   }
 
-  async getHeadBlockNumber(): Promise<number> {
+  public async getHeadBlockNumber(): Promise<number> {
     const blockInfo = await this.httpRequest("get", {
       url: `${this.nodeosEndpoint}/v1/chain/get_info`,
       json: true,
@@ -42,7 +42,7 @@ export default class NodeosActionReader extends AbstractActionReader {
     return blockInfo.head_block_num
   }
 
-  async getBlock(blockNumber: number): Promise<Block> {
+  public async getBlock(blockNumber: number): Promise<Block> {
     const rawBlock = await this.httpRequest("post", {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },
@@ -56,12 +56,12 @@ export default class NodeosActionReader extends AbstractActionReader {
     }
   }
 
-  flattenArray(arr: any[]): any[] {
+  public flattenArray(arr: any[]): any[] {
     return arr.reduce((flat, toFlatten) =>
       flat.concat(Array.isArray(toFlatten) ? this.flattenArray(toFlatten) : toFlatten), [])
   }
 
-  collectActionsFromBlock(rawBlock: any): Action[] {
+  public collectActionsFromBlock(rawBlock: any): Action[] {
     return this.flattenArray(rawBlock.transactions.map((transaction: any) => {
       if (!transaction.trx.transaction) {
         return [] // Deferred transaction, cannot decode

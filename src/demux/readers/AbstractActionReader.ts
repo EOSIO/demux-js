@@ -98,30 +98,43 @@ export default abstract class AbstractActionReader {
   public async rollback() {
     console.info("!! Fork detected !!")
 
+    let blocksToRewind: number
     // Rewind at least 1 block back
-    // TODO:
-    this.currentBlockData = await this.getBlock(this.blockHistory.pop()!.blockNumber)
-    let blocksToRewind = 1
+    if (this.blockHistory.length > 0) {
+      // TODO:
+      // check and throw error if undefined
+      const block = this.blockHistory.pop()
+      if (block === undefined) {
+        throw Error ("block history should not have undefined entries.")
+      }
+      this.currentBlockData = await this.getBlock(block.blockNumber)
+      blocksToRewind = 1
+    }
 
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
       const [cachedPreviousBlockData] = this.blockHistory.slice(-1)
       const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockNumber)
-      if (this.currentBlockData.previousBlockHash === previousBlockData.blockHash) {
-        console.info(`✓ BLOCK ${this.currentBlockData.blockNumber} MATCH:`)
-        console.info(`  expected: ${this.currentBlockData.previousBlockHash}`)
+      // TODO:
+      // add null guards
+      const currentBlock = this.currentBlockData
+      if (currentBlock !== null) {
+        if (currentBlock.previousBlockHash === previousBlockData.blockHash) {
+          console.info(`✓ BLOCK ${currentBlock.blockNumber} MATCH:`)
+          console.info(`  expected: ${currentBlock.previousBlockHash}`)
+          console.info(`  received: ${previousBlockData.blockHash}`)
+          console.info(`Rewinding ${blocksToRewind!} blocks to block (${currentBlock.blockNumber})...`)
+          break
+        }
+        console.info(`✕ BLOCK ${currentBlock.blockNumber} MISMATCH:`)
+        console.info(`  expected: ${currentBlock.previousBlockHash}`)
         console.info(`  received: ${previousBlockData.blockHash}`)
-        console.info(`Rewinding ${blocksToRewind} blocks to block (${this.currentBlockData.blockNumber})...`)
-        break
+        console.info("Rollback history has been exhausted!")
       }
-      console.info(`✕ BLOCK ${this.currentBlockData.blockNumber} MISMATCH:`)
-      console.info(`  expected: ${this.currentBlockData.previousBlockHash}`)
-      console.info(`  received: ${previousBlockData.blockHash}`)
-      console.info("Rollback history has been exhausted!")
 
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
-      blocksToRewind += 1
+      blocksToRewind! += 1
     }
     if (this.blockHistory.length === 0) {
       await this.rollbackExhausted()
@@ -131,11 +144,11 @@ export default abstract class AbstractActionReader {
   /**
    * When history is exhausted in rollback(), this is run to handle the situation.
    */
-  rollbackExhausted() {
+  public rollbackExhausted() {
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 
-  async seekToBlock(blockNumber: number): Promise<void> {
+  public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
 

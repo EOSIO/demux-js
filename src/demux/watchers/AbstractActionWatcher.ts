@@ -1,10 +1,10 @@
-import AbstractActionHandler from "../handlers/AbstractActionHandler";
-import AbstractActionReader from "../readers/AbstractActionReader";
+import AbstractActionHandler from "../handlers/AbstractActionHandler"
+import AbstractActionReader from "../readers/AbstractActionReader"
 
 export default abstract class AbstractActionWatcher {
-  actionReader: AbstractActionReader
-  actionHandler: AbstractActionHandler
-  pollInterval: number
+  protected actionReader: AbstractActionReader
+  protected actionHandler: AbstractActionHandler
+  protected pollInterval: number
 
   constructor(actionReader: AbstractActionReader, actionHandler: AbstractActionHandler, pollInterval: number) {
     this.actionReader = actionReader
@@ -15,11 +15,11 @@ export default abstract class AbstractActionWatcher {
   /**
    * Gets the state from the stateProvider and passes it to the actionHandler handleBlock method.
    */
-  async handleBlock(): Promise<[boolean, number]> {
+  public async handleBlock(): Promise<[boolean, number]> {
     throw Error("Must implement `handleBlock`; refer to documentation for details.")
   }
 
-  async watch() {
+  public async watch() {
     // Record start time
     const startTime = new Date().getTime()
 
