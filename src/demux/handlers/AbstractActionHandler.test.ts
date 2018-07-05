@@ -1,9 +1,19 @@
 import AbstractActionHandler from "./AbstractActionHandler"
 
 class TestActionHandler extends AbstractActionHandler {
-  async handleWithState() {}
+  // tslint:disable-next-line
+  public async handleWithState() {}
 
-  async rollbackTo() {}
+  // tslint:disable-next-line
+  public async rollbackTo() {}
+
+  public setLastProcessedBlockHash(hash: string) {
+    this.lastProcessedBlockHash = hash
+  }
+
+  public setLastProcessedBlockNumber(num: number) {
+    this.lastProcessedBlockNumber = num
+  }
 }
 
 const blockData = {
@@ -15,16 +25,16 @@ const blockData = {
         authorization: [
           {
             actor: "testing",
-            permission: "active"
-          }
+            permission: "active",
+          },
         ],
         data: {
-          memo: "EOS is awesome!"
+          memo: "EOS is awesome!",
         },
         name: "action",
-        transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533"
+        transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
       },
-      type: "testing::action"
+      type: "testing::action",
     },
     {
       payload: {
@@ -33,21 +43,21 @@ const blockData = {
         authorization: [
           {
             actor: "testing",
-            permission: "active"
-          }
+            permission: "active",
+          },
         ],
         data: {
-          memo: "Go EOS!"
+          memo: "Go EOS!",
         },
         name: "action2",
-        transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533"
+        transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
       },
-      type: "testing::action2"
-    }
+      type: "testing::action2",
+    },
   ],
   blockHash: "000f4241873a9aef0daefd47d8821495b6f61c4d1c73544419eb0ddc22a9e906",
   blockNumber: 20,
-  previousBlockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8"
+  previousBlockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8",
 }
 
 describe("BaseActionHandler", () => {
@@ -92,7 +102,7 @@ describe("BaseActionHandler", () => {
           authorization: [],
           data: {},
           name: "transfer",
-          transactionId: "1"
+          transactionId: "1",
         },
         type: "eosio.token::transfer",
       },
@@ -103,13 +113,12 @@ describe("BaseActionHandler", () => {
           authorization: [],
           data: {},
           name: "regproducer",
-          transactionId: "1"
+          transactionId: "1",
         },
         type: "eosio.system::regproducer",
       },
     ]
   })
-
 
   it("runs the correct updater based on action type", () => {
     actionHandler.runUpdaters({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
@@ -124,29 +133,29 @@ describe("BaseActionHandler", () => {
   })
 
   it("seeks to the next block needed when on first block and other blocks have been processed", async () => {
-    actionHandler._lastProcessedBlockHash = "abcd"
+    actionHandler.setLastProcessedBlockHash("abcd")
     const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockData, false, true)
     expect(needToSeek).toBe(true)
     expect(seekBlockNum).toBe(1)
-    actionHandler._lastProcessedBlockHash = ""
+    actionHandler.setLastProcessedBlockHash("")
   })
 
   it("seeks to the next block needed when block number doesn't match last processed block", async () => {
-    actionHandler._lastProcessedBlockNumber = 18
+    actionHandler.setLastProcessedBlockNumber(18)
     const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockData, false, false)
     expect(needToSeek).toBe(true)
     expect(seekBlockNum).toBe(19)
-    actionHandler._lastProcessedBlockNumber = 0
+    actionHandler.setLastProcessedBlockNumber(0)
   })
 
   it("throws error if previous block hash and last processed don't match up", async () => {
-    actionHandler._lastProcessedBlockNumber = 19
-    actionHandler._lastProcessedBlockHash = "asdfasdfasdf"
+    actionHandler.setLastProcessedBlockNumber(19)
+    actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
 
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
     expect(actionHandler.handleBlock(blockData, false, false)).rejects.toEqual(expectedError)
 
-    actionHandler._lastProcessedBlockHash = ""
-    actionHandler._lastProcessedBlockNumber = 0
+    actionHandler.setLastProcessedBlockHash("")
+    actionHandler.setLastProcessedBlockNumber(0)
   })
 })

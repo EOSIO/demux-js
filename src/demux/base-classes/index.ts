@@ -26,16 +26,16 @@ interface Payload {
 }
 
 interface Authorization {
-    actor: string;
-    permission: string;
+    actor: string
+    permission: string
 }
 
 interface Updater {
     actionType: string
-    updater: Function
+    updater: (data: any) => void
 }
 
 interface Effect {
     actionType: string
-    effect: Function
+    effect: (data: any) => void
 }

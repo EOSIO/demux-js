@@ -17,6 +17,7 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "example": "./run-example.sh",
+    "lint": "./node_modules/.bin/tslint -c tslint.json src/**/*.ts",
     "test": "jest"
   },
   "author": "Julien Heller",
@@ -24,7 +25,8 @@
   "dependencies": {
     "@types/request-promise-native": "^1.0.15",
     "request": "^2.87.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "tslint": "^5.10.0"
   },
   "jest": {
     "moduleFileExtensions": [

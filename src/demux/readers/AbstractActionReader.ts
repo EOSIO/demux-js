@@ -1,11 +1,14 @@
 export default abstract class AbstractActionReader {
-  headBlockNumber: number | null
-  startAtBlock: number
-  currentBlockNumber: number
-  currentBlockData: Block | null
-  onlyIrreversible: boolean
-  blockHistory: Block[]
-  maxHistoryLength: number
+  public currentBlockNumber: number
+  public headBlockNumber: number | null
+
+  protected onlyIrreversible: boolean
+
+  private startAtBlock: number
+  private currentBlockData: Block | null
+  private blockHistory: Block[]
+  private maxHistoryLength: number
+
   constructor(startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600) {
     this.headBlockNumber = null
     this.startAtBlock = startAtBlock
@@ -21,21 +24,20 @@ export default abstract class AbstractActionReader {
    * If onlyIrreversible is true, return the most recent irreversible block number
    * @return {Promise<number>}
    */
-  abstract async getHeadBlockNumber(): Promise<number>
+  public abstract async getHeadBlockNumber(): Promise<number>
 
   /**
    * Loads a block with the given block number
    * @param {number} blockNumber - Number of the block to retrieve
    * @returns {Block}
    */
-  abstract async getBlock(blockNumber: number): Promise<Block>
+  public abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  // TODO:
-  async nextBlock(): Promise<[Block | null, boolean, boolean]> {
+  public async nextBlock(): Promise<[Block | null, boolean, boolean]> {
     let blockData = null
     let rollback = false
     let firstBlock = false
@@ -93,7 +95,7 @@ export default abstract class AbstractActionReader {
    *
    * @return {Promise<void>}
    */
-  async rollback() {
+  public async rollback() {
     console.info("!! Fork detected !!")
 
     // Rewind at least 1 block back
