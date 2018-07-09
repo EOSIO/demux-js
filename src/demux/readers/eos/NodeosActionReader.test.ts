@@ -107,54 +107,6 @@ describe("NodeosActionReader", () => {
     expect(blockNum).toBe(20)
   })
 
-  it("flattens arrays", async () => {
-    const array = [[1, [2, 3]], [4, 5, 6]]
-    const flattenedArray = await reader.flattenArray(array)
-    expect(flattenedArray).toEqual([1, 2, 3, 4, 5, 6])
-  })
-
-  it("collects actions from blocks", async () => {
-    const actions = reader.collectActionsFromBlock(rawBlock)
-    expect(actions).toEqual([
-      {
-        payload: {
-          account: "testing",
-          actionIndex: 0,
-          authorization: [
-            {
-              actor: "testing",
-              permission: "active",
-            },
-          ],
-          data: {
-            memo: "EOS is awesome!",
-          },
-          name: "action",
-          transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
-        },
-        type: "testing::action",
-      },
-      {
-        payload: {
-          account: "testing",
-          actionIndex: 1,
-          authorization: [
-            {
-              actor: "testing",
-              permission: "active",
-            },
-          ],
-          data: {
-            memo: "Go EOS!",
-          },
-          name: "action2",
-          transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
-        },
-        type: "testing::action2",
-      },
-    ])
-  })
-
   it("gets a block", async () => {
     const block = await reader.getBlock(20)
     expect(block).toEqual({

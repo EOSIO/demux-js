@@ -49,7 +49,6 @@ There are other solutions to the above problems that involve legacy persistence 
 
 <img src='https://i.imgur.com/MFfGOe3.png' height='492' alt='Demux Logo' />
 
-1. Client queries API for data
 1. Client sends transaction to blockchain
 1. Action Watcher invokes Action Reader to check for new blocks
 1. Action Reader sees transaction in new block, parses actions
@@ -57,7 +56,7 @@ There are other solutions to the above problems that involve legacy persistence 
 1. Action Handler processes actions through Updaters and Effects
 1. Actions run their corresponding Updaters, updating the state of the Datastore
 1. Actions run their corresponding Effects, triggering external events
-1. Client queries API for (updated) data
+1. Client queries API for updated data
 
 ## Usage
 

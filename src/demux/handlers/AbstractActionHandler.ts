@@ -14,7 +14,7 @@ export default abstract class AbstractActionHandler {
 
   /**
    * From the object passed to handleActions, retrieve an array of actions
-   * @param {Block} blockData
+   * @param {AbstractBlock} blockData
    * @returns {Action[]}
    */
   public getActions(blockData: Block): Action[] {
@@ -23,7 +23,7 @@ export default abstract class AbstractActionHandler {
 
   /**
    * From the object passed to handleActions, retrieve an object of block info
-   * @param {Block} blockData
+   * @param {AbstractBlock} blockData
    * @returns {BlockInfo}
    */
   public getBlockInfo(blockData: Block): BlockInfo {
@@ -83,7 +83,7 @@ export default abstract class AbstractActionHandler {
 
   /**
    * Receive block, validate, and handle actions with updaters and effects
-   * @param {Block} blockData
+   * @param {AbstractBlock} blockData
    * @param {boolean} rollback
    * @param {boolean} firstBlock
    * @returns {Promise<[boolean, number]>}

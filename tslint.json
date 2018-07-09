@@ -1,14 +1,17 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-        "object-literal-sort-keys": false,
-        "interface-name": [true, "never-prefix"],
-        "no-console": [true, "log", "error"],
-        "semicolon": [true, "never"]
-    },
-    "rulesDirectory": []
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-eslint-rules"
+  ],
+  "jsRules": {},
+  "rules": {
+    "object-literal-sort-keys": false,
+    "interface-name": [true, "never-prefix"],
+    "no-console": [true, "log", "error"],
+    "semicolon": [true, "never"],
+    "ter-indent": [true, 2]
+
+  },
+  "rulesDirectory": []
 }

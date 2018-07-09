@@ -1,22 +1,18 @@
 export default abstract class AbstractActionReader {
   public currentBlockNumber: number
   public headBlockNumber: number | null
+  protected currentBlockData: Block | null
+  protected blockHistory: Block[]
 
-  protected onlyIrreversible: boolean
-
-  private startAtBlock: number
-  private currentBlockData: Block | null
-  private blockHistory: Block[]
-  private maxHistoryLength: number
-
-  constructor(startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600) {
+  constructor(
+    protected startAtBlock: number = 1,
+    protected onlyIrreversible: boolean = false,
+    protected maxHistoryLength: number = 600
+  ) {
     this.headBlockNumber = null
-    this.startAtBlock = startAtBlock
     this.currentBlockNumber = startAtBlock - 1
     this.currentBlockData = null
-    this.onlyIrreversible = onlyIrreversible
     this.blockHistory = []
-    this.maxHistoryLength = maxHistoryLength
   }
 
   /**
@@ -29,7 +25,7 @@ export default abstract class AbstractActionReader {
   /**
    * Loads a block with the given block number
    * @param {number} blockNumber - Number of the block to retrieve
-   * @returns {Block}
+   * @returns {AbstractBlock}
    */
   public abstract async getBlock(blockNumber: number): Promise<Block>
 

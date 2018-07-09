@@ -1,7 +1,7 @@
 import AbstractActionReader from "./AbstractActionReader"
-import NodeosActionReader from "./NodeosActionReader"
+import * as eos from "./eos"
 
 module.exports = {
   AbstractActionReader,
-  NodeosActionReader,
+  eos,
 }
