@@ -1,8 +1,15 @@
 {
-  "name": "demux",
+  "name": "demux-js",
   "version": "0.0.1",
+  "author": "Julien Heller",
+  "license": "MIT",
   "description": "Deterministic event-sourced state and side effect handling for blockchain applications",
   "main": "dist/index.js",
+  "dependencies": {
+    "@types/request-promise-native": "^1.0.15",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5"
+  },
   "devDependencies": {
     "@types/jest": "^23.1.4",
     "@types/node": "^10.5.1",
@@ -11,6 +18,8 @@
     "eslint-plugin-import": "^2.7.0",
     "jest": "^22.4.3",
     "ts-jest": "^23.0.0",
+    "tslint": "^5.10.0",
+    "tslint-eslint-rules": "^5.3.1",
     "typescript": "^2.9.2"
   },
   "scripts": {
@@ -19,14 +28,6 @@
     "example": "./run-example.sh",
     "lint": "tslint -c tslint.json src/**/*.ts",
     "test": "jest"
-  },
-  "author": "Julien Heller",
-  "license": "MIT",
-  "dependencies": {
-    "@types/request-promise-native": "^1.0.15",
-    "request": "^2.87.0",
-    "request-promise-native": "^1.0.5",
-    "tslint": "^5.10.0"
   },
   "jest": {
     "moduleFileExtensions": [

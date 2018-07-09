@@ -1,5 +1,5 @@
-import AbstractActionWatcher from "./AbstractActionWatcher"
+import BaseActionWatcher from "./BaseActionWatcher"
 
 module.exports = {
-  AbstractActionWatcher,
+  BaseActionWatcher,
 }

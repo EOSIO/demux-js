@@ -49,7 +49,6 @@ There are other solutions to the above problems that involve legacy persistence 
 
 <img src='https://i.imgur.com/MFfGOe3.png' height='492' alt='Demux Logo' />
 
-1. Client queries API for data
 1. Client sends transaction to blockchain
 1. Action Watcher invokes Action Reader to check for new blocks
 1. Action Reader sees transaction in new block, parses actions
@@ -57,7 +56,7 @@ There are other solutions to the above problems that involve legacy persistence 
 1. Action Handler processes actions through Updaters and Effects
 1. Actions run their corresponding Updaters, updating the state of the Datastore
 1. Actions run their corresponding Effects, triggering external events
-1. Client queries API for (updated) data
+1. Client queries API for updated data
 
 ## Usage
 
@@ -65,15 +64,15 @@ This library provides the following classes:
 
 * [**`AbstractActionReader`**](src/demux/readers/): Abstract class used for implementing your own Action Readers
     * [`NodeosActionReader`](src/demux/readers/eos/): Action reader that reads actions from EOS Nodeos nodes
+    * [`NodeosBlock`](src/demux/readers/eos/): Block that parses raw EOS Nodeos block data
 
 
-* [**`AbstractActionHandler`**](src/demux/handlers/): Abstract class used for implementing your own Action Handlers
-    * [`MassiveActionHandler`](src/demux/handlers/postgres/): Action handler that utilizes Massive.js to make SQL queries to a Postgres database
+* [**`AbstractActionHandler`**](src/demux/handlers/): Abstract class used for implementing your own Action Handlers   
 
 
 * [**`BaseActionWatcher`**](src/demux/watchers/): Base class that implements a ready-to-use Action Watcher
 
-*(Click each above for detailed method and subclassing usage.)*
+*(Click each above for detailed usage.)*
 
 ## Example
 

@@ -1,22 +1,13 @@
 export default abstract class AbstractActionReader {
-  public currentBlockNumber: number
-  public headBlockNumber: number | null
-
-  protected onlyIrreversible: boolean
-
-  private startAtBlock: number
-  private currentBlockData: Block | null
-  private blockHistory: Block[]
-  private maxHistoryLength: number
-
-  constructor(startAtBlock = 1, onlyIrreversible = false, maxHistoryLength = 600) {
-    this.headBlockNumber = null
-    this.startAtBlock = startAtBlock
-    this.currentBlockNumber = startAtBlock - 1
-    this.currentBlockData = null
-    this.onlyIrreversible = onlyIrreversible
-    this.blockHistory = []
-    this.maxHistoryLength = maxHistoryLength
+  constructor(
+    protected startAtBlock: number = 1,
+    protected onlyIrreversible: boolean = false,
+    protected maxHistoryLength: number = 600,
+    public headBlockNumber: number | null = null,
+    public currentBlockNumber: number = startAtBlock - 1,
+    protected currentBlockData: Block | null = null,
+    protected blockHistory: Block[] = [],
+  ) {
   }
 
   /**
@@ -148,6 +139,11 @@ export default abstract class AbstractActionReader {
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 
+  /**
+   * Move to the specified block.
+   * @param {number} blockNumber
+   * @returns {Promise<void>}
+   */
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
