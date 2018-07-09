@@ -5,8 +5,8 @@
 Reads from EOSIO Nodeos blockchains. 
 
 
-## `EosBlock`
+## `NodeosBlock`
 
-*Extends [`AbstractBlock`](../README.md)*
+*Implements [`Block`](../../interfaces.ts)*
 
 Parses blocks retrieved from EOSIO Nodeos blockchain nodes.

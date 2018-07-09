@@ -11,7 +11,6 @@
     "no-console": [true, "log", "error"],
     "semicolon": [true, "never"],
     "ter-indent": [true, 2]
-
   },
   "rulesDirectory": []
 }

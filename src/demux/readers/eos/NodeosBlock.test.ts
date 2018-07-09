@@ -1,4 +1,4 @@
-import EosBlock from "./EosBlock"
+import NodeosBlock from "./NodeosBlock"
 
 const rawBlock = {
   timestamp: "2018-06-16T05:59:49.500",
@@ -76,17 +76,11 @@ const rawBlock = {
   ref_block_prefix: 1207807501,
 }
 
-describe("EosBlock", () => {
-  let eosBlock: EosBlock
+describe("NodeosBlock", () => {
+  let eosBlock: NodeosBlock
 
   beforeEach(() => {
-    eosBlock = new EosBlock(rawBlock)
-  })
-
-  it("flattens arrays", async () => {
-    const array = [[1, [2, 3]], [4, 5, 6]]
-    const flattenedArray = await eosBlock.flattenArray(array)
-    expect(flattenedArray).toEqual([1, 2, 3, 4, 5, 6])
+    eosBlock = new NodeosBlock(rawBlock)
   })
 
   it("collects actions from blocks", async () => {

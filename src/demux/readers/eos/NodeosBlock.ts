@@ -1,18 +1,13 @@
-import AbstractBlock from "../AbstractBlock"
-
-export default class EosBlock extends AbstractBlock {
-  protected parseRawBlock(rawBlock: any): Block {
-    return {
-      actions: this.collectActionsFromBlock(rawBlock),
-      blockNumber: rawBlock.block_num,
-      blockHash: rawBlock.id,
-      previousBlockHash: rawBlock.previous,
-    }
-  }
-
-  public flattenArray(arr: any[]): any[] {
-    return arr.reduce((flat, toFlatten) =>
-      flat.concat(Array.isArray(toFlatten) ? this.flattenArray(toFlatten) : toFlatten), [])
+export default class NodeosBlock implements Block {
+  public actions: Action[]
+  public blockHash: string
+  public blockNumber: number
+  public previousBlockHash: string
+  constructor(rawBlock: any) {
+    this.actions = this.collectActionsFromBlock(rawBlock)
+    this.blockNumber = rawBlock.block_num
+    this.blockHash = rawBlock.id
+    this.previousBlockHash = rawBlock.previous
   }
 
   protected collectActionsFromBlock(rawBlock: any): EosAction[] {
@@ -35,5 +30,10 @@ export default class EosBlock extends AbstractBlock {
         }
       })
     }))
+  }
+
+  private flattenArray(arr: any[]): any[] {
+    return arr.reduce((flat, toFlatten) =>
+      flat.concat(Array.isArray(toFlatten) ? this.flattenArray(toFlatten) : toFlatten), [])
   }
 }

@@ -4,7 +4,7 @@
  */
 
 import AbstractActionReader from "../AbstractActionReader"
-import EosBlock from "./EosBlock"
+import NodeosBlock from "./NodeosBlock"
 
 import request from "request-promise-native"
 
@@ -40,7 +40,7 @@ export default class NodeosActionReader extends AbstractActionReader {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },
     })
-    return new EosBlock(rawBlock)
+    return new NodeosBlock(rawBlock)
   }
 
   protected async httpRequest(method: string, requestParams: any): Promise<any> {
@@ -51,4 +51,3 @@ export default class NodeosActionReader extends AbstractActionReader {
     }
   }
 }
-
