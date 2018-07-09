@@ -8,4 +8,4 @@
 
 Abstract methods: `getHeadBlockNumber`, `getBlock`
 
-Implement `getBlock` to retrieve a block at the block number given, returning a subclass of `AbstractBlock`. Implement `getHeadBlockNumber` to get the latest block from the blockchain.  
+Implement `getBlock` to retrieve a block at the block number given, returning an implementation of the [`Block`](../interfaces.ts) interface. Implement `getHeadBlockNumber` to get the latest block from the blockchain.  

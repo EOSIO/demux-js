@@ -25,7 +25,7 @@ export default abstract class AbstractActionReader {
   /**
    * Loads a block with the given block number
    * @param {number} blockNumber - Number of the block to retrieve
-   * @returns {AbstractBlock}
+   * @returns {Block}
    */
   public abstract async getBlock(blockNumber: number): Promise<Block>
 
