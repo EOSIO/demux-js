@@ -24,14 +24,6 @@ export default class NodeosActionReader extends AbstractActionReader {
     this.nodeosEndpoint = nodeosEndpoint.replace(/\/+$/g, "") // Remove trailing slashes
   }
 
-  protected async httpRequest(method: string, requestParams: any): Promise<any> {
-    if (method === "get") {
-      return await this.requestInstance.get(requestParams)
-    } else if (method === "post") {
-      return await this.requestInstance.post(requestParams)
-    }
-  }
-
   public async getHeadBlockNumber(): Promise<number> {
     const blockInfo = await this.httpRequest("get", {
       url: `${this.nodeosEndpoint}/v1/chain/get_info`,
@@ -49,6 +41,14 @@ export default class NodeosActionReader extends AbstractActionReader {
       json: { block_num_or_id: blockNumber },
     })
     return new EosBlock(rawBlock)
+  }
+
+  protected async httpRequest(method: string, requestParams: any): Promise<any> {
+    if (method === "get") {
+      return await this.requestInstance.get(requestParams)
+    } else if (method === "post") {
+      return await this.requestInstance.post(requestParams)
+    }
   }
 }
 

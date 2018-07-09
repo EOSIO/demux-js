@@ -5,8 +5,13 @@ export default class BaseActionWatcher {
   constructor(
     protected actionReader: AbstractActionReader,
     protected actionHandler: AbstractActionHandler,
-    protected pollInterval: number) {}
+    protected pollInterval: number) {
+  }
 
+  /**
+   * Uses the given actionReader and actionHandler to poll and process new blocks.
+   * @returns {Promise<void>}
+   */
   public async watch() {
     // Record start time
     const startTime = new Date().getTime()

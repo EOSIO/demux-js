@@ -65,10 +65,11 @@ This library provides the following classes:
 * [**`AbstractActionReader`**](src/demux/readers/): Abstract class used for implementing your own Action Readers
     * [`NodeosActionReader`](src/demux/readers/eos/): Action reader that reads actions from EOS Nodeos nodes
 
+* [**`AbstractBlock`**](src/demux/readers): Abstract class used for implementing parsing of raw block data
+    * [**`AbstractBlock`**](src/demux/readers/eos/): Block that parses raw EOS Nodeos block data
 
 * [**`AbstractActionHandler`**](src/demux/handlers/): Abstract class used for implementing your own Action Handlers
-    * [`MassiveActionHandler`](src/demux/handlers/postgres/): Action handler that utilizes Massive.js to make SQL queries to a Postgres database
-
+    
 
 * [**`BaseActionWatcher`**](src/demux/watchers/): Base class that implements a ready-to-use Action Watcher
 

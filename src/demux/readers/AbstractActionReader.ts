@@ -7,7 +7,7 @@ export default abstract class AbstractActionReader {
   constructor(
     protected startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
-    protected maxHistoryLength: number = 600
+    protected maxHistoryLength: number = 600,
   ) {
     this.headBlockNumber = null
     this.currentBlockNumber = startAtBlock - 1
@@ -144,6 +144,11 @@ export default abstract class AbstractActionReader {
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 
+  /**
+   * Move to the specified block.
+   * @param {number} blockNumber
+   * @returns {Promise<void>}
+   */
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
