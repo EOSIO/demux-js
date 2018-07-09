@@ -1,18 +1,13 @@
 export default abstract class AbstractActionReader {
-  public currentBlockNumber: number
-  public headBlockNumber: number | null
-  protected currentBlockData: Block | null
-  protected blockHistory: Block[]
-
   constructor(
     protected startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
     protected maxHistoryLength: number = 600,
+    public headBlockNumber: number | null = null,
+    public currentBlockNumber: number = startAtBlock - 1,
+    protected currentBlockData: Block | null = null,
+    protected blockHistory: Block[] = [],
   ) {
-    this.headBlockNumber = null
-    this.currentBlockNumber = startAtBlock - 1
-    this.currentBlockData = null
-    this.blockHistory = []
   }
 
   /**

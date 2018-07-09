@@ -15,13 +15,14 @@ export default class NodeosActionReader extends AbstractActionReader {
   protected nodeosEndpoint: string
   constructor(
     nodeosEndpoint: string = "http://localhost:8888",
-    startAtBlock: number = 1,
-    onlyIrreversible: boolean = false,
-    maxHistoryLength: number = 600,
+    protected startAtBlock: number = 1,
+    protected onlyIrreversible: boolean = false,
+    protected maxHistoryLength: number = 600,
     protected requestInstance: any = request,
   ) {
     super(startAtBlock, onlyIrreversible, maxHistoryLength)
-    this.nodeosEndpoint = nodeosEndpoint.replace(/\/+$/g, "") // Remove trailing slashes
+    // Remove trailing slashes
+    this.nodeosEndpoint = nodeosEndpoint.replace(/\/+$/g, "")
   }
 
   public async getHeadBlockNumber(): Promise<number> {
