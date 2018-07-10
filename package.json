@@ -1,7 +1,10 @@
 {
   "name": "demux-js",
   "version": "0.0.1",
-  "author": "Julien Heller",
+  "author": {
+    "name": "Julien Heller",
+    "url": "https://block.one/"
+  },
   "license": "MIT",
   "description": "Deterministic event-sourced state and side effect handling for blockchain applications",
   "main": "dist/index.js",

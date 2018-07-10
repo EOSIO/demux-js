@@ -17,7 +17,7 @@ export default abstract class AbstractActionHandler {
    * @param {Block} blockData
    * @returns {Action[]}
    */
-  public getActions(blockData: Block): Action[] {
+  protected getActions(blockData: Block): Action[] {
     return blockData.actions
   }
 
@@ -26,7 +26,7 @@ export default abstract class AbstractActionHandler {
    * @param {Block} blockData
    * @returns {BlockInfo}
    */
-  public getBlockInfo(blockData: Block): BlockInfo {
+  protected getBlockInfo(blockData: Block): BlockInfo {
     return {
       blockNumber: blockData.blockNumber,
       blockHash: blockData.blockHash,
