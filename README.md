@@ -1,16 +1,13 @@
-# <img src='https://i.imgur.com/E56MPry.png' height='60' alt='Demux Logo' />
-
 Demux is a backend infrastructure pattern for sourcing blockchain events to deterministically update queryable datastores and trigger side effects. This library serves as a reference implementation of that pattern for use with Node applications.
 
 ## Installation
 
-Using `yarn`:
-```bash
-yarn add demux-js
-```
 
-Using `npm`:
 ```bash
+# Using yarn
+yarn add demux-js
+
+# Using npm
 npm install demux-js --save
 ```
 ## Overview
@@ -29,7 +26,7 @@ Storing data in indexed state on blockchains can be useful for three reasons: de
 * The query interface used to retrieve the indexed data is limited. Complex data requirements can mean you either have to make an excess number of queries and process the data on the client, or you must store additional derivative data on the blockchain itself.
 * Scaling your query load means creating more blockchain endpoint nodes, which can be very expensive.
 
-Demux solves these problems by off-loading queries to any persistence layer that you want. As blockchain events happen, your chosen persistence layer is updated deterministically by `updater` functions, which can then be queried by your front-end through a suitable API (for example, REST or GraphQL).
+Demux solves these problems by off-loading queries to any persistence layer that you want. As blockchain events happen, your chosen persistence layer is updated by `updater` functions, which deterministically process an array of `Action` objects. The persistence layer can then be queried by your front-end through a suitable API (for example, REST or GraphQL).
 
 This means that we can separate our concerns: for data that needs decentralized consensus of computation or access from other blockchain events, we can still store the data in indexed blockchain state, without having to worry about tailoring to front-end queries. For data required by our front-end, we can pre-process and index data in a way that makes it easy for it to be queried, in a horizontally scalable persistence layer of our choice. The end result is that both systems can serve their purpose more effectively.
 
@@ -92,21 +89,21 @@ const MyActionHandler = require("./MyActionHandler")
 const updaters = require("./updaters")
 const effects = require("./effects")
 
-const actionHandler = new MyActionHandler({
+const actionHandler = new MyActionHandler(
   updaters,
   effects,
-})
+)
 
-const actionReader = new NodeosActionReader({
-  nodeosEndpoint: "http://some-nodeos-endpoint:8888", // Locally hosted node needed for reasonable indexing speed
-  startAtBlock: 12345678, // First actions relevant to this dapp happen at this block
-})
+const actionReader = new NodeosActionReader(
+  "http://some-nodeos-endpoint:8888", // Locally hosted node needed for reasonable indexing speed
+  12345678, // First actions relevant to this dapp happen at this block
+)
 
-const actionWatcher = new BaseActionWatcher({
+const actionWatcher = new BaseActionWatcher(
   actionReader,
   actionHandler,
-  pollInterval: 250, // Poll at twice the block interval for less latency
-})
+  250, // Poll at twice the block interval for less latency
+)
 
 actionWatcher.watch() // Start watch loop
 ```

@@ -1,6 +1,6 @@
 ## `NoedeosActionReader`
 
-*Extends [`AbstractActionReader`](../README.md)*
+*Extends [`AbstractActionReader`](..)*
 
 Reads from EOSIO Nodeos blockchains. 
 

@@ -1,5 +1,5 @@
 export default class NodeosBlock implements Block {
-  public actions: Action[]
+  public actions: EosAction[]
   public blockHash: string
   public blockNumber: number
   public previousBlockHash: string
