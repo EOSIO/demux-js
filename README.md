@@ -26,13 +26,13 @@ Storing data in indexed state on blockchains can be useful for three reasons: de
 * The query interface used to retrieve the indexed data is limited. Complex data requirements can mean you either have to make an excess number of queries and process the data on the client, or you must store additional derivative data on the blockchain itself.
 * Scaling your query load means creating more blockchain endpoint nodes, which can be very expensive.
 
-Demux solves these problems by off-loading queries to any persistence layer that you want. As blockchain events happen, your chosen persistence layer is updated by `updater` functions, which deterministically process an array of `Action` objects. The persistence layer can then be queried by your front-end through a suitable API (for example, REST or GraphQL).
+Demux solves these problems by off-loading queries to any persistence layer that you want. As blockchain events happen, your chosen persistence layer is updated by `updater` functions, which deterministically process an array of [Action](https://github.com/EOSIO/demux-js/blob/develop/examples/eos-transfers/updaters.js#L17) objects. The persistence layer can then be queried by your front-end through a suitable API (for example, REST or GraphQL).
 
 This means that we can separate our concerns: for data that needs decentralized consensus of computation or access from other blockchain events, we can still store the data in indexed blockchain state, without having to worry about tailoring to front-end queries. For data required by our front-end, we can pre-process and index data in a way that makes it easy for it to be queried, in a horizontally scalable persistence layer of our choice. The end result is that both systems can serve their purpose more effectively.
 
 ### Side Effects
 
-Since we have a system for acting upon specific blockchain events deterministically, we can utilize this system to manage non-deterministic events as well. These `effect` functions work almost exactly the same as `updater` functions, except they run asynchronously, are not run during replays, and modifying the deterministic datastore is off-limits. Examples include: signing and broadcasting a transaction, sending an email, and initiating a traditional fiat payment.
+Since we have a system for acting upon specific blockchain events deterministically, we can utilize this system to manage non-deterministic events as well. These [effect](https://github.com/EOSIO/demux-js/blob/develop/examples/eos-transfers/effects.js) functions work almost exactly the same as [updater](https://github.com/EOSIO/demux-js/blob/develop/examples/eos-transfers/updaters.js) functions, except they run asynchronously, are not run during replays, and modifying the deterministic datastore is off-limits. Examples include: signing and broadcasting a transaction, sending an email, and initiating a traditional fiat payment.
 
 ### Single Source of Truth
 
