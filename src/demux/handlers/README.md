@@ -2,13 +2,8 @@
 
 | Parameter  | Type        | Signature | Description |
 |------------|-------------|-----------|-------------|
-| `updaters` | `Updater[]` | `[{ 
-  actionType: "contract:actionName",
-  updater: ({ state, payload, blockInfo, context }) => {} }]` | Array of objects, each object must contain an `actionType` and `updater`. |
-
-| `effects`  | `Effect[]`  | `[{
-  actionType: "contract:actionName",
-  updater: ({ effect, payload, blockInfo, context }) => {} }]` | Array of objects, each object must contain an `actionType` and `effect`. |
+| `updaters` | `Updater[]` | `[{ actionType: "contract:actionName", updater: ({ state, payload, blockInfo, context }) => {} }]` | Array of objects, each object must contain an `actionType` and `updater`. |
+| `effects`  | `Effect[]`  | `[{ actionType: "contract:actionName", updater: ({ effect, payload, blockInfo, context }) => {} }]` | Array of objects, each object must contain an `actionType` and `effect`. |
 
 Abstract methods: `handleWithState`, `rollbackTo`
 
