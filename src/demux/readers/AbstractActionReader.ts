@@ -1,15 +1,15 @@
-import { Block } from "../../../index"
-
 export default abstract class AbstractActionReader {
+  public headBlockNumber: number | null = null
+  public currentBlockNumber: number
+  protected currentBlockData: Block | null = null
+  protected blockHistory: Block[] = []
+
   constructor(
-    protected startAtBlock: number = 1,
+    public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
     protected maxHistoryLength: number = 600,
-    public headBlockNumber: number | null = null,
-    public currentBlockNumber: number = startAtBlock - 1,
-    protected currentBlockData: Block | null = null,
-    protected blockHistory: Block[] = [],
   ) {
+    this.currentBlockNumber = startAtBlock - 1
   }
 
   /**
@@ -32,8 +32,8 @@ export default abstract class AbstractActionReader {
    */
   public async nextBlock(): Promise<[Block | null, boolean, boolean]> {
     let blockData = null
-    let rollback = false
-    let firstBlock = false
+    let isRollback = false
+    let isFirstBlock = false
 
     // If we're on the head block, refresh current head block
     if (this.currentBlockNumber === this.headBlockNumber || !this.headBlockNumber) {
@@ -67,7 +67,7 @@ export default abstract class AbstractActionReader {
         // and need to roll back
         await this.rollback()
         blockData = this.currentBlockData
-        rollback = true // Signal action handler that we must roll back
+        isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
         this.headBlockNumber = await this.getHeadBlockNumber()
       }
@@ -75,10 +75,10 @@ export default abstract class AbstractActionReader {
 
     // Let handler know if this is the earliest block we'll send
     if (this.currentBlockNumber === this.startAtBlock) {
-      firstBlock = true
+      isFirstBlock = true
     }
 
-    return [blockData, rollback, firstBlock]
+    return [blockData, isRollback, isFirstBlock]
   }
 
   /**
@@ -149,6 +149,13 @@ export default abstract class AbstractActionReader {
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
+    this.headBlockNumber = null
+
+    // If we're going back to the first block, we don't want to get the preceding block
+    if (blockNumber === 1) {
+      this.blockHistory = []
+      return
+    }
 
     // Check if block exists in history
     let toDelete = -1

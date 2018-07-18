@@ -2,7 +2,6 @@
  * Reads an EOSIO nodeos node to get actions.
  * It is important to note that deferred transactions will not be included, as these are not accessible without plugins.
  */
-import { Block } from "../../../../index"
 
 import AbstractActionReader from "../AbstractActionReader"
 import NodeosBlock from "./NodeosBlock"
@@ -16,7 +15,7 @@ export default class NodeosActionReader extends AbstractActionReader {
   protected nodeosEndpoint: string
   constructor(
     nodeosEndpoint: string = "http://localhost:8888",
-    protected startAtBlock: number = 1,
+    public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
     protected maxHistoryLength: number = 600,
     protected requestInstance: any = request,

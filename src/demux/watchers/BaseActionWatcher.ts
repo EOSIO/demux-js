@@ -52,4 +52,9 @@ export default class BaseActionWatcher {
     // Schedule next iteration
     setTimeout(async () => this.watch, waitTime)
   }
+
+  public async replay() {
+    await this.actionReader.seekToBlock(this.actionReader.startAtBlock)
+    await this.watch()
+  }
 }
