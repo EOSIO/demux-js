@@ -1,3 +1,4 @@
+import { Action } from "../../../index"
 import AbstractActionHandler from "./AbstractActionHandler"
 
 class TestActionHandler extends AbstractActionHandler {

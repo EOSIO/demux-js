@@ -1,27 +1,33 @@
-interface Block {
+declare module "demux-js"
+
+export const handlers: any
+export const readers: any
+export const watchers: any
+
+export interface Block {
   actions: Action[]
   blockHash: string
   blockNumber: number
   previousBlockHash: string
 }
 
-interface BlockInfo {
+export interface BlockInfo {
   blockNumber: number
   blockHash: string
   previousBlockHash: string
 }
 
-interface Action {
+export interface Action {
   type: string
   payload: any
 }
 
-interface Updater {
+export interface Updater {
   actionType: string
   updater: (data: any) => void
 }
 
-interface Effect {
+export interface Effect {
   actionType: string
   effect: (data: any) => void
 }
