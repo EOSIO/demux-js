@@ -13,7 +13,7 @@ const actionHandler = new ObjectActionHandler(
 )
 
 const actionReader = new NodeosActionReader(
-  "http://api.cypherglass.com:8888", // Thanks CypherGlass!
+  "http://mainnet.eoscalgary.io", // Thanks EOS Calgary!
   0, // Start at most recent blocks
 )
 

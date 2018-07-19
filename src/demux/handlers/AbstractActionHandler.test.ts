@@ -1,4 +1,4 @@
-import { Action } from "../../../index"
+import { Action, BlockInfo } from "../../../index"
 import AbstractActionHandler from "./AbstractActionHandler"
 
 class TestActionHandler extends AbstractActionHandler {
@@ -14,6 +14,14 @@ class TestActionHandler extends AbstractActionHandler {
 
   public setLastProcessedBlockNumber(num: number) {
     this.lastProcessedBlockNumber = num
+  }
+
+  public async _runUpdaters(state: any, actions: Action[], blockInfo: BlockInfo, context: any) {
+    await this.runUpdaters(state, actions, blockInfo, context)
+  }
+
+  public _runEffects(state: any, actions: Action[], blockInfo: BlockInfo, context: any) {
+    this.runEffects(state, actions, blockInfo, context)
   }
 }
 
@@ -121,14 +129,14 @@ describe("BaseActionHandler", () => {
     ]
   })
 
-  it("runs the correct updater based on action type", () => {
-    actionHandler.runUpdaters({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
+  it("runs the correct updater based on action type", async () => {
+    await actionHandler._runUpdaters({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
     expect(runUpdater).toHaveBeenCalled()
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
   it("runs the correct effect based on action type", () => {
-    actionHandler.runEffects({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
+    actionHandler._runEffects({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
     expect(runEffect).toHaveBeenCalled()
     expect(notRunEffect).not.toHaveBeenCalled()
   })

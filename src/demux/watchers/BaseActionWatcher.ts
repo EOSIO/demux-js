@@ -19,13 +19,13 @@ export default class BaseActionWatcher {
     // Process blocks until we're at the head block
     let { headBlockNumber } = this.actionReader
     while (!headBlockNumber || this.actionReader.currentBlockNumber <= headBlockNumber) {
-      const [blockData, rollback, firstBlock] = await this.actionReader.nextBlock()
+      const [blockData, isRollback] = await this.actionReader.nextBlock()
 
       // Handle block (and the actions within them)
       let needToSeek = false
       let seekBlockNum = 0
       if (blockData) {
-        [needToSeek, seekBlockNum] = await this.actionHandler.handleBlock(blockData, rollback, firstBlock)
+        [needToSeek, seekBlockNum] = await this.actionHandler.handleBlock(blockData, isRollback, this.actionReader.isFirstBlock)
       }
 
       // Seek to next needed block at the request of the action handler
@@ -33,8 +33,8 @@ export default class BaseActionWatcher {
         await this.actionReader.seekToBlock(seekBlockNum - 1)
       }
 
-      // Reset headBlockNumber on rollback for safety, as it may have decreased
-      if (rollback) {
+      // Reset headBlockNumber on isRollback for safety, as it may have decreased
+      if (isRollback) {
         headBlockNumber = this.actionReader.headBlockNumber
       }
     }
@@ -51,5 +51,10 @@ export default class BaseActionWatcher {
 
     // Schedule next iteration
     setTimeout(async () => this.watch, waitTime)
+  }
+
+  public async replay() {
+    await this.actionReader.seekToBlock(this.actionReader.startAtBlock)
+    await this.watch()
   }
 }

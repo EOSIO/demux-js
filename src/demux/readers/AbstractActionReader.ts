@@ -1,15 +1,18 @@
 import { Block } from "../../../index"
 
 export default abstract class AbstractActionReader {
+  public headBlockNumber: number | null = null
+  public currentBlockNumber: number
+  public isFirstBlock: boolean = true
+  protected currentBlockData: Block | null = null
+  protected blockHistory: Block[] = []
+
   constructor(
-    protected startAtBlock: number = 1,
+    public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
     protected maxHistoryLength: number = 600,
-    public headBlockNumber: number | null = null,
-    public currentBlockNumber: number = startAtBlock - 1,
-    protected currentBlockData: Block | null = null,
-    protected blockHistory: Block[] = [],
   ) {
+    this.currentBlockNumber = startAtBlock - 1
   }
 
   /**
@@ -30,10 +33,9 @@ export default abstract class AbstractActionReader {
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  public async nextBlock(): Promise<[Block | null, boolean, boolean]> {
+  public async nextBlock(): Promise<[Block, boolean]> {
     let blockData = null
-    let rollback = false
-    let firstBlock = false
+    let isRollback = false
 
     // If we're on the head block, refresh current head block
     if (this.currentBlockNumber === this.headBlockNumber || !this.headBlockNumber) {
@@ -50,6 +52,8 @@ export default abstract class AbstractActionReader {
     // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
+
+
       const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockHash : "INVALID"
       const actualHash = unvalidatedBlockData.previousBlockHash
 
@@ -66,19 +70,20 @@ export default abstract class AbstractActionReader {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
         await this.rollback()
-        blockData = this.currentBlockData
-        rollback = true // Signal action handler that we must roll back
+        isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
         this.headBlockNumber = await this.getHeadBlockNumber()
       }
     }
 
     // Let handler know if this is the earliest block we'll send
-    if (this.currentBlockNumber === this.startAtBlock) {
-      firstBlock = true
+    this.isFirstBlock = this.currentBlockNumber === this.startAtBlock
+
+    if (this.currentBlockData === null) {
+      throw Error("currentBlockData must not be null.")
     }
 
-    return [blockData, rollback, firstBlock]
+    return [this.currentBlockData, isRollback]
   }
 
   /**
@@ -149,6 +154,13 @@ export default abstract class AbstractActionReader {
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
+    this.headBlockNumber = null
+
+    // If we're going back to the first block, we don't want to get the preceding block
+    if (blockNumber === 1) {
+      this.blockHistory = []
+      return
+    }
 
     // Check if block exists in history
     let toDelete = -1

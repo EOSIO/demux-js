@@ -2,7 +2,6 @@
  * Reads an EOSIO nodeos node to get actions.
  * It is important to note that deferred transactions will not be included, as these are not accessible without plugins.
  */
-import { Block } from "../../../../index"
 
 import AbstractActionReader from "../AbstractActionReader"
 import NodeosBlock from "./NodeosBlock"
@@ -16,7 +15,7 @@ export default class NodeosActionReader extends AbstractActionReader {
   protected nodeosEndpoint: string
   constructor(
     nodeosEndpoint: string = "http://localhost:8888",
-    protected startAtBlock: number = 1,
+    public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
     protected maxHistoryLength: number = 600,
     protected requestInstance: any = request,
@@ -37,12 +36,13 @@ export default class NodeosActionReader extends AbstractActionReader {
     return blockInfo.head_block_num
   }
 
-  public async getBlock(blockNumber: number): Promise<Block> {
+  public async getBlock(blockNumber: number): Promise<NodeosBlock> {
     const rawBlock = await this.httpRequest("post", {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },
     })
-    return new NodeosBlock(rawBlock)
+    const block = new NodeosBlock(rawBlock)
+    return block
   }
 
   protected async httpRequest(method: string, requestParams: any): Promise<any> {
