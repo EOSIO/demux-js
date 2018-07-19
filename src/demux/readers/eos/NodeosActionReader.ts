@@ -2,6 +2,7 @@
  * Reads an EOSIO nodeos node to get actions.
  * It is important to note that deferred transactions will not be included, as these are not accessible without plugins.
  */
+import { Block } from "../../../../index"
 
 import AbstractActionReader from "../AbstractActionReader"
 import NodeosBlock from "./NodeosBlock"

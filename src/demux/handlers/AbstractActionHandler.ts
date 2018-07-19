@@ -1,3 +1,5 @@
+import { Action, Block, BlockInfo, Effect, Updater } from "../../../index"
+
 export default abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number
   protected lastProcessedBlockHash: string
@@ -10,28 +12,6 @@ export default abstract class AbstractActionHandler {
     this.effects = effects
     this.lastProcessedBlockNumber = 0
     this.lastProcessedBlockHash = ""
-  }
-
-  /**
-   * From the object passed to handleActions, retrieve an array of actions
-   * @param {Block} blockData
-   * @returns {Action[]}
-   */
-  protected getActions(blockData: Block): Action[] {
-    return blockData.actions
-  }
-
-  /**
-   * From the object passed to handleActions, retrieve an object of block info
-   * @param {Block} blockData
-   * @returns {BlockInfo}
-   */
-  protected getBlockInfo(blockData: Block): BlockInfo {
-    return {
-      blockNumber: blockData.blockNumber,
-      blockHash: blockData.blockHash,
-      previousBlockHash: blockData.previousBlockHash,
-    }
   }
 
   /**
@@ -135,4 +115,26 @@ export default abstract class AbstractActionHandler {
    * @param {(state: any) => void} handle
    */
   public abstract async handleWithState(handle: (state: any) => void): Promise<void>
+
+  /**
+   * From the object passed to handleActions, retrieve an array of actions
+   * @param {Block} blockData
+   * @returns {Action[]}
+   */
+  protected getActions(blockData: Block): Action[] {
+    return blockData.actions
+  }
+
+  /**
+   * From the object passed to handleActions, retrieve an object of block info
+   * @param {Block} blockData
+   * @returns {BlockInfo}
+   */
+  protected getBlockInfo(blockData: Block): BlockInfo {
+    return {
+      blockNumber: blockData.blockNumber,
+      blockHash: blockData.blockHash,
+      previousBlockHash: blockData.previousBlockHash,
+    }
+  }
 }

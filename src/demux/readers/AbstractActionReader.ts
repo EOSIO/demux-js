@@ -1,3 +1,5 @@
+import { Block } from "../../../index"
+
 export default abstract class AbstractActionReader {
   constructor(
     protected startAtBlock: number = 1,

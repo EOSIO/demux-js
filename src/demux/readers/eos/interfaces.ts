@@ -1,9 +1,11 @@
-interface EosAuthorization {
+import { Action } from "../../../../index"
+
+export interface EosAuthorization {
   actor: string
   permission: string
 }
 
-interface EosPayload {
+export interface EosPayload {
   account: string
   actionIndex: number
   authorization: EosAuthorization[]
@@ -12,6 +14,6 @@ interface EosPayload {
   transactionId: string
 }
 
-interface EosAction extends Action {
+export interface EosAction extends Action {
   payload: EosPayload
 }

@@ -8,6 +8,7 @@
   "license": "MIT",
   "description": "Deterministic event-sourced state and side effect handling for blockchain applications",
   "main": "dist/index.js",
+  "types": "index.d.ts",
   "dependencies": {
     "@types/request-promise-native": "^1.0.15",
     "request": "^2.87.0",
