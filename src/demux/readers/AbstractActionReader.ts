@@ -3,6 +3,7 @@ import { Block } from "../../../index"
 export default abstract class AbstractActionReader {
   public headBlockNumber: number | null = null
   public currentBlockNumber: number
+  public isFirstBlock: boolean = true
   protected currentBlockData: Block | null = null
   protected blockHistory: Block[] = []
 
@@ -32,10 +33,9 @@ export default abstract class AbstractActionReader {
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  public async nextBlock(): Promise<[Block, boolean, boolean]> {
+  public async nextBlock(): Promise<[Block, boolean]> {
     let blockData = null
     let isRollback = false
-    let isFirstBlock = false
 
     // If we're on the head block, refresh current head block
     if (this.currentBlockNumber === this.headBlockNumber || !this.headBlockNumber) {
@@ -52,6 +52,8 @@ export default abstract class AbstractActionReader {
     // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
+
+
       const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockHash : "INVALID"
       const actualHash = unvalidatedBlockData.previousBlockHash
 
@@ -68,7 +70,6 @@ export default abstract class AbstractActionReader {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
         await this.rollback()
-        blockData = this.currentBlockData
         isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
         this.headBlockNumber = await this.getHeadBlockNumber()
@@ -76,15 +77,13 @@ export default abstract class AbstractActionReader {
     }
 
     // Let handler know if this is the earliest block we'll send
-    if (this.currentBlockNumber === this.startAtBlock) {
-      isFirstBlock = true
+    this.isFirstBlock = this.currentBlockNumber === this.startAtBlock
+
+    if (this.currentBlockData === null) {
+      throw Error("currentBlockData must not be null.")
     }
 
-    if (blockData === null) {
-      throw Error("blockData must not be null.")
-    }
-
-    return [blockData, isRollback, isFirstBlock]
+    return [this.currentBlockData, isRollback]
   }
 
   /**

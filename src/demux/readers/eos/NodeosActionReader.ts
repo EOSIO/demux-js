@@ -41,7 +41,8 @@ export default class NodeosActionReader extends AbstractActionReader {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },
     })
-    return new NodeosBlock(rawBlock)
+    const block = new NodeosBlock(rawBlock)
+    return block
   }
 
   protected async httpRequest(method: string, requestParams: any): Promise<any> {

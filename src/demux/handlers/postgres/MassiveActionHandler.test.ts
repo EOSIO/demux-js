@@ -48,8 +48,8 @@ describe("MassiveActionHandler", async () => {
   it("populates database correctly", async () => {
     const actionReader = new JsonActionReader(blockchain)
     const actionHandler = new MassiveActionHandler(updaters, [], db)
-    const [block1, isRollback, isFirstBlock] = await actionReader.nextBlock()
-    await actionHandler.handleBlock(block1, isRollback, isFirstBlock)
+    const [block1, isRollback] = await actionReader.nextBlock()
+    await actionHandler.handleBlock(block1, isRollback, actionReader.isFirstBlock)
     await wait(500)
 
     const groceries = await db.todo.findOne({ id: 1 })
@@ -63,8 +63,8 @@ describe("MassiveActionHandler", async () => {
       name: "Places to Visit",
     })
 
-    const [block2, isNotRollback, isNotFirstBlock] = await actionReader.nextBlock()
-    await actionHandler.handleBlock(block2, isNotRollback, isNotFirstBlock)
+    const [block2, isNotRollback] = await actionReader.nextBlock()
+    await actionHandler.handleBlock(block2, isNotRollback, actionReader.isFirstBlock)
     await wait(500)
 
     const cookies = await db.task.findOne({ name: "cookies" })
@@ -83,13 +83,12 @@ describe("MassiveActionHandler", async () => {
       todo_id: 2,
     })
 
-    const [block3, alsoNotRollback, alsoNotFirstBlock] = await actionReader.nextBlock()
-    await actionHandler.handleBlock(block3, alsoNotRollback, alsoNotFirstBlock)
+    const [block3, alsoNotRollback] = await actionReader.nextBlock()
+    await actionHandler.handleBlock(block3, alsoNotRollback, actionReader.isFirstBlock)
     await wait(500)
 
     const milk = await db.task.findOne({ name: "milk" })
     const dippedCookies = await db.task.findOne({ name: "cookies" })
-    console.info(milk, dippedCookies)
     expect(milk).toEqual({
       id: 4,
       name: "milk",

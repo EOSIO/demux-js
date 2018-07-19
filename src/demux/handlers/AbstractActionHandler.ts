@@ -37,8 +37,15 @@ export default abstract class AbstractActionHandler {
     }
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
+
+    if (blockInfo.blockNumber === this.lastProcessedBlockNumber
+        && blockInfo.blockHash === this.lastProcessedBlockHash) {
+      return [false, 0]
+    }
+
     // If it's the first block but we've already processed blocks, seek to next block
     if (isFirstBlock && this.lastProcessedBlockHash) {
+
       return [true, nextBlockNeeded]
     }
     // Only check if this is the block we need if it's not the first block
