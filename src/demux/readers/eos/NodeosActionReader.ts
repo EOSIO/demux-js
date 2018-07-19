@@ -36,7 +36,7 @@ export default class NodeosActionReader extends AbstractActionReader {
     return blockInfo.head_block_num
   }
 
-  public async getBlock(blockNumber: number): Promise<Block> {
+  public async getBlock(blockNumber: number): Promise<NodeosBlock> {
     const rawBlock = await this.httpRequest("post", {
       url: `${this.nodeosEndpoint}/v1/chain/get_block`,
       json: { block_num_or_id: blockNumber },

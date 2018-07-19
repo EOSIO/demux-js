@@ -1,4 +1,5 @@
 import AbstractActionHandler from "../AbstractActionHandler"
+import { Effect, Updater } from "../../../../index"
 
 export default class MassiveActionHandler extends AbstractActionHandler {
   constructor(

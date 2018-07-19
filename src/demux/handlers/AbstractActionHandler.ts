@@ -1,3 +1,5 @@
+import { Action, Block, BlockInfo, Effect, Updater } from "../../../index"
+
 export default abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
   protected lastProcessedBlockHash: string = ""

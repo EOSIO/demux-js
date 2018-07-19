@@ -1,5 +1,6 @@
 import AbstractActionReader from "../AbstractActionReader"
 import request from "request-promise-native"
+import { Block } from "../../../../index"
 
 export default class JsonActionReader extends AbstractActionReader {
   constructor(

@@ -1,4 +1,4 @@
-import { Action } from "../../../index"
+import { Action, BlockInfo } from "../../../index"
 import AbstractActionHandler from "./AbstractActionHandler"
 
 class TestActionHandler extends AbstractActionHandler {

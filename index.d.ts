@@ -24,10 +24,10 @@ export interface Action {
 
 export interface Updater {
   actionType: string
-  updater: (data: any) => void
+  updater: (state: any, payload: any, blockInfo: BlockInfo, context: any) => void
 }
 
 export interface Effect {
   actionType: string
-  effect: (data: any) => void
+  effect: (state: any, payload: any, blockInfo: BlockInfo, context: any) => void
 }

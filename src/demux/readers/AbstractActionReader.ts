@@ -1,3 +1,5 @@
+import { Block } from "../../../index"
+
 export default abstract class AbstractActionReader {
   public headBlockNumber: number | null = null
   public currentBlockNumber: number
