@@ -30,7 +30,7 @@ export default abstract class AbstractActionReader {
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  public async nextBlock(): Promise<[Block | null, boolean, boolean]> {
+  public async nextBlock(): Promise<[Block, boolean, boolean]> {
     let blockData = null
     let isRollback = false
     let isFirstBlock = false
@@ -76,6 +76,10 @@ export default abstract class AbstractActionReader {
     // Let handler know if this is the earliest block we'll send
     if (this.currentBlockNumber === this.startAtBlock) {
       isFirstBlock = true
+    }
+
+    if (blockData === null) {
+      throw Error("blockData must not be null.")
     }
 
     return [blockData, isRollback, isFirstBlock]

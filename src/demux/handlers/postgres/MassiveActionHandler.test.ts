@@ -21,6 +21,8 @@ export function wait(ms: number) {
   })
 }
 
+jest.setTimeout(30000)
+
 beforeAll(async () => {
   await dockerUtils.pullImage(docker, postgresImageName)
   await dockerUtils.removePostgresContainer(docker, postgresContainerName)

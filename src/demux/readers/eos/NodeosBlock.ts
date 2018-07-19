@@ -1,6 +1,3 @@
-import { Block } from "../../../../index"
-import { EosAction } from "./interfaces"
-
 export default class NodeosBlock implements Block {
   public actions: EosAction[]
   public blockHash: string

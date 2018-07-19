@@ -1,10 +1,9 @@
-import {Stream} from "stream"
+import { Container } from "dockerode"
+import { Stream } from "stream"
 
-
-export function promisifyStream(stream: Stream) {
+export function promisifyStream(stream: Stream): Promise<string> {
   const data: Buffer[] = []
   return new Promise((resolve, reject) => {
-    // stream.pipe(process.stdout)
     stream.on("data", (chunk) => data.push(chunk))
     stream.on("end", () => {
       const toReturn = Buffer.concat(data).toString()
@@ -19,7 +18,7 @@ export async function pullImage(docker: any, imageName: string) {
   await promisifyStream(stream)
 }
 
-export async function waitForPostgres(container) {
+export async function waitForPostgres(container: Container) {
   let connectionTries = 0
   while (connectionTries < 40) {
     const exec = await container.exec({

@@ -14,7 +14,6 @@ export default class MassiveActionHandler extends AbstractActionHandler {
       this.massiveInstance.withTransaction(async (tx: any) => {
         try {
           await handle(tx)
-          // console.info("Resolving!")
           resolve(tx)
         } catch (err) {
           reject()
