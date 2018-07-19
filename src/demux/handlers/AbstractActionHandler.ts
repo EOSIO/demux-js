@@ -120,7 +120,7 @@ export default abstract class AbstractActionHandler {
   /**
    * Will run when a rollback block number is passed to handleActions. Implement this method to
    * handle reversing actions full blocks at a time, until the last applied block is the block
-   * number passed to this method. If replay is true, effects should not
+   * number passed to this method. If replay is true, effects should not be processed
    *
    * @param {number} blockNumber
    * @returns {Promise<void>}
