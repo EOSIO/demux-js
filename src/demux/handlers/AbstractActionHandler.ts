@@ -14,7 +14,7 @@ export default abstract class AbstractActionHandler {
    * Calls handleActions with the appropriate state using the passed in handle function
    * @param {(state: any) => void} handle
    */
-  public abstract async handleWithState(handle: (state: any) => void): Promise<void>
+  public abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
    * Receive block, validate, and handle actions with updaters and effects
@@ -59,8 +59,9 @@ export default abstract class AbstractActionHandler {
       }
     }
 
-    const handleWithArgs: (state: any) => void = async (state: any) =>
-      await this.handleActions(state, actions, blockInfo, isReplay)
+    const handleWithArgs: (state: any, context?: any) => void = async (state: any, context: any = {}) => {
+      await this.handleActions(state, actions, blockInfo, context, isReplay)
+    }
     await this.handleWithState(handleWithArgs)
     return [false, 0]
   }
@@ -139,10 +140,16 @@ export default abstract class AbstractActionHandler {
    * @param {any} state
    * @param {Action[]} actions
    * @param {BlockInfo} blockInfo
+   * @param {any} context
    * @param {boolean} isReplay
    */
-  protected async handleActions(state: any, actions: Action[], blockInfo: BlockInfo, isReplay: boolean): Promise<void> {
-    const context = {}
+  protected async handleActions(
+    state: any,
+    actions: Action[],
+    blockInfo: BlockInfo,
+    context: any,
+    isReplay: boolean,
+  ): Promise<void> {
     await this.runUpdaters(state, actions, blockInfo, context)
     if (!isReplay) {
       this.runEffects(state, actions, blockInfo, context)
