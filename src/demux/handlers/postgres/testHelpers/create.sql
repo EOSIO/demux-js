@@ -9,3 +9,10 @@ CREATE TABLE ${schema~}.task (
   name text NOT NULL,
   completed bool DEFAULT FALSE
 );
+
+CREATE TABLE ${schema~}._index_state (
+  id serial PRIMARY KEY,
+  block_number integer NOT NULL,
+  block_hash text NOT NULL
+  is_replay boolean NOT NULL,
+);

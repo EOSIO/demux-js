@@ -36,9 +36,9 @@ beforeAll(async () => {
   await db.reload()
 })
 
-afterAll(async () => {
-  await dockerUtils.removePostgresContainer(docker, postgresContainerName)
-})
+// afterAll(async () => {
+//   await dockerUtils.removePostgresContainer(docker, postgresContainerName)
+// })
 
 describe("MassiveActionHandler", async () => {
   beforeEach(async () => {

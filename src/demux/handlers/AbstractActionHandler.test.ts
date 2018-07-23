@@ -1,9 +1,15 @@
-import { Action, BlockInfo } from "../../../index"
+import { Block, IndexState } from "../../../index"
 import AbstractActionHandler from "./AbstractActionHandler"
 
 class TestActionHandler extends AbstractActionHandler {
   // tslint:disable-next-line
   public async handleWithState() {}
+
+  // tslint:disable-next-line
+  protected async loadIndexState(): Promise<IndexState> { return { blockNumber: 0, blockHash: "" } }
+
+  // tslint:disable-next-line
+  protected async updateIndexState() {}
 
   // tslint:disable-next-line
   public async rollbackTo() {}
@@ -16,16 +22,16 @@ class TestActionHandler extends AbstractActionHandler {
     this.lastProcessedBlockNumber = num
   }
 
-  public async _runUpdaters(state: any, actions: Action[], blockInfo: BlockInfo, context: any) {
-    await this.runUpdaters(state, actions, blockInfo, context)
+  public async _runUpdaters(state: any, block: Block, context: any) {
+    await this.runUpdaters(state, block, context)
   }
 
-  public _runEffects(state: any, actions: Action[], blockInfo: BlockInfo, context: any) {
-    this.runEffects(state, actions, blockInfo, context)
+  public _runEffects(state: any, block: Block, context: any) {
+    this.runEffects(state, block, context)
   }
 }
 
-const blockData = {
+const rawBlock= {
   actions: [
     {
       payload: {
@@ -71,7 +77,7 @@ const blockData = {
 
 describe("BaseActionHandler", () => {
   let actionHandler: TestActionHandler
-  let actions: Action[]
+  let block: Block
 
   const notRunUpdater = jest.fn()
   const notRunEffect = jest.fn()
@@ -103,47 +109,52 @@ describe("BaseActionHandler", () => {
       ],
     )
 
-    actions = [
-      {
-        payload: {
-          account: "eosio.token",
-          actionIndex: 0,
-          authorization: [],
-          data: {},
-          name: "transfer",
-          transactionId: "1",
+    block = {
+      blockHash: "",
+      blockNumber: 0,
+      previousBlockHash: "",
+      actions: [
+        {
+          payload: {
+            account: "eosio.token",
+            actionIndex: 0,
+            authorization: [],
+            data: {},
+            name: "transfer",
+            transactionId: "1",
+          },
+          type: "eosio.token::transfer",
         },
-        type: "eosio.token::transfer",
-      },
-      {
-        payload: {
-          account: "eosio.system",
-          actionIndex: 0,
-          authorization: [],
-          data: {},
-          name: "regproducer",
-          transactionId: "1",
+        {
+          payload: {
+            account: "eosio.system",
+            actionIndex: 0,
+            authorization: [],
+            data: {},
+            name: "regproducer",
+            transactionId: "1",
+          },
+          type: "eosio.system::regproducer",
         },
-        type: "eosio.system::regproducer",
-      },
-    ]
+      ],
+    }
   })
 
   it("runs the correct updater based on action type", async () => {
-    await actionHandler._runUpdaters({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
+    await actionHandler._runUpdaters({}, block, {})
     expect(runUpdater).toHaveBeenCalled()
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
   it("runs the correct effect based on action type", () => {
-    actionHandler._runEffects({}, actions, { blockHash: "", blockNumber: 0, previousBlockHash: "" }, {})
+    actionHandler._runEffects({}, block, {})
     expect(runEffect).toHaveBeenCalled()
     expect(notRunEffect).not.toHaveBeenCalled()
   })
 
   it("seeks to the correct block when we've already processed blocks and are on the first block (replay)", async () => {
     actionHandler.setLastProcessedBlockHash("abcd")
-    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockData, false, true)
+    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(rawBlock, false, true)
     expect(needToSeek).toBe(true)
     expect(seekBlockNum).toBe(1)
     actionHandler.setLastProcessedBlockHash("")
@@ -151,7 +162,7 @@ describe("BaseActionHandler", () => {
 
   it("seeks to the next block needed when block number doesn't match last processed block", async () => {
     actionHandler.setLastProcessedBlockNumber(18)
-    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockData, false, false)
+    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(rawBlock, false, false)
     expect(needToSeek).toBe(true)
     expect(seekBlockNum).toBe(19)
     actionHandler.setLastProcessedBlockNumber(0)
@@ -162,7 +173,7 @@ describe("BaseActionHandler", () => {
     actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
 
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
-    expect(actionHandler.handleBlock(blockData, false, false)).rejects.toEqual(expectedError)
+    expect(actionHandler.handleBlock(rawBlock, false, false)).rejects.toEqual(expectedError)
 
     actionHandler.setLastProcessedBlockHash("")
     actionHandler.setLastProcessedBlockNumber(0)

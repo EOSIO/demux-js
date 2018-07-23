@@ -27,11 +27,12 @@ export default class MassiveActionHandler extends AbstractActionHandler {
     })
   }
 
-  protected async updateIndexState(state: any, block: Block) {
+  protected async updateIndexState(state: any, block: Block, isReplay: boolean) {
     state._index_state.save({
       id: 0,
-      blockNumber: block.blockNumber,
-      blockHash: block.blockHash,
+      block_number: block.blockNumber,
+      block_hash: block.blockHash,
+      is_replay: isReplay,
     })
   }
 

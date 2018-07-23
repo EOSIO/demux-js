@@ -66,7 +66,7 @@ export default abstract class AbstractActionHandler {
     return [false, 0]
   }
 
-  protected abstract async updateIndexState(state: any, block: Block, context?: any): Promise<void>
+  protected abstract async updateIndexState(state: any, block: Block, isReplay: boolean, context?: any): Promise<void>
 
   protected abstract async loadIndexState(): Promise<IndexState>
 
@@ -149,7 +149,7 @@ export default abstract class AbstractActionHandler {
       this.runEffects(state, block, context)
     }
 
-    await this.updateIndexState(state, block, context)
+    await this.updateIndexState(state, block, isReplay, context)
     this.lastProcessedBlockNumber = block.blockNumber
     this.lastProcessedBlockHash = block.blockHash
   }
