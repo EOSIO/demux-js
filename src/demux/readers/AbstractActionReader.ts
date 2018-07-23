@@ -153,7 +153,7 @@ export default abstract class AbstractActionReader {
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
-    this.headBlockNumber = null
+    this.headBlockNumber = 0
 
     // If we're going back to the first block, we don't want to get the preceding block
     if (blockNumber === 1) {

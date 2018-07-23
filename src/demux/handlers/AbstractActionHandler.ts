@@ -10,8 +10,6 @@ export default abstract class AbstractActionHandler {
   ) {
   }
 
-  public abstract async loadIndexState(): Promise<IndexState>
-
   /**
    * Receive block, validate, and handle actions with updaters and effects
    * @param {Block} block
@@ -69,6 +67,8 @@ export default abstract class AbstractActionHandler {
   }
 
   protected abstract async updateIndexState(state: any, block: Block, context?: any): Promise<void>
+
+  protected abstract async loadIndexState(): Promise<IndexState>
 
   /**
    * Calls handleActions with the appropriate state using the passed in handle function
