@@ -1,4 +1,4 @@
-import { Action, Block, BlockInfo, Effect, Updater } from "../../../index"
+import {Block, Effect, IndexState, Updater} from "../../../index"
 
 export default abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
@@ -10,93 +10,84 @@ export default abstract class AbstractActionHandler {
   ) {
   }
 
-  /**
-   * Calls handleActions with the appropriate state using the passed in handle function
-   * @param {(state: any) => void} handle
-   */
-  public abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
+  public abstract async loadIndexState(): Promise<IndexState>
 
   /**
    * Receive block, validate, and handle actions with updaters and effects
-   * @param {Block} blockData
+   * @param {Block} block
    * @param {boolean} isRollback
    * @param {boolean} isFirstBlock
    * @param {boolean} isReplay
    * @returns {Promise<[boolean, number]>}
    */
   public async handleBlock(
-    blockData: Block,
+    block: Block,
     isRollback: boolean,
     isFirstBlock: boolean,
     isReplay: boolean = false,
   ): Promise<[boolean, number]> {
-    const blockInfo = this.getBlockInfo(blockData)
-    const actions = this.getActions(blockData)
     if (isRollback) {
-      await this.rollbackTo(blockInfo.blockNumber - 1)
+      await this.rollbackTo(block.blockNumber - 1)
+    }
+
+    if (!this.lastProcessedBlockHash && this.lastProcessedBlockNumber !== 0) {
+      const { blockNumber: indexStateBlockNumber, blockHash: indexStateBlockHash } = await this.loadIndexState()
+      if (indexStateBlockNumber && indexStateBlockHash) {
+        this.lastProcessedBlockNumber = indexStateBlockNumber
+        this.lastProcessedBlockHash = indexStateBlockHash
+      }
     }
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
 
-    if (blockInfo.blockNumber === this.lastProcessedBlockNumber
-        && blockInfo.blockHash === this.lastProcessedBlockHash) {
+    // Just processed this block; skip
+    if (block.blockNumber === this.lastProcessedBlockNumber
+        && block.blockHash === this.lastProcessedBlockHash) {
       return [false, 0]
     }
 
     // If it's the first block but we've already processed blocks, seek to next block
     if (isFirstBlock && this.lastProcessedBlockHash) {
-
       return [true, nextBlockNeeded]
     }
     // Only check if this is the block we need if it's not the first block
     if (!isFirstBlock) {
-      if (blockInfo.blockNumber !== nextBlockNeeded) {
+      if (block.blockNumber !== nextBlockNeeded) {
         return [true, nextBlockNeeded]
       }
       // Block sequence consistency should be handled by the ActionReader instance
-      if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
+      if (block.previousBlockHash !== this.lastProcessedBlockHash) {
         throw Error("Block hashes do not match; block not part of current chain.")
       }
     }
 
     const handleWithArgs: (state: any, context?: any) => void = async (state: any, context: any = {}) => {
-      await this.handleActions(state, actions, blockInfo, context, isReplay)
+      await this.handleActions(state, block, context, isReplay)
     }
     await this.handleWithState(handleWithArgs)
     return [false, 0]
   }
 
-  /**
-   * From the object passed to handleActions, retrieve an array of actions
-   * @param {Block} blockData
-   * @returns {Action[]}
-   */
-  public getActions(blockData: Block): Action[] {
-    return blockData.actions
-  }
+  protected abstract async updateIndexState(state: any, block: Block, context?: any): Promise<void>
 
   /**
-   * From the object passed to handleActions, retrieve an object of block info
-   * @param {Block} blockData
-   * @returns {BlockInfo}
+   * Calls handleActions with the appropriate state using the passed in handle function
+   * @param {(state: any) => void} handle
    */
-  public getBlockInfo(blockData: Block): BlockInfo {
-    return {
-      blockNumber: blockData.blockNumber,
-      blockHash: blockData.blockHash,
-      previousBlockHash: blockData.previousBlockHash,
-    }
-  }
+  protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
    * Process actions against deterministically accumulating updater functions.
    * @param {any} state
-   * @param {Action[]} actions
-   * @param {BlockInfo} blockInfo
+   * @param {Block} block
    * @param {any} context
-   * @returns {Promise<void>}
    */
-  protected async runUpdaters(state: any, actions: Action[], blockInfo: BlockInfo, context: any): Promise<void> {
+  protected async runUpdaters(
+    state: any,
+    block: Block,
+    context: any,
+  ): Promise<void> {
+    const { actions, ...blockInfo } = block
     for (const action of actions) {
       for (const updater of this.updaters) {
         if (action.type === updater.actionType) {
@@ -110,11 +101,15 @@ export default abstract class AbstractActionHandler {
   /**
    * Process actions against asynchronous side effects.
    * @param {any} state
-   * @param {Action[]} actions
-   * @param {BlockInfo} blockInfo
+   * @param {Block} block
    * @param {any} context
    */
-  protected runEffects(state: any, actions: Action[], blockInfo: BlockInfo, context: any): void {
+  protected runEffects(
+    state: any,
+    block: Block,
+    context: any,
+  ): void {
+    const { actions, ...blockInfo } = block
     for (const action of actions) {
       for (const effect of this.effects) {
         if (action.type === effect.actionType) {
@@ -138,23 +133,24 @@ export default abstract class AbstractActionHandler {
   /**
    * Calls runUpdaters and runEffects on the given actions
    * @param {any} state
-   * @param {Action[]} actions
-   * @param {BlockInfo} blockInfo
+   * @param {Block} block
    * @param {any} context
    * @param {boolean} isReplay
    */
   protected async handleActions(
     state: any,
-    actions: Action[],
-    blockInfo: BlockInfo,
+    block: Block,
     context: any,
     isReplay: boolean,
   ): Promise<void> {
-    await this.runUpdaters(state, actions, blockInfo, context)
+
+    await this.runUpdaters(state, block, context)
     if (!isReplay) {
-      this.runEffects(state, actions, blockInfo, context)
+      this.runEffects(state, block, context)
     }
-    this.lastProcessedBlockNumber = blockInfo.blockNumber
-    this.lastProcessedBlockHash = blockInfo.blockHash
+
+    await this.updateIndexState(state, block, context)
+    this.lastProcessedBlockNumber = block.blockNumber
+    this.lastProcessedBlockHash = block.blockHash
   }
 }

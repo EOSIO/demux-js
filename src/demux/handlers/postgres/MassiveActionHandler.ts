@@ -1,5 +1,5 @@
 import AbstractActionHandler from "../AbstractActionHandler"
-import { Effect, Updater } from "../../../../index"
+import {Block, Effect, IndexState, Updater} from "../../../../index"
 
 export default class MassiveActionHandler extends AbstractActionHandler {
   constructor(
@@ -10,7 +10,7 @@ export default class MassiveActionHandler extends AbstractActionHandler {
     super(updaters, effects)
   }
 
-  public async handleWithState(handle: (state: any) => void) {
+  protected async handleWithState(handle: (state: any, context?: any) => void): Promise<void> {
     await new Promise((resolve, reject) => {
       this.massiveInstance.withTransaction(async (tx: any) => {
         try {
@@ -25,6 +25,22 @@ export default class MassiveActionHandler extends AbstractActionHandler {
         }),
       })
     })
+  }
+
+  protected async updateIndexState(state: any, block: Block) {
+    state._index_state.save({
+      id: 0,
+      blockNumber: block.blockNumber,
+      blockHash: block.blockHash,
+    })
+  }
+
+  protected async loadIndexState(): Promise<IndexState> {
+    const { blockNumber, blockHash } = await this.massiveInstance._index_state.findOne({ id: 0 })
+    if (blockNumber && blockHash) {
+      return { blockNumber, blockHash }
+    }
+    return { blockNumber: 0, blockHash: "" }
   }
 
   protected async rollbackTo(blockNumber: number) {
