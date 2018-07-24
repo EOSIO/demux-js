@@ -8,24 +8,33 @@ export default class BaseActionWatcher {
     protected pollInterval: number) {
   }
 
+  public async replay() {
+    await this.actionReader.seekToBlock(this.actionReader.startAtBlock)
+    await this.watch()
+  }
+
   /**
    * Uses the given actionReader and actionHandler to poll and process new blocks.
    * @returns {Promise<void>}
    */
-  public async watch() {
+  protected async watch() {
     // Record start time
     const startTime = new Date().getTime()
 
     // Process blocks until we're at the head block
-    let { headBlockNumber } = this.actionReader
-    while (!headBlockNumber || this.actionReader.currentBlockNumber <= headBlockNumber) {
+    let headBlockNumber = 0
+    while (!headBlockNumber || this.actionReader.currentBlockNumber < headBlockNumber) {
       const [blockData, isRollback] = await this.actionReader.nextBlock()
 
       // Handle block (and the actions within them)
       let needToSeek = false
       let seekBlockNum = 0
       if (blockData) {
-        [needToSeek, seekBlockNum] = await this.actionHandler.handleBlock(blockData, isRollback, this.actionReader.isFirstBlock)
+        [needToSeek, seekBlockNum] = await this.actionHandler.handleBlock(
+          blockData,
+          isRollback,
+          this.actionReader.isFirstBlock,
+        )
       }
 
       // Seek to next needed block at the request of the action handler
@@ -33,10 +42,7 @@ export default class BaseActionWatcher {
         await this.actionReader.seekToBlock(seekBlockNum - 1)
       }
 
-      // Reset headBlockNumber on isRollback for safety, as it may have decreased
-      if (isRollback) {
-        headBlockNumber = this.actionReader.headBlockNumber
-      }
+      headBlockNumber = this.actionReader.headBlockNumber
     }
 
     // Record end time
@@ -50,11 +56,6 @@ export default class BaseActionWatcher {
     }
 
     // Schedule next iteration
-    setTimeout(async () => this.watch, waitTime)
-  }
-
-  public async replay() {
-    await this.actionReader.seekToBlock(this.actionReader.startAtBlock)
-    await this.watch()
+    setTimeout(async () => await this.watch(), waitTime)
   }
 }

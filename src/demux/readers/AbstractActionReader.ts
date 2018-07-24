@@ -1,7 +1,7 @@
 import { Block } from "../../../index"
 
 export default abstract class AbstractActionReader {
-  public headBlockNumber: number | null = null
+  public headBlockNumber: number = 0
   public currentBlockNumber: number
   public isFirstBlock: boolean = true
   protected currentBlockData: Block | null = null
@@ -52,7 +52,6 @@ export default abstract class AbstractActionReader {
     // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
-
 
       const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockHash : "INVALID"
       const actualHash = unvalidatedBlockData.previousBlockHash
@@ -154,7 +153,7 @@ export default abstract class AbstractActionReader {
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
     this.currentBlockData = null
-    this.headBlockNumber = null
+    this.headBlockNumber = 0
 
     // If we're going back to the first block, we don't want to get the preceding block
     if (blockNumber === 1) {

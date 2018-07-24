@@ -11,9 +11,14 @@ export interface Block {
   previousBlockHash: string
 }
 
-export interface BlockInfo {
+export interface IndexState {
   blockNumber: number
   blockHash: string
+}
+
+export interface BlockInfo {
+  blockHash: string
+  blockNumber: number
   previousBlockHash: string
 }
 
