@@ -163,15 +163,15 @@ export default abstract class AbstractActionReader {
 
     // Check if block exists in history
     let toDelete = -1
-    for (const cachedBlockData of this.blockHistory) {
-      if (cachedBlockData.blockNumber === blockNumber) {
+    for (let i = this.blockHistory.length-1; i >= 0; i--) {
+      if (this.blockHistory[i].blockNumber === blockNumber) {
         break
       } else {
         toDelete += 1
       }
     }
     if (toDelete >= 0) {
-      this.blockHistory.splice(this.blockHistory.length - toDelete)
+      this.blockHistory.splice(toDelete)
       this.currentBlockData = this.blockHistory.pop() || null
     }
 

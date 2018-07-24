@@ -28,7 +28,7 @@ export default abstract class AbstractActionHandler {
       await this.rollbackTo(block.blockNumber - 1)
     }
 
-    if (!this.lastProcessedBlockHash && this.lastProcessedBlockNumber !== 0) {
+    if (!this.lastProcessedBlockHash && this.lastProcessedBlockNumber === 0) {
       const { blockNumber: indexStateBlockNumber, blockHash: indexStateBlockHash } = await this.loadIndexState()
       if (indexStateBlockNumber && indexStateBlockHash) {
         this.lastProcessedBlockNumber = indexStateBlockNumber
