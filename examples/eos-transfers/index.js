@@ -17,6 +17,18 @@ const actionReader = new NodeosActionReader(
   0, // Start at most recent blocks
 )
 
+// If using MongoActionReader you need to call
+// actionReader.initialize()
+//   .then(() => {
+//     const actionWatcher = new BaseActionWatcher(
+//       actionReader,
+//       actionHandler,
+//       500,
+//     )
+
+//     actionWatcher.watch()
+//   })
+
 const actionWatcher = new BaseActionWatcher(
   actionReader,
   actionHandler,
@@ -24,3 +36,4 @@ const actionWatcher = new BaseActionWatcher(
 )
 
 actionWatcher.watch()
+
