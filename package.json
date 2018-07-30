@@ -38,7 +38,8 @@
     "watch": "tsc -w",
     "example": "./run-example.sh",
     "lint": "tslint -c tslint.json src/**/*.ts",
-    "test": "jest"
+    "test": "jest",
+    "build-docs": "./build-docs.sh"
   },
   "jest": {
     "moduleFileExtensions": [
