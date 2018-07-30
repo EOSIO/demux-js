@@ -61,17 +61,17 @@ There are other solutions to the above problems that involve legacy persistence 
 
 This library provides the following classes:
 
-* [**`AbstractActionReader`**](src/demux/readers/): Abstract class used for implementing your own Action Readers
-    * [`NodeosActionReader`](src/demux/readers/eos/): Action reader that reads actions from EOS Nodeos nodes
-    * [`NodeosBlock`](src/demux/readers/eos/): Block that parses raw EOS Nodeos block data
+* [**`AbstractActionReader`**](https://eosio.github.io/demux-js/classes/abstractactionreader.html): Abstract class used for implementing your own Action Readers
+    * [`NodeosActionReader`](https://eosio.github.io/demux-js/classes/nodeosactionreader.html): Action reader that reads actions from EOS Nodeos nodes
 
 
-* [**`AbstractActionHandler`**](src/demux/handlers/): Abstract class used for implementing your own Action Handlers   
+* [**`AbstractActionHandler`**](https://eosio.github.io/demux-js/classes/abstractactionhandler.html): Abstract class used for implementing your own Action Handlers   
+    * [`MassiveActionHandler`](https://eosio.github.io/demux-js/classes/massiveactionhandler.html): Handles actions backed by Postgres using [MassiveJS](https://github.com/dmfay/massive-js)
 
 
-* [**`BaseActionWatcher`**](src/demux/watchers/): Base class that implements a ready-to-use Action Watcher
+* [**`BaseActionWatcher`**](https://eosio.github.io/demux-js/classes/baseactionwatcher.html): Base class that implements a ready-to-use Action Watcher
 
-*(Click each above for detailed usage.)*
+#### [**View full API documentation here.**](https://eosio.github.io/demux-js/)
 
 ## Example
 
