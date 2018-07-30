@@ -1,16 +1,36 @@
 {
-  "name": "demux",
+  "name": "demux-js",
   "version": "0.0.1",
+  "author": {
+    "name": "Julien Heller",
+    "url": "https://block.one/"
+  },
+  "license": "MIT",
   "description": "Deterministic event-sourced state and side effect handling for blockchain applications",
   "main": "dist/index.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "massive": "^5.1.3",
+    "pg-promise": "^8.4.5",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5"
+  },
   "devDependencies": {
+    "@types/dockerode": "^2.5.5",
     "@types/jest": "^23.1.4",
+    "@types/massive": "^4.6.1",
     "@types/node": "^10.5.1",
+    "@types/pg-promise": "^5.4.3",
+    "@types/request-promise-native": "^1.0.15",
+    "dockerode": "^2.5.5",
     "eslint": "^4.9.0",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "^2.7.0",
     "jest": "^22.4.3",
     "ts-jest": "^23.0.0",
+    "tslint": "^5.10.0",
+    "tslint-eslint-rules": "^5.3.1",
+    "typedoc": "^0.11.1",
     "typescript": "^2.9.2"
   },
   "scripts": {
@@ -18,15 +38,8 @@
     "watch": "tsc -w",
     "example": "./run-example.sh",
     "lint": "tslint -c tslint.json src/**/*.ts",
-    "test": "jest"
-  },
-  "author": "Julien Heller",
-  "license": "MIT",
-  "dependencies": {
-    "@types/request-promise-native": "^1.0.15",
-    "request": "^2.87.0",
-    "request-promise-native": "^1.0.5",
-    "tslint": "^5.10.0"
+    "test": "jest",
+    "build-docs": "./build-docs.sh"
   },
   "jest": {
     "moduleFileExtensions": [

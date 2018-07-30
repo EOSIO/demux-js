@@ -4,7 +4,7 @@ function parseTokenString(tokenString) {
   return { amount, symbol }
 }
 
-function updateTransferData({ state, payload, blockInfo, context }) {
+function updateTransferData(state, payload, blockInfo, context) {
   const { amount, symbol } = parseTokenString(payload.data.quantity)
   if (!state.volumeBySymbol[symbol]) {
     state.volumeBySymbol[symbol] = amount
