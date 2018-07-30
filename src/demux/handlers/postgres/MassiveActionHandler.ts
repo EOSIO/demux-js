@@ -1,7 +1,7 @@
-import AbstractActionHandler from "../AbstractActionHandler"
-import {Block, Effect, IndexState, Updater} from "../../../../index"
+import { AbstractActionHandler } from "../AbstractActionHandler"
+import { Block, Effect, IndexState, Updater } from "../../../../index"
 
-export default class MassiveActionHandler extends AbstractActionHandler {
+export class MassiveActionHandler extends AbstractActionHandler {
   constructor(
     protected updaters: Updater[],
     protected effects: Effect[],

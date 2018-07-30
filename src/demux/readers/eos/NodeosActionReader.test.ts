@@ -1,4 +1,4 @@
-import NodeosActionReader from "./NodeosActionReader"
+import { NodeosActionReader } from "./NodeosActionReader"
 
 const rawBlock = {
   timestamp: "2018-06-16T05:59:49.500",

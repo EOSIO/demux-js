@@ -1,5 +1,3 @@
-import NodeosActionReader from "./NodeosActionReader"
+import { NodeosActionReader } from "./NodeosActionReader"
 
-module.exports = {
-  NodeosActionReader,
-}
+export const eos = { NodeosActionReader }

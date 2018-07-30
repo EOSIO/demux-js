@@ -3,15 +3,15 @@
  * It is important to note that deferred transactions will not be included, as these are not accessible without plugins.
  */
 
-import AbstractActionReader from "../AbstractActionReader"
-import NodeosBlock from "./NodeosBlock"
+import { AbstractActionReader } from "../AbstractActionReader"
+import { NodeosBlock } from "./NodeosBlock"
 
 import request from "request-promise-native"
 
 /**
  * Implementation of an ActionReader that polls a node using `get_block`.
  */
-export default class NodeosActionReader extends AbstractActionReader {
+export class NodeosActionReader extends AbstractActionReader {
   protected nodeosEndpoint: string
   constructor(
     nodeosEndpoint: string = "http://localhost:8888",

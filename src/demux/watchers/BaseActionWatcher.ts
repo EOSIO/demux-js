@@ -1,7 +1,7 @@
-import AbstractActionHandler from "../handlers/AbstractActionHandler"
-import AbstractActionReader from "../readers/AbstractActionReader"
+import { AbstractActionHandler } from "../handlers/AbstractActionHandler"
+import { AbstractActionReader } from "../readers/AbstractActionReader"
 
-export default class BaseActionWatcher {
+export class BaseActionWatcher {
   constructor(
     protected actionReader: AbstractActionReader,
     protected actionHandler: AbstractActionHandler,

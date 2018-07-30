@@ -1,6 +1,6 @@
 import {Block, Effect, IndexState, Updater} from "../../../index"
 
-export default abstract class AbstractActionHandler {
+export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
   protected lastProcessedBlockHash: string = ""
 

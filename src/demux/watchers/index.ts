@@ -1,5 +1,3 @@
-import BaseActionWatcher from "./BaseActionWatcher"
+import { BaseActionWatcher } from "./BaseActionWatcher"
 
-module.exports = {
-  BaseActionWatcher,
-}
+export const watchers = { BaseActionWatcher }

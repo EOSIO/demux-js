@@ -1,6 +1,6 @@
 import { Block } from "../../../index"
 
-export default abstract class AbstractActionReader {
+export abstract class AbstractActionReader {
   public headBlockNumber: number = 0
   public currentBlockNumber: number
   public isFirstBlock: boolean = true

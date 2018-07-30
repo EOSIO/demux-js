@@ -1,5 +1,5 @@
 import { Block, IndexState } from "../../../index"
-import AbstractActionHandler from "./AbstractActionHandler"
+import { AbstractActionHandler } from "./AbstractActionHandler"
 
 class TestActionHandler extends AbstractActionHandler {
   // tslint:disable-next-line

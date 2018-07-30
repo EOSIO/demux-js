@@ -1,8 +1,8 @@
-import AbstractActionReader from "../AbstractActionReader"
+import { AbstractActionReader } from "../AbstractActionReader"
 import request from "request-promise-native"
 import { Block } from "../../../../index"
 
-export default class JsonActionReader extends AbstractActionReader {
+export class JsonActionReader extends AbstractActionReader {
   constructor(
     protected blockchain: Block[],
     public startAtBlock: number = 1,
