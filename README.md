@@ -69,7 +69,7 @@ This library provides the following classes:
     * [`MassiveActionHandler`](https://eosio.github.io/demux-js/classes/massiveactionhandler.html): Handles actions backed by Postgres using [MassiveJS](https://github.com/dmfay/massive-js)
 
 
-* [**`BaseActionWatcher`**](src/demux/watchers/): Base class that implements a ready-to-use Action Watcher
+* [**`BaseActionWatcher`**](https://eosio.github.io/demux-js/classes/baseactionwatcher.html): Base class that implements a ready-to-use Action Watcher
 
 #### [**View full API documentation here.**](https://eosio.github.io/demux-js/)
 
