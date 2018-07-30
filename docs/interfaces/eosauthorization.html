@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Effect | demux-js</title>
+	<title>EosAuthorization | demux-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -937,22 +937,22 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-interface">
 			<a href="blockinfo.html" class="tsd-kind-icon">Block<wbr>Info</a>
 		</li>
-		<li class="current tsd-kind-interface">
+		<li class=" tsd-kind-interface">
 			<a href="effect.html" class="tsd-kind-icon">Effect</a>
-			<ul>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="effect.html#actiontype" class="tsd-kind-icon">action<wbr>Type</a>
-				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="effect.html#effect-1" class="tsd-kind-icon">effect</a>
-				</li>
-			</ul>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
 		</li>
-		<li class=" tsd-kind-interface">
+		<li class="current tsd-kind-interface">
 			<a href="eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
+			<ul>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="eosauthorization.html#actor" class="tsd-kind-icon">actor</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="eosauthorization.html#permission" class="tsd-kind-icon">permission</a>
+				</li>
+			</ul>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
@@ -989,7 +989,7 @@ img { max-width: 100%; }
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">Effect</span>
+					<span class="target">EosAuthorization</span>
 				</li>
 			</ul>
 		</section>
@@ -1000,8 +1000,8 @@ img { max-width: 100%; }
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="effect.html#actiontype" class="tsd-kind-icon">action<wbr>Type</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="effect.html#effect-1" class="tsd-kind-icon">effect</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="eosauthorization.html#actor" class="tsd-kind-icon">actor</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="eosauthorization.html#permission" class="tsd-kind-icon">permission</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1010,54 +1010,24 @@ img { max-width: 100%; }
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="actiontype" class="tsd-anchor"></a>
-				<h3>action<wbr>Type</h3>
-				<div class="tsd-signature tsd-kind-icon">action<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<a name="actor" class="tsd-anchor"></a>
+				<h3>actor</h3>
+				<div class="tsd-signature tsd-kind-icon">actor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L36">index.d.ts:36</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/eos/interfaces.ts#L4">src/demux/readers/eos/interfaces.ts:4</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="effect-1" class="tsd-anchor"></a>
-				<h3>effect</h3>
-				<div class="tsd-signature tsd-kind-icon">effect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+				<a name="permission" class="tsd-anchor"></a>
+				<h3>permission</h3>
+				<div class="tsd-signature tsd-kind-icon">permission<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L37">index.d.ts:37</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/eos/interfaces.ts#L5">src/demux/readers/eos/interfaces.ts:5</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter-siganture">
-							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, payload<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, blockInfo<span class="tsd-signature-symbol">: </span><a href="blockinfo.html" class="tsd-signature-type">BlockInfo</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-							</ul>
-							<ul class="tsd-descriptions">
-								<li class="tsd-description">
-									<h4 class="tsd-parameters-title">Parameters</h4>
-									<ul class="tsd-parameters">
-										<li>
-											<h5>state: <span class="tsd-signature-type">any</span></h5>
-										</li>
-										<li>
-											<h5>payload: <span class="tsd-signature-type">any</span></h5>
-										</li>
-										<li>
-											<h5>blockInfo: <a href="blockinfo.html" class="tsd-signature-type">BlockInfo</a></h5>
-										</li>
-										<li>
-											<h5>context: <span class="tsd-signature-type">any</span></h5>
-										</li>
-									</ul>
-									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
 			</section>
 		</section>
 		<footer>

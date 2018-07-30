@@ -1,5 +1,11 @@
-import {Block, Effect, IndexState, Updater} from "../../../index"
+import { Block, Effect, IndexState, Updater } from "../../../index"
 
+/**
+ * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through
+ * `Updater`s and `Effect`s. Pass an object exposing a persistence API as `state` in the `handleWithState`
+ * method. Persist and retrieve information about the last block processed with `updateIndexState` and
+ * `loadIndexState`.
+ */
 export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
   protected lastProcessedBlockHash: string = ""
@@ -12,11 +18,6 @@ export abstract class AbstractActionHandler {
 
   /**
    * Receive block, validate, and handle actions with updaters and effects
-   * @param {Block} block
-   * @param {boolean} isRollback
-   * @param {boolean} isFirstBlock
-   * @param {boolean} isReplay
-   * @returns {Promise<[boolean, number]>}
    */
   public async handleBlock(
     block: Block,
@@ -66,21 +67,27 @@ export abstract class AbstractActionHandler {
     return [false, 0]
   }
 
+  /**
+   * Updates the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state, coinciding with the block
+   * that has just been processed. These are the same values read by `updateIndexState()`.
+   */
   protected abstract async updateIndexState(state: any, block: Block, isReplay: boolean, context?: any): Promise<void>
 
+  /**
+   * Returns a promise for the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state, coinciding with the block
+   * that has just been processed. These are the same values written by `updateIndexState()`.
+   * @returns A promise that resolves to an `IndexState`
+   */
   protected abstract async loadIndexState(): Promise<IndexState>
 
   /**
-   * Calls handleActions with the appropriate state using the passed in handle function
-   * @param {(state: any) => void} handle
+   * Calls handleActions with the appropriate state passed by calling the `handle` parameter function.
+   * Optionally, pass in a `context` object as a second parameter.
    */
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
    * Process actions against deterministically accumulating updater functions.
-   * @param {any} state
-   * @param {Block} block
-   * @param {any} context
    */
   protected async runUpdaters(
     state: any,
@@ -100,9 +107,6 @@ export abstract class AbstractActionHandler {
 
   /**
    * Process actions against asynchronous side effects.
-   * @param {any} state
-   * @param {Block} block
-   * @param {any} context
    */
   protected runEffects(
     state: any,
@@ -124,18 +128,11 @@ export abstract class AbstractActionHandler {
    * Will run when a rollback block number is passed to handleActions. Implement this method to
    * handle reversing actions full blocks at a time, until the last applied block is the block
    * number passed to this method. If replay is true, effects should not be processed
-   *
-   * @param {number} blockNumber
-   * @returns {Promise<void>}
    */
   protected abstract async rollbackTo(blockNumber: number): Promise<void>
 
   /**
-   * Calls runUpdaters and runEffects on the given actions
-   * @param {any} state
-   * @param {Block} block
-   * @param {any} context
-   * @param {boolean} isReplay
+   * Calls `runUpdaters` and `runEffects` on the given actions
    */
   protected async handleActions(
     state: any,

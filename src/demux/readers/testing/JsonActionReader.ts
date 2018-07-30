@@ -2,6 +2,9 @@ import { AbstractActionReader } from "../AbstractActionReader"
 import request from "request-promise-native"
 import { Block } from "../../../../index"
 
+/**
+ * Reads from an array of `Block` objects, useful for testing.
+ */
 export class JsonActionReader extends AbstractActionReader {
   constructor(
     protected blockchain: Block[],

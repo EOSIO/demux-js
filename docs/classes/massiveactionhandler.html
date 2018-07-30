@@ -988,33 +988,47 @@ img { max-width: 100%; }
 			<a href="../interfaces/eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/updater.html" class="tsd-kind-icon">Updater</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#eos" class="tsd-kind-icon">eos</a>
+			<a href="../index.html#eos" class="tsd-kind-icon">eos</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#handlers" class="tsd-kind-icon">handlers</a>
+			<a href="../index.html#handlers" class="tsd-kind-icon">handlers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#postgres" class="tsd-kind-icon">postgres</a>
+			<a href="../index.html#postgres" class="tsd-kind-icon">postgres</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#readers" class="tsd-kind-icon">readers</a>
+			<a href="../index.html#readers" class="tsd-kind-icon">readers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#testing" class="tsd-kind-icon">testing</a>
+			<a href="../index.html#testing" class="tsd-kind-icon">testing</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#watchers" class="tsd-kind-icon">watchers</a>
+			<a href="../index.html#watchers" class="tsd-kind-icon">watchers</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p>Connects to a Postgres database using <a href="https://github.com/dmfay/massive-js">MassiveJS</a>. This expects that
+					the database is already migrated, including an <code>_index_state</code> table. Refer to the tests for more information.</p>
+				</div>
+			</div>
+		</section>
 		<section class="tsd-panel tsd-hierarchy">
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
@@ -1077,7 +1091,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#constructor">constructor</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L4">src/demux/handlers/postgres/MassiveActionHandler.ts:4</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L8">src/demux/handlers/postgres/MassiveActionHandler.ts:8</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1106,7 +1120,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#effects">effects</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L7">src/demux/handlers/postgres/MassiveActionHandler.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L11">src/demux/handlers/postgres/MassiveActionHandler.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1117,7 +1131,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#lastprocessedblockhash">lastProcessedBlockHash</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/AbstractActionHandler.ts#L5">src/demux/handlers/AbstractActionHandler.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/AbstractActionHandler.ts#L11">src/demux/handlers/AbstractActionHandler.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1128,7 +1142,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#lastprocessedblocknumber">lastProcessedBlockNumber</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/AbstractActionHandler.ts#L4">src/demux/handlers/AbstractActionHandler.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/AbstractActionHandler.ts#L10">src/demux/handlers/AbstractActionHandler.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1138,7 +1152,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">massive<wbr>Instance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L8">src/demux/handlers/postgres/MassiveActionHandler.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L12">src/demux/handlers/postgres/MassiveActionHandler.ts:12</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1149,7 +1163,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#updaters">updaters</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L6">src/demux/handlers/postgres/MassiveActionHandler.ts:6</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L10">src/demux/handlers/postgres/MassiveActionHandler.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1167,12 +1181,12 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#handleactions">handleActions</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/AbstractActionHandler.ts#L140">src/demux/handlers/AbstractActionHandler.ts:140</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/AbstractActionHandler.ts#L137">src/demux/handlers/AbstractActionHandler.ts:137</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Calls runUpdaters and runEffects on the given actions</p>
+								<p>Calls <code>runUpdaters</code> and <code>runEffects</code> on the given actions</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1188,8 +1202,6 @@ img { max-width: 100%; }
 							</li>
 							<li>
 								<h5>isReplay: <span class="tsd-signature-type">boolean</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1207,7 +1219,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#handleblock">handleBlock</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/AbstractActionHandler.ts#L21">src/demux/handlers/AbstractActionHandler.ts:21</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/AbstractActionHandler.ts#L22">src/demux/handlers/AbstractActionHandler.ts:22</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1245,7 +1257,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#handlewithstate">handleWithState</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L13">src/demux/handlers/postgres/MassiveActionHandler.ts:13</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L17">src/demux/handlers/postgres/MassiveActionHandler.ts:17</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1290,7 +1302,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#loadindexstate">loadIndexState</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L39">src/demux/handlers/postgres/MassiveActionHandler.ts:39</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L43">src/demux/handlers/postgres/MassiveActionHandler.ts:43</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/indexstate.html" class="tsd-signature-type">IndexState</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1308,7 +1320,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#rollbackto">rollbackTo</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L47">src/demux/handlers/postgres/MassiveActionHandler.ts:47</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L51">src/demux/handlers/postgres/MassiveActionHandler.ts:51</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1332,7 +1344,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#runeffects">runEffects</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/AbstractActionHandler.ts#L107">src/demux/handlers/AbstractActionHandler.ts:107</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/AbstractActionHandler.ts#L111">src/demux/handlers/AbstractActionHandler.ts:111</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1350,8 +1362,6 @@ img { max-width: 100%; }
 							</li>
 							<li>
 								<h5>context: <span class="tsd-signature-type">any</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1369,7 +1379,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#runupdaters">runUpdaters</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/AbstractActionHandler.ts#L85">src/demux/handlers/AbstractActionHandler.ts:85</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/AbstractActionHandler.ts#L92">src/demux/handlers/AbstractActionHandler.ts:92</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1387,8 +1397,6 @@ img { max-width: 100%; }
 							</li>
 							<li>
 								<h5>context: <span class="tsd-signature-type">any</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1406,7 +1414,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractactionhandler.html">AbstractActionHandler</a>.<a href="abstractactionhandler.html#updateindexstate">updateIndexState</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/MassiveActionHandler.ts#L30">src/demux/handlers/postgres/MassiveActionHandler.ts:30</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/MassiveActionHandler.ts#L34">src/demux/handlers/postgres/MassiveActionHandler.ts:34</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>

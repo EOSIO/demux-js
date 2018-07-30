@@ -964,33 +964,47 @@ img { max-width: 100%; }
 			<a href="../interfaces/eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/updater.html" class="tsd-kind-icon">Updater</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#eos" class="tsd-kind-icon">eos</a>
+			<a href="../index.html#eos" class="tsd-kind-icon">eos</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#handlers" class="tsd-kind-icon">handlers</a>
+			<a href="../index.html#handlers" class="tsd-kind-icon">handlers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#postgres" class="tsd-kind-icon">postgres</a>
+			<a href="../index.html#postgres" class="tsd-kind-icon">postgres</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#readers" class="tsd-kind-icon">readers</a>
+			<a href="../index.html#readers" class="tsd-kind-icon">readers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#testing" class="tsd-kind-icon">testing</a>
+			<a href="../index.html#testing" class="tsd-kind-icon">testing</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#watchers" class="tsd-kind-icon">watchers</a>
+			<a href="../index.html#watchers" class="tsd-kind-icon">watchers</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p>Cooredinates implementations of <code>AbstractActionReader</code>s and <code>AbstractActionHandler</code>s in
+					a polling loop.</p>
+				</div>
+			</div>
+		</section>
 		<section class="tsd-panel tsd-hierarchy">
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
@@ -1039,7 +1053,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/BaseActionWatcher.ts#L4">src/demux/watchers/BaseActionWatcher.ts:4</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L8">src/demux/watchers/BaseActionWatcher.ts:8</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1067,7 +1081,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">action<wbr>Handler<span class="tsd-signature-symbol">:</span> <a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/BaseActionWatcher.ts#L7">src/demux/watchers/BaseActionWatcher.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L11">src/demux/watchers/BaseActionWatcher.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1077,7 +1091,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">action<wbr>Reader<span class="tsd-signature-symbol">:</span> <a href="abstractactionreader.html" class="tsd-signature-type">AbstractActionReader</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/BaseActionWatcher.ts#L6">src/demux/watchers/BaseActionWatcher.ts:6</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L10">src/demux/watchers/BaseActionWatcher.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1087,7 +1101,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">poll<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/BaseActionWatcher.ts#L8">src/demux/watchers/BaseActionWatcher.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L12">src/demux/watchers/BaseActionWatcher.ts:12</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1104,9 +1118,14 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/BaseActionWatcher.ts#L11">src/demux/watchers/BaseActionWatcher.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L18">src/demux/watchers/BaseActionWatcher.ts:18</a></li>
 							</ul>
 						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Starts a polling loop running in replay mode.</p>
+							</div>
+						</div>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
@@ -1121,7 +1140,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/BaseActionWatcher.ts#L20">src/demux/watchers/BaseActionWatcher.ts:20</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L26">src/demux/watchers/BaseActionWatcher.ts:26</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">

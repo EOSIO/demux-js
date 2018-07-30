@@ -1,5 +1,8 @@
 import { Block } from "../../../index"
 
+/**
+ * Reads blocks from a blockchain, outputting normalized `Block` objects.
+ */
 export abstract class AbstractActionReader {
   public headBlockNumber: number = 0
   public currentBlockNumber: number
@@ -139,16 +142,15 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * When history is exhausted in rollback(), this is run to handle the situation.
+   * When history is exhausted in rollback(), this is run to handle the situation. If left unimplemented,
+   * then only instantiate with `onlyIrreversible` set to true.
    */
-  public rollbackExhausted() {
+  protected rollbackExhausted() {
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 
   /**
    * Move to the specified block.
-   * @param {number} blockNumber
-   * @returns {Promise<void>}
    */
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data

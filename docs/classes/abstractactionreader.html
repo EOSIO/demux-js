@@ -952,7 +952,7 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="abstractactionreader.html#rollback" class="tsd-kind-icon">rollback</a>
 				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionreader.html#rollbackexhausted" class="tsd-kind-icon">rollback<wbr>Exhausted</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -991,33 +991,46 @@ img { max-width: 100%; }
 			<a href="../interfaces/eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/updater.html" class="tsd-kind-icon">Updater</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#eos" class="tsd-kind-icon">eos</a>
+			<a href="../index.html#eos" class="tsd-kind-icon">eos</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#handlers" class="tsd-kind-icon">handlers</a>
+			<a href="../index.html#handlers" class="tsd-kind-icon">handlers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#postgres" class="tsd-kind-icon">postgres</a>
+			<a href="../index.html#postgres" class="tsd-kind-icon">postgres</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#readers" class="tsd-kind-icon">readers</a>
+			<a href="../index.html#readers" class="tsd-kind-icon">readers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#testing" class="tsd-kind-icon">testing</a>
+			<a href="../index.html#testing" class="tsd-kind-icon">testing</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="../globals.html#watchers" class="tsd-kind-icon">watchers</a>
+			<a href="../index.html#watchers" class="tsd-kind-icon">watchers</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p>Reads blocks from a blockchain, outputting normalized <code>Block</code> objects.</p>
+				</div>
+			</div>
+		</section>
 		<section class="tsd-panel tsd-hierarchy">
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
@@ -1064,7 +1077,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#getheadblocknumber" class="tsd-kind-icon">get<wbr>Head<wbr>Block<wbr>Number</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#nextblock" class="tsd-kind-icon">next<wbr>Block</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#rollback" class="tsd-kind-icon">rollback</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#rollbackexhausted" class="tsd-kind-icon">rollback<wbr>Exhausted</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#rollbackexhausted" class="tsd-kind-icon">rollback<wbr>Exhausted</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#seektoblock" class="tsd-kind-icon">seek<wbr>ToBlock</a></li>
 						</ul>
 					</section>
@@ -1083,7 +1096,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L8">src/demux/readers/AbstractActionReader.ts:8</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L11">src/demux/readers/AbstractActionReader.ts:11</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1111,7 +1124,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">block<wbr>History<span class="tsd-signature-symbol">:</span> <a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L8">src/demux/readers/AbstractActionReader.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L11">src/demux/readers/AbstractActionReader.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1121,7 +1134,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">current<wbr>Block<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L7">src/demux/readers/AbstractActionReader.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L10">src/demux/readers/AbstractActionReader.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1131,7 +1144,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">current<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L5">src/demux/readers/AbstractActionReader.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L8">src/demux/readers/AbstractActionReader.ts:8</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1141,7 +1154,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">head<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L4">src/demux/readers/AbstractActionReader.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L7">src/demux/readers/AbstractActionReader.ts:7</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1151,7 +1164,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">is<wbr>First<wbr>Block<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L6">src/demux/readers/AbstractActionReader.ts:6</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L9">src/demux/readers/AbstractActionReader.ts:9</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1161,7 +1174,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">max<wbr>History<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L13">src/demux/readers/AbstractActionReader.ts:13</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L16">src/demux/readers/AbstractActionReader.ts:16</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1171,7 +1184,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">only<wbr>Irreversible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L12">src/demux/readers/AbstractActionReader.ts:12</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L15">src/demux/readers/AbstractActionReader.ts:15</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1181,7 +1194,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">start<wbr>AtBlock<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L11">src/demux/readers/AbstractActionReader.ts:11</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L14">src/demux/readers/AbstractActionReader.ts:14</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1198,7 +1211,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L30">src/demux/readers/AbstractActionReader.ts:30</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L33">src/demux/readers/AbstractActionReader.ts:33</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1229,7 +1242,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L23">src/demux/readers/AbstractActionReader.ts:23</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L26">src/demux/readers/AbstractActionReader.ts:26</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1252,7 +1265,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L36">src/demux/readers/AbstractActionReader.ts:36</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L39">src/demux/readers/AbstractActionReader.ts:39</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1275,7 +1288,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L95">src/demux/readers/AbstractActionReader.ts:95</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L98">src/demux/readers/AbstractActionReader.ts:98</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1289,22 +1302,23 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 				<a name="rollbackexhausted" class="tsd-anchor"></a>
-				<h3>rollback<wbr>Exhausted</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> rollback<wbr>Exhausted</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<li class="tsd-signature tsd-kind-icon">rollback<wbr>Exhausted<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L144">src/demux/readers/AbstractActionReader.ts:144</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L148">src/demux/readers/AbstractActionReader.ts:148</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>When history is exhausted in rollback(), this is run to handle the situation.</p>
+								<p>When history is exhausted in rollback(), this is run to handle the situation. If left unimplemented,
+								then only instantiate with <code>onlyIrreversible</code> set to true.</p>
 							</div>
 						</div>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1321,7 +1335,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/AbstractActionReader.ts#L153">src/demux/readers/AbstractActionReader.ts:153</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/AbstractActionReader.ts#L155">src/demux/readers/AbstractActionReader.ts:155</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">

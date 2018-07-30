@@ -944,132 +944,39 @@ img { max-width: 100%; }
 			<a href="interfaces/eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="interfaces/eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="interfaces/eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/updater.html" class="tsd-kind-icon">Updater</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="globals.html#eos" class="tsd-kind-icon">eos</a>
+			<a href="index.html#eos" class="tsd-kind-icon">eos</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="globals.html#handlers" class="tsd-kind-icon">handlers</a>
+			<a href="index.html#handlers" class="tsd-kind-icon">handlers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="globals.html#postgres" class="tsd-kind-icon">postgres</a>
+			<a href="index.html#postgres" class="tsd-kind-icon">postgres</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="globals.html#readers" class="tsd-kind-icon">readers</a>
+			<a href="index.html#readers" class="tsd-kind-icon">readers</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="globals.html#testing" class="tsd-kind-icon">testing</a>
+			<a href="index.html#testing" class="tsd-kind-icon">testing</a>
 		</li>
 		<li class=" tsd-kind-object-literal">
-			<a href="globals.html#watchers" class="tsd-kind-icon">watchers</a>
+			<a href="index.html#watchers" class="tsd-kind-icon">watchers</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
-		<div class="tsd-panel tsd-typography">
-			<p>Demux is a backend infrastructure pattern for sourcing blockchain events to deterministically update queryable datastores and trigger side effects. This library serves as a reference implementation of that pattern for use with Node applications.</p>
-			<h2 id="installation">Installation</h2>
-			<pre><code class="lang-bash"><span class="hljs-comment"># Using yarn</span>
-yarn add demux-js
-
-<span class="hljs-comment"># Using npm</span>
-npm install demux-js --save
-</code></pre>
-			<h2 id="overview">Overview</h2>
-			<p>Taking inspiration from the <a href="https://facebook.github.io/flux/docs/in-depth-overview.html#content">Flux Architecture</a> pattern and <a href="https://github.com/reduxjs/redux/">Redux</a>, Demux was born out of the following qualifications:</p>
-			<ol>
-				<li>A separation of concerns between how state exists on the blockchain and how it is queried by the client front-end</li>
-				<li>Client front-end not solely responsible for determining derived, reduced, and/or accumulated state</li>
-				<li>Ability for blockchain events to trigger new transactions, as well as other side effects outside of the blockchain</li>
-				<li>The blockchain as the single source of truth for all application state</li>
-			</ol>
-			<h3 id="separated-persistence-layer">Separated Persistence Layer</h3>
-			<p>Storing data in indexed state on blockchains can be useful for three reasons: decentralized consensus of computation results, usage of state from within other blockchain computations, and for retrieval of state for use in client front-ends. When building more complicated front-ends, you run into a few problems when retrieving directly from indexed blockchain state:</p>
-			<ul>
-				<li>The query interface used to retrieve the indexed data is limited. Complex data requirements can mean you either have to make an excess number of queries and process the data on the client, or you must store additional derivative data on the blockchain itself.</li>
-				<li>Scaling your query load means creating more blockchain endpoint nodes, which can be very expensive.</li>
-			</ul>
-			<p>Demux solves these problems by off-loading queries to any persistence layer that you want. As blockchain events happen, your chosen persistence layer is updated by <code>updater</code> functions, which deterministically process an array of <code>Action</code> objects. The persistence layer can then be queried by your front-end through a suitable API (for example, REST or GraphQL).</p>
-			<p>This means that we can separate our concerns: for data that needs decentralized consensus of computation or access from other blockchain events, we can still store the data in indexed blockchain state, without having to worry about tailoring to front-end queries. For data required by our front-end, we can pre-process and index data in a way that makes it easy for it to be queried, in a horizontally scalable persistence layer of our choice. The end result is that both systems can serve their purpose more effectively.</p>
-			<h3 id="side-effects">Side Effects</h3>
-			<p>Since we have a system for acting upon specific blockchain events deterministically, we can utilize this system to manage non-deterministic events as well. These <code>effect</code> functions work almost exactly the same as <code>updater</code> functions, except they run asynchronously, are not run during replays, and modifying the deterministic datastore is off-limits. Examples include: signing and broadcasting a transaction, sending an email, and initiating a traditional fiat payment.</p>
-			<h3 id="single-source-of-truth">Single Source of Truth</h3>
-			<p>There are other solutions to the above problems that involve legacy persistence layers that are their own sources of truth. By deriving all state from the blockchain, however, we gain the following benefits:</p>
-			<ul>
-				<li>If the accumulated datastore is lost or deleted, it may be regenerated by replaying blockchain actions</li>
-				<li>As long as application code is open source, and the blockchain is public, all application state can be audited</li>
-				<li>No need to maintain multiple ways of updating state (submitting transactions is the sole way)</li>
-			</ul>
-			<h2 id="data-flow">Data Flow</h2>
-			<p><img src='https://i.imgur.com/MFfGOe3.png' height='492' alt='Demux Logo' /></p>
-			<ol>
-				<li>Client sends transaction to blockchain</li>
-				<li>Action Watcher invokes Action Reader to check for new blocks</li>
-				<li>Action Reader sees transaction in new block, parses actions</li>
-				<li>Action Watcher sends actions to Action Handler</li>
-				<li>Action Handler processes actions through Updaters and Effects</li>
-				<li>Actions run their corresponding Updaters, updating the state of the Datastore</li>
-				<li>Actions run their corresponding Effects, triggering external events</li>
-				<li>Client queries API for updated data</li>
-			</ol>
-			<h2 id="usage">Usage</h2>
-			<p>This library provides the following classes:</p>
-			<ul>
-				<li><a href="src/demux/readers/"><strong><code>AbstractActionReader</code></strong></a>: Abstract class used for implementing your own Action Readers<ul>
-						<li><a href="src/demux/readers/eos/"><code>NodeosActionReader</code></a>: Action reader that reads actions from EOS Nodeos nodes</li>
-						<li><a href="src/demux/readers/eos/"><code>NodeosBlock</code></a>: Block that parses raw EOS Nodeos block data</li>
-					</ul>
-				</li>
-			</ul>
-			<ul>
-				<li><a href="src/demux/handlers/"><strong><code>AbstractActionHandler</code></strong></a>: Abstract class used for implementing your own Action Handlers   </li>
-			</ul>
-			<ul>
-				<li><a href="src/demux/watchers/"><strong><code>BaseActionWatcher</code></strong></a>: Base class that implements a ready-to-use Action Watcher</li>
-			</ul>
-			<p><em>(Click each above for detailed usage.)</em></p>
-			<h2 id="example">Example</h2>
-			<pre><code class="lang-js"><span class="hljs-keyword">const</span> {
-  <span class="hljs-attr">readers</span>: {
-    <span class="hljs-attr">eos</span>: { NodeosActionReader } <span class="hljs-comment">// Let's read from an EOS node</span>
-  },
-  <span class="hljs-attr">watchers</span>: { BaseActionWatcher }, <span class="hljs-comment">// Don't need anything special, so let's use the base Action Watcher</span>
-} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"demux-js"</span>)
-
-<span class="hljs-comment">// Assuming you've already created a subclass of AbstractActionHandler</span>
-<span class="hljs-keyword">const</span> MyActionHandler = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./MyActionHandler"</span>)
-
-<span class="hljs-comment">// Import Updaters and Effects, which are arrays of objects:</span>
-<span class="hljs-comment">// [ { actionType:string, (updater|effect):function }, ... ] </span>
-<span class="hljs-keyword">const</span> updaters = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./updaters"</span>)
-<span class="hljs-keyword">const</span> effects = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./effects"</span>)
-
-<span class="hljs-keyword">const</span> actionHandler = <span class="hljs-keyword">new</span> MyActionHandler(
-  updaters,
-  effects,
-)
-
-<span class="hljs-keyword">const</span> actionReader = <span class="hljs-keyword">new</span> NodeosActionReader(
-  <span class="hljs-string">"http://some-nodeos-endpoint:8888"</span>, <span class="hljs-comment">// Locally hosted node needed for reasonable indexing speed</span>
-  <span class="hljs-number">12345678</span>, <span class="hljs-comment">// First actions relevant to this dapp happen at this block</span>
-)
-
-<span class="hljs-keyword">const</span> actionWatcher = <span class="hljs-keyword">new</span> BaseActionWatcher(
-  actionReader,
-  actionHandler,
-  <span class="hljs-number">250</span>, <span class="hljs-comment">// Poll at twice the block interval for less latency</span>
-)
-
-actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
-</code></pre>
-			<p>For more complete examples, <a href="examples/">see the examples directory</a>.</p>
-		</div>
-		<div style="position:relative;"><a name="typedoc-main-index" class="tsd-anchor"></a></div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
@@ -1094,6 +1001,8 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 							<li class="tsd-kind-interface"><a href="interfaces/blockinfo.html" class="tsd-kind-icon">Block<wbr>Info</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/effect.html" class="tsd-kind-icon">Effect</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/updater.html" class="tsd-kind-icon">Updater</a></li>
 						</ul>
@@ -1101,12 +1010,12 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<section class="tsd-index-section ">
 						<h3>Object literals</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-object-literal"><a href="globals.html#eos" class="tsd-kind-icon">eos</a></li>
-							<li class="tsd-kind-object-literal"><a href="globals.html#handlers" class="tsd-kind-icon">handlers</a></li>
-							<li class="tsd-kind-object-literal"><a href="globals.html#postgres" class="tsd-kind-icon">postgres</a></li>
-							<li class="tsd-kind-object-literal"><a href="globals.html#readers" class="tsd-kind-icon">readers</a></li>
-							<li class="tsd-kind-object-literal"><a href="globals.html#testing" class="tsd-kind-icon">testing</a></li>
-							<li class="tsd-kind-object-literal"><a href="globals.html#watchers" class="tsd-kind-icon">watchers</a></li>
+							<li class="tsd-kind-object-literal"><a href="index.html#eos" class="tsd-kind-icon">eos</a></li>
+							<li class="tsd-kind-object-literal"><a href="index.html#handlers" class="tsd-kind-icon">handlers</a></li>
+							<li class="tsd-kind-object-literal"><a href="index.html#postgres" class="tsd-kind-icon">postgres</a></li>
+							<li class="tsd-kind-object-literal"><a href="index.html#readers" class="tsd-kind-icon">readers</a></li>
+							<li class="tsd-kind-object-literal"><a href="index.html#testing" class="tsd-kind-icon">testing</a></li>
+							<li class="tsd-kind-object-literal"><a href="index.html#watchers" class="tsd-kind-icon">watchers</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1120,7 +1029,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 				<div class="tsd-signature tsd-kind-icon">eos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/eos/index.ts#L3">src/demux/readers/eos/index.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/eos/index.ts#L3">src/demux/readers/eos/index.ts:3</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1129,7 +1038,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">Nodeos<wbr>Action<wbr>Reader<span class="tsd-signature-symbol">:</span> <a href="classes/nodeosactionreader.html" class="tsd-signature-type">NodeosActionReader</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/eos/index.ts#L3">src/demux/readers/eos/index.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/eos/index.ts#L3">src/demux/readers/eos/index.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1140,8 +1049,8 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 				<div class="tsd-signature tsd-kind-icon">handlers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/index.d.ts#L3">index.d.ts:3</a></li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/index.ts#L4">src/demux/handlers/index.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L3">index.d.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/index.ts#L4">src/demux/handlers/index.ts:4</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1150,7 +1059,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">Abstract<wbr>Action<wbr>Handler<span class="tsd-signature-symbol">:</span> <a href="classes/abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/index.ts#L5">src/demux/handlers/index.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/index.ts#L5">src/demux/handlers/index.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1160,7 +1069,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">postgres<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/index.ts#L6">src/demux/handlers/index.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/index.ts#L6">src/demux/handlers/index.ts:6</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -1176,7 +1085,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 				<div class="tsd-signature tsd-kind-icon">postgres<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/index.ts#L3">src/demux/handlers/postgres/index.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/index.ts#L3">src/demux/handlers/postgres/index.ts:3</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1185,7 +1094,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">Massive<wbr>Action<wbr>Handler<span class="tsd-signature-symbol">:</span> <a href="classes/massiveactionhandler.html" class="tsd-signature-type">MassiveActionHandler</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/handlers/postgres/index.ts#L3">src/demux/handlers/postgres/index.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/handlers/postgres/index.ts#L3">src/demux/handlers/postgres/index.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1196,8 +1105,8 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 				<div class="tsd-signature tsd-kind-icon">readers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/index.d.ts#L4">index.d.ts:4</a></li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/index.ts#L5">src/demux/readers/index.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L4">index.d.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/index.ts#L5">src/demux/readers/index.ts:5</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1206,7 +1115,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">Abstract<wbr>Action<wbr>Reader<span class="tsd-signature-symbol">:</span> <a href="classes/abstractactionreader.html" class="tsd-signature-type">AbstractActionReader</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/index.ts#L6">src/demux/readers/index.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/index.ts#L6">src/demux/readers/index.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1216,7 +1125,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">eos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/index.ts#L7">src/demux/readers/index.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/index.ts#L7">src/demux/readers/index.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -1231,7 +1140,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">testing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/index.ts#L8">src/demux/readers/index.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/index.ts#L8">src/demux/readers/index.ts:8</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -1247,7 +1156,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 				<div class="tsd-signature tsd-kind-icon">testing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/testing/index.ts#L3">src/demux/readers/testing/index.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/testing/index.ts#L3">src/demux/readers/testing/index.ts:3</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1256,7 +1165,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">Json<wbr>Action<wbr>Reader<span class="tsd-signature-symbol">:</span> <a href="classes/jsonactionreader.html" class="tsd-signature-type">JsonActionReader</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/readers/testing/index.ts#L3">src/demux/readers/testing/index.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/readers/testing/index.ts#L3">src/demux/readers/testing/index.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1267,8 +1176,8 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 				<div class="tsd-signature tsd-kind-icon">watchers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/index.d.ts#L5">index.d.ts:5</a></li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/index.ts#L3">src/demux/watchers/index.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L5">index.d.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/index.ts#L3">src/demux/watchers/index.ts:3</a></li>
 					</ul>
 				</aside>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1277,7 +1186,7 @@ actionWatcher.watch() <span class="hljs-comment">// Start watch loop</span>
 					<div class="tsd-signature tsd-kind-icon">Base<wbr>Action<wbr>Watcher<span class="tsd-signature-symbol">:</span> <a href="classes/baseactionwatcher.html" class="tsd-signature-type">BaseActionWatcher</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/395f4c0/src/demux/watchers/index.ts#L3">src/demux/watchers/index.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/index.ts#L3">src/demux/watchers/index.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
