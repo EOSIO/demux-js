@@ -1,7 +1,11 @@
-import AbstractActionHandler from "../AbstractActionHandler"
-import {Block, Effect, IndexState, Updater} from "../../../../index"
+import { AbstractActionHandler } from "../AbstractActionHandler"
+import { Block, Effect, IndexState, Updater } from "../../../../index"
 
-export default class MassiveActionHandler extends AbstractActionHandler {
+/**
+ * Connects to a Postgres database using [MassiveJS](https://github.com/dmfay/massive-js). This expects that
+ * the database is already migrated, including an `_index_state` table. Refer to the tests for more information.
+ */
+export class MassiveActionHandler extends AbstractActionHandler {
   constructor(
     protected updaters: Updater[],
     protected effects: Effect[],

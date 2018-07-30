@@ -1,13 +1,20 @@
-import AbstractActionHandler from "../handlers/AbstractActionHandler"
-import AbstractActionReader from "../readers/AbstractActionReader"
+import { AbstractActionHandler } from "../handlers/AbstractActionHandler"
+import { AbstractActionReader } from "../readers/AbstractActionReader"
 
-export default class BaseActionWatcher {
+/**
+ * Cooredinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
+ * a polling loop.
+ */
+export class BaseActionWatcher {
   constructor(
     protected actionReader: AbstractActionReader,
     protected actionHandler: AbstractActionHandler,
     protected pollInterval: number) {
   }
 
+  /**
+   * Starts a polling loop running in replay mode.
+   */
   public async replay() {
     await this.actionReader.seekToBlock(this.actionReader.startAtBlock)
     await this.watch()
@@ -15,7 +22,6 @@ export default class BaseActionWatcher {
 
   /**
    * Uses the given actionReader and actionHandler to poll and process new blocks.
-   * @returns {Promise<void>}
    */
   protected async watch() {
     // Record start time

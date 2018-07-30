@@ -1,7 +1,9 @@
-import AbstractActionReader from "./AbstractActionReader"
-import * as eos from "./eos"
+import { AbstractActionReader } from "./AbstractActionReader"
+import { eos } from "./eos"
+import { testing } from "./testing"
 
-module.exports = {
+export const readers = {
   AbstractActionReader,
   eos,
+  testing,
 }

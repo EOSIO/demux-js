@@ -1,3 +1,5 @@
+# demux-js
+
 Demux is a backend infrastructure pattern for sourcing blockchain events to deterministically update queryable datastores and trigger side effects. This library serves as a reference implementation of that pattern for use with Node applications.
 
 ## Installation

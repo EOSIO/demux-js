@@ -1,9 +1,7 @@
-import AbstractActionHandler from "./AbstractActionHandler"
-import MassiveActionHandler from "./postgres/MassiveActionHandler"
+import { AbstractActionHandler } from "./AbstractActionHandler"
+import { postgres } from "./postgres"
 
-module.exports = {
+export const handlers = {
   AbstractActionHandler,
-  postgres: {
-    MassiveActionHandler,
-  },
+  postgres,
 }
