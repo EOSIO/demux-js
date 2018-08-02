@@ -4,9 +4,9 @@ import { BitsharesBlock } from "./BitsharesBlock"
 import request from "request-promise-native"
 
 /**
- * Reads from an Bitshares node to get blocks of actions.
+ * Reads from a Bitshares node to get blocks of operations.
  * It is important to note that virtual transactions will not be included,
- * as these not accessible in get_blocks API.
+ * as these are not accessible in get_block API.
  */
 export class BitsharesActionReader extends AbstractActionReader {
   protected bitsharesEndpoint: string
