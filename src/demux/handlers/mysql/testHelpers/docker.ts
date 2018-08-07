@@ -18,7 +18,7 @@ export async function pullImage(docker: any, imageName: string) {
   await promisifyStream(stream)
 }
 
-export async function waitForMysql(container: Container, dbPass: String) {
+export async function waitForMysql(_container: Container, _dbPass: String) {
   await wait(20000);
   //let connectionTries = 0
   //while (connectionTries < 40) {
@@ -53,8 +53,8 @@ export async function startMysqlContainer(
   docker: any,
   imageName: string,
   containerName: string,
-  dbName: string,
-  dbUser: string,
+  _dbName: string,
+  _dbUser: string,
   dbPass: string,
 ) {
   const container = await docker.createContainer({

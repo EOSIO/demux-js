@@ -2,7 +2,11 @@ import * as path from "path"
 import fs from "fs"
 
 function loadQueryFile(file: string) {
-  var appDir = path.dirname(require.main.filename);
+  var appDir;
+  if (require.main)
+    appDir = path.dirname(require.main.filename);
+  else
+    appDir = "./"
   const fullPath = path.join(appDir, "testHelpers", file);
   return fs.readFileSync(fullPath, "utf-8");
 }

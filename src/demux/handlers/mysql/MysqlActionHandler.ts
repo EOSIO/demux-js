@@ -18,7 +18,7 @@ export class MysqlActionHandler extends AbstractActionHandler {
     await handle(null, { conn: this.mysqlInstance });
   }
 
-  protected async updateIndexState(state: any, block: Block, isReplay: boolean) {
+  protected async updateIndexState(_state: any, block: Block, isReplay: boolean) {
     this.mysqlInstance.query(`REPLACE INTO _index_state VALUES (0, ${block.blockNumber}, "${block.blockHash}", ${isReplay} )`);
   }
 
