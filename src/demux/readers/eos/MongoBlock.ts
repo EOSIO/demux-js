@@ -6,37 +6,28 @@ export class MongoBlock implements Block {
   public blockHash: string
   public blockNumber: number
   public previousBlockHash: string
-  constructor(rawBlock: any, blockState: any) {
+  constructor(rawBlock: any) {
     this.actions = this.collectActionsFromBlock(rawBlock)
-    this.blockNumber = blockState.block_num
-    this.blockHash = blockState.block_id
-    this.previousBlockHash = blockState.block_header_state.header.previous
+    this.blockNumber = rawBlock.block_num
+    this.blockHash = rawBlock.block_id
+    this.previousBlockHash = rawBlock.block.previous
   }
 
   protected collectActionsFromBlock(rawBlock: any = { actions: [] }): EosAction[] {
-    return this.flattenArray(rawBlock.map((trx: any) => {
-      return trx.actions.map((action: any, actionIndex: number) => {
+    return this.flattenArray(rawBlock.block.transactions.map(({ trx }: any) => {
+      return trx.transaction.actions.map((action: any, actionIndex: number) => {
 
         // Delete unneeded hex data if we have deserialized data
         if (action.payload) {
-          delete action.payload.hex_data // eslint-disable-line
+          delete action.hex_data // eslint-disable-line
         }
 
-        console.info({
-          type: action.type,
-          payload: {
-            transactionId: rawBlock.trx_id,
-            actionIndex,
-            ...action.payload,
-          },
-        })
-
         return {
-          type: action.type,
+          type: `${action.account}::${action.name}`,
           payload: {
-            transactionId: rawBlock.trx_id,
+            transactionId: trx.trx.id,
             actionIndex,
-            ...action.payload,
+            ...action,
           },
         }
       })

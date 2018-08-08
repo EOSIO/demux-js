@@ -26,7 +26,7 @@ export class MongoActionReader extends AbstractActionReader {
   }
 
   public async getHeadBlockNumber(): Promise<number> {
-    const [ blockInfo ] = await this.mongodb.collection("block_states")
+    const [blockInfo] = await this.mongodb.collection("block_states")
       .find({})
       .limit(1)
       .sort({ $natural: -1 })
@@ -40,19 +40,12 @@ export class MongoActionReader extends AbstractActionReader {
   }
 
   public async getBlock(blockNumber: number): Promise<MongoBlock> {
-    // Need to start querying blocks and getting transactions from
-    // them
-    const rawBlock = await this.mongodb.collection("transactions")
-      .find({ "transaction_header.ref_block_num": blockNumber })
+    // Will not handle scenario of a fork since it only grabs first block
+    const [rawBlock] = await this.mongodb.collection("blocks")
+      .find({ "block_num": blockNumber })
       .toArray()
 
-    // If theres a fork there could be multiple blocks with the same number
-    const [ blockState ] = await this.mongodb.collection("block_states")
-      .find({ "block_header_state.block_num": blockNumber })
-      .toArray()
-
-    const block = new MongoBlock(rawBlock, blockState)
+    const block = new MongoBlock(rawBlock)
     return block
   }
-
 }
