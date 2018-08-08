@@ -23,7 +23,7 @@ const actionWatcher = new BaseActionWatcher(
   500,
 )
 
-// If using MongoActionReader you need to call
+// If using MongoActionReader, actionReader.initialize must be called
 // actionReader.initialize()
 //   .then(() => {
 //     actionWatcher.watch()
