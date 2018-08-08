@@ -74,8 +74,9 @@ export abstract class AbstractActionHandler {
   protected abstract async updateIndexState(state: any, block: Block, isReplay: boolean, context?: any): Promise<void>
 
   /**
-   * Returns a promise for the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state, coinciding with the block
-   * that has just been processed. These are the same values written by `updateIndexState()`.
+   * Returns a promise for the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state,
+   * coinciding with the block that has just been processed.
+   * These are the same values written by `updateIndexState()`.
    * @returns A promise that resolves to an `IndexState`
    */
   protected abstract async loadIndexState(): Promise<IndexState>

@@ -8,7 +8,7 @@
   "rules": {
     "object-literal-sort-keys": false,
     "interface-name": [true, "never-prefix"],
-    "no-console": [true, "log", "error"],
+    "no-console": [true, "log"],
     "semicolon": [true, "never"],
     "ter-indent": [true, 2]
   },

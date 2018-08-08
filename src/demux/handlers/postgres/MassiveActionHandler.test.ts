@@ -1,10 +1,10 @@
 import Docker from "dockerode"
 import massive from "massive"
-import { MassiveActionHandler } from "./MassiveActionHandler"
 import { JsonActionReader } from "../../readers/testing/JsonActionReader"
+import { MassiveActionHandler } from "./MassiveActionHandler"
 import blockchain from "./testHelpers/blockchain.json"
-import * as migrate from "./testHelpers/migrate"
 import * as dockerUtils from "./testHelpers/docker"
+import * as migrate from "./testHelpers/migrate"
 import updaters from "./testHelpers/updaters"
 
 const docker = new Docker()

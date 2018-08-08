@@ -1,5 +1,5 @@
-import { AbstractActionHandler } from "../AbstractActionHandler"
 import { Block, Effect, IndexState, Updater } from "../../../../index"
+import { AbstractActionHandler } from "../AbstractActionHandler"
 
 /**
  * Connects to a Postgres database using [MassiveJS](https://github.com/dmfay/massive-js). This expects that

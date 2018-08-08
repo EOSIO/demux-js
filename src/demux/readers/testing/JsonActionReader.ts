@@ -1,6 +1,6 @@
-import { AbstractActionReader } from "../AbstractActionReader"
 import request from "request-promise-native"
 import { Block } from "../../../../index"
+import { AbstractActionReader } from "../AbstractActionReader"
 
 /**
  * Reads from an array of `Block` objects, useful for testing.
