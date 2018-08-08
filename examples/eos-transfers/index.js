@@ -1,5 +1,5 @@
 const {
-  readers: { eos: { MongoActionReader } },
+  readers: { eos: { NodeosActionReader } },
   watchers: { BaseActionWatcher },
 } = require("../../dist/")
 const ObjectActionHandler = require("./ObjectActionHandler")
@@ -12,28 +12,22 @@ const actionHandler = new ObjectActionHandler(
   effects,
 )
 
-const actionReader = new MongoActionReader(
-  "mongodb://127.0.0.1:27017",
-  0,
+const actionReader = new NodeosActionReader(
+  "http://mainnet.eoscalgary.io", // Thanks EOS Calgary!
+  0, // Start at most recent blocks
+)
+
+const actionWatcher = new BaseActionWatcher(
+  actionReader,
+  actionHandler,
+  500,
 )
 
 // If using MongoActionReader you need to call
-actionReader.initialize()
-  .then(() => {
-    const actionWatcher = new BaseActionWatcher(
-      actionReader,
-      actionHandler,
-      500,
-    )
+// actionReader.initialize()
+//   .then(() => {
+//     actionWatcher.watch()
+//   })
 
-    actionWatcher.watch()
-  })
-
-// const actionWatcher = new BaseActionWatcher(
-//   actionReader,
-//   actionHandler,
-//   500,
-// )
-
-// actionWatcher.watch()
+actionWatcher.watch()
 
