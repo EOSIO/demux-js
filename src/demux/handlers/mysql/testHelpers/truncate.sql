@@ -1,0 +1,3 @@
+TRUNCATE TABLE task;
+TRUNCATE TABLE todo;
+TRUNCATE TABLE _index_state;
