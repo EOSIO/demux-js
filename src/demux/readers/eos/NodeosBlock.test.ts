@@ -83,8 +83,8 @@ describe("NodeosBlock", () => {
     eosBlock = new NodeosBlock(rawBlock)
   })
 
-  it("collects actions from blocks", async () => {
-    const { actions } = eosBlock
+  it("collects actions and transactions from blocks", async () => {
+    const { actions, transactions } = eosBlock
     expect(actions).toEqual([
       {
         payload: {
@@ -123,5 +123,68 @@ describe("NodeosBlock", () => {
         type: "testing::action2",
       },
     ])
+    expect(transactions).toEqual([{
+      block_producer: "eoscafeblock",
+      block_id: "000f4241873a9aef0daefd47d8821495b6f61c4d1c73544419eb0ddc22a9e906",
+      block_num: 20,
+      block_timestamp: "2018-06-16T05:59:49.500",
+      status: "executed",
+      cpu_usage_us: 778,
+      net_usage_words: 14,
+      trx: {
+        id: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
+        compression: "none",
+        packed_context_free_data: "",
+        context_free_data: [],
+        transaction: {
+          expiration: "2018-06-16T06:31:33",
+          ref_block_num: 16633,
+          ref_block_prefix: 754036046,
+          max_net_usage_words: 0,
+          max_cpu_usage_ms: 0,
+          delay_sec: 0,
+          context_free_actions: [],
+          actions: [
+            {
+              payload: {
+                account: "testing",
+                actionIndex: 0,
+                authorization: [
+                  {
+                    actor: "testing",
+                    permission: "active",
+                  },
+                ],
+                data: {
+                  memo: "EOS is awesome!",
+                },
+                name: "action",
+                transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
+              },
+              type: "testing::action",
+            },
+            {
+              payload: {
+                account: "testing",
+                actionIndex: 1,
+                authorization: [
+                  {
+                    actor: "testing",
+                    permission: "active",
+                  },
+                ],
+                data: {
+                  memo: "Go EOS!",
+                },
+                name: "action2",
+                transactionId: "b890beb84a6d1d77755f2e0cdad48e2ffcfd06ff3481917b4875cc5f3a343533",
+              },
+              type: "testing::action2",
+            },
+          ],
+          transaction_extensions: [],
+        },
+      },
+    }])
   })
 })
