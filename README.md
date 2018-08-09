@@ -63,6 +63,7 @@ This library provides the following classes:
 
 * [**`AbstractActionReader`**](https://eosio.github.io/demux-js/classes/abstractactionreader.html): Abstract class used for implementing your own Action Readers
     * [`NodeosActionReader`](https://eosio.github.io/demux-js/classes/nodeosactionreader.html): Action reader that reads actions from EOS Nodeos nodes
+    * [`BitsharesActionReader`](https://eosio.github.io/demux-js/classes/bitsharesactionreader.html): Action reader that reads actions from Bitshares core API nodes
 
 
 * [**`AbstractActionHandler`**](https://eosio.github.io/demux-js/classes/abstractactionhandler.html): Abstract class used for implementing your own Action Handlers   
