@@ -11,6 +11,7 @@ export class NodeosBlock implements Block {
     this.blockNumber = rawBlock.block_num
     this.blockHash = rawBlock.id
     this.previousBlockHash = rawBlock.previous
+    this.timestamp = new Date(rawBlock.timestamp)
   }
 
   protected collectActionsFromBlock(rawBlock: any): EosAction[] {
