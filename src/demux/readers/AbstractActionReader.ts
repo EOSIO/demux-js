@@ -142,14 +142,6 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * When history is exhausted in rollback(), this is run to handle the situation. If left unimplemented,
-   * then only instantiate with `onlyIrreversible` set to true.
-   */
-  protected rollbackExhausted() {
-    throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
-  }
-
-  /**
    * Move to the specified block.
    */
   public async seekToBlock(blockNumber: number): Promise<void> {
@@ -165,7 +157,7 @@ export abstract class AbstractActionReader {
 
     // Check if block exists in history
     let toDelete = -1
-    for (let i = this.blockHistory.length-1; i >= 0; i--) {
+    for (let i = this.blockHistory.length - 1; i >= 0; i--) {
       if (this.blockHistory[i].blockNumber === blockNumber) {
         break
       } else {
@@ -182,5 +174,13 @@ export abstract class AbstractActionReader {
     if (!this.currentBlockData) {
       this.currentBlockData = await this.getBlock(this.currentBlockNumber)
     }
+  }
+
+  /**
+   * When history is exhausted in rollback(), this is run to handle the situation. If left unimplemented,
+   * then only instantiate with `onlyIrreversible` set to true.
+   */
+  protected rollbackExhausted() {
+    throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 }
