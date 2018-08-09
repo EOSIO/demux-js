@@ -20,27 +20,6 @@ export async function pullImage(docker: any, imageName: string) {
 
 export async function waitForMysql(_container: Container, _dbPass: String) {
   await wait(20000);
-  //let connectionTries = 0
-  //while (connectionTries < 40) {
-  //  const exec = await container.exec({
-  //    Cmd: [`systemctl status mysql`],
-  //    AttachStdin: true,
-  //    AttachStdout: true,
-  //  })
-  //  const { output } = await exec.start({ hijack: true, stdin: true })
-  //  const data = await promisifyStream(output)
-  //  console.log(data);
-  //  const status = data.split(" - ")[1].trim()
-  //  if (status === "accepting connections") {
-  //    await wait(1000)
-  //    break
-  //  }
-  //  connectionTries += 1
-  //  await wait(500)
-  //}
-  //if (connectionTries === 30) {
-  //  throw Error("Too many tries to connect to database")
-  //}
 }
 
 export function wait(ms: number) {
