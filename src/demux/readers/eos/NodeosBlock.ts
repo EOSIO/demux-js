@@ -6,11 +6,13 @@ export class NodeosBlock implements Block {
   public blockHash: string
   public blockNumber: number
   public previousBlockHash: string
+  public timestamp: Date
   constructor(rawBlock: any) {
     this.actions = this.collectActionsFromBlock(rawBlock)
     this.blockNumber = rawBlock.block_num
     this.blockHash = rawBlock.id
     this.previousBlockHash = rawBlock.previous
+    this.timestamp = new Date(rawBlock.timestamp)
   }
 
   protected collectActionsFromBlock(rawBlock: any): EosAction[] {

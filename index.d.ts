@@ -9,6 +9,7 @@ export interface Block {
   blockHash: string
   blockNumber: number
   previousBlockHash: string
+  timestamp: Date
 }
 
 export interface IndexState {
@@ -20,6 +21,7 @@ export interface BlockInfo {
   blockHash: string
   blockNumber: number
   previousBlockHash: string
+  timestamp: Date
 }
 
 export interface Action {
