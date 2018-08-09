@@ -6,12 +6,6 @@ class TestActionHandler extends AbstractActionHandler {
   public async handleWithState() {}
 
   // tslint:disable-next-line
-  protected async loadIndexState(): Promise<IndexState> { return { blockNumber: 0, blockHash: "" } }
-
-  // tslint:disable-next-line
-  protected async updateIndexState() {}
-
-  // tslint:disable-next-line
   public async rollbackTo() {}
 
   public setLastProcessedBlockHash(hash: string) {
@@ -29,9 +23,15 @@ class TestActionHandler extends AbstractActionHandler {
   public _runEffects(state: any, block: Block, context: any) {
     this.runEffects(state, block, context)
   }
+
+  // tslint:disable-next-line
+  protected async loadIndexState(): Promise<IndexState> { return { blockNumber: 0, blockHash: "" } }
+
+  // tslint:disable-next-line
+  protected async updateIndexState() {}
 }
 
-const rawBlock= {
+const rawBlock = {
   actions: [
     {
       payload: {

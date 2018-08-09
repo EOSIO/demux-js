@@ -1,5 +1,5 @@
 import * as path from "path"
-import { QueryFile, IDatabase } from "pg-promise"
+import { IDatabase, QueryFile } from "pg-promise"
 
 function loadQueryFile(file: string) {
   const fullPath = path.join(__dirname, file)
