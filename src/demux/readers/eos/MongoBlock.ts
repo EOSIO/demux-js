@@ -1,5 +1,5 @@
-import { EosAction } from "./interfaces"
 import { Block } from "../../../../index"
+import { EosAction } from "./interfaces"
 
 export class MongoBlock implements Block {
   public actions: EosAction[]

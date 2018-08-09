@@ -7,8 +7,8 @@ import { MongoClient } from "mongodb"
  * Implementation of an ActionReader that polls a mongodb.
  */
 export class MongoActionReader extends AbstractActionReader {
-  protected isInitialized: boolean
   protected mongodb: any
+  protected isInitialized: boolean
   constructor(
     protected mongoEndpoint: string = "mongodb://127.0.0.1:27017",
     public startAtBlock: number = 1,
@@ -17,16 +17,8 @@ export class MongoActionReader extends AbstractActionReader {
     protected maxHistoryLength: number = 600,
   ) {
     super(startAtBlock, onlyIrreversible, maxHistoryLength)
-    this.mongoEndpoint = mongoEndpoint
     this.mongodb = null
     this.isInitialized = false
-    this.dbName = dbName
-  }
-
-  private throwIfNotInitialized() {
-    if (!this.isInitialized) {
-      throw Error("MongoActionReader must be initialized before fetching blocks.")
-    }
   }
 
   public async initialize() {
@@ -56,10 +48,16 @@ export class MongoActionReader extends AbstractActionReader {
 
     // Will not handle scenario of a fork since it only grabs first block
     const [rawBlock] = await this.mongodb.collection("blocks")
-      .find({ "block_num": blockNumber })
+      .find({ block_num: blockNumber })
       .toArray()
 
     const block = new MongoBlock(rawBlock)
     return block
+  }
+
+  private throwIfNotInitialized() {
+    if (!this.isInitialized) {
+      throw Error("MongoActionReader must be initialized before fetching blocks.")
+    }
   }
 }
