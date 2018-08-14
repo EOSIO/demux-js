@@ -12,9 +12,9 @@ export class MongoActionReader extends AbstractActionReader {
   constructor(
     protected mongoEndpoint: string = "mongodb://127.0.0.1:27017",
     public startAtBlock: number = 1,
-    public dbName: string = "EOS",
     protected onlyIrreversible: boolean = false,
     protected maxHistoryLength: number = 600,
+    public dbName: string = "EOS",
   ) {
     super(startAtBlock, onlyIrreversible, maxHistoryLength)
     this.mongodb = null
