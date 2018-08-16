@@ -1,11 +1,8 @@
-const {
-  readers: { eos: { NodeosActionReader } },
-  watchers: { BaseActionWatcher },
-} = require("../../dist/")
+const { BaseActionWatcher } = require("../../dist/")
+const { NodeosActionReader } = require("demux-eos") // eslint-disable-line
 const ObjectActionHandler = require("./ObjectActionHandler")
 const updaters = require("./updaters")
 const effects = require("./effects")
-
 
 const actionHandler = new ObjectActionHandler(
   updaters,
