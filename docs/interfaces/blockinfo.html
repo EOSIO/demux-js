@@ -916,18 +916,6 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-class">
 			<a href="../classes/baseactionwatcher.html" class="tsd-kind-icon">Base<wbr>Action<wbr>Watcher</a>
 		</li>
-		<li class=" tsd-kind-class">
-			<a href="../classes/jsonactionreader.html" class="tsd-kind-icon">Json<wbr>Action<wbr>Reader</a>
-		</li>
-		<li class=" tsd-kind-class">
-			<a href="../classes/massiveactionhandler.html" class="tsd-kind-icon">Massive<wbr>Action<wbr>Handler</a>
-		</li>
-		<li class=" tsd-kind-class">
-			<a href="../classes/nodeosactionreader.html" class="tsd-kind-icon">Nodeos<wbr>Action<wbr>Reader</a>
-		</li>
-		<li class=" tsd-kind-class">
-			<a href="../classes/nodeosblock.html" class="tsd-kind-icon">Nodeos<wbr>Block</a>
-		</li>
 		<li class=" tsd-kind-interface">
 			<a href="action.html" class="tsd-kind-icon">Action</a>
 		</li>
@@ -946,43 +934,19 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="blockinfo.html#previousblockhash" class="tsd-kind-icon">previous<wbr>Block<wbr>Hash</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="blockinfo.html#timestamp" class="tsd-kind-icon">timestamp</a>
+				</li>
 			</ul>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="effect.html" class="tsd-kind-icon">Effect</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
-		</li>
-		<li class=" tsd-kind-interface">
-			<a href="eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
-		</li>
-		<li class=" tsd-kind-interface">
-			<a href="eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
-		</li>
-		<li class=" tsd-kind-interface">
 			<a href="indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="updater.html" class="tsd-kind-icon">Updater</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#eos" class="tsd-kind-icon">eos</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#handlers" class="tsd-kind-icon">handlers</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#postgres" class="tsd-kind-icon">postgres</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#readers" class="tsd-kind-icon">readers</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#testing" class="tsd-kind-icon">testing</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#watchers" class="tsd-kind-icon">watchers</a>
 		</li>
 	</ul>
 </nav>
@@ -1006,6 +970,7 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="blockinfo.html#blockhash" class="tsd-kind-icon">block<wbr>Hash</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="blockinfo.html#blocknumber" class="tsd-kind-icon">block<wbr>Number</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="blockinfo.html#previousblockhash" class="tsd-kind-icon">previous<wbr>Block<wbr>Hash</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="blockinfo.html#timestamp" class="tsd-kind-icon">timestamp</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1019,7 +984,8 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">block<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L20">index.d.ts:20</a></li>
+						<li>Defined in dist/interfaces.d.ts:10</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/interfaces.ts#L12">src/interfaces.ts:12</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1029,7 +995,8 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L21">index.d.ts:21</a></li>
+						<li>Defined in dist/interfaces.d.ts:11</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/interfaces.ts#L13">src/interfaces.ts:13</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1039,7 +1006,19 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">previous<wbr>Block<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/index.d.ts#L22">index.d.ts:22</a></li>
+						<li>Defined in dist/interfaces.d.ts:12</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/interfaces.ts#L14">src/interfaces.ts:14</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="timestamp" class="tsd-anchor"></a>
+				<h3>timestamp</h3>
+				<div class="tsd-signature tsd-kind-icon">timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in dist/interfaces.d.ts:13</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/interfaces.ts#L15">src/interfaces.ts:15</a></li>
 					</ul>
 				</aside>
 			</section>

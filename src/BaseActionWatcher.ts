@@ -1,5 +1,5 @@
-import { AbstractActionHandler } from "../handlers/AbstractActionHandler"
-import { AbstractActionReader } from "../readers/AbstractActionReader"
+import { AbstractActionHandler } from "./AbstractActionHandler"
+import { AbstractActionReader } from "./AbstractActionReader"
 
 /**
  * Cooredinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in

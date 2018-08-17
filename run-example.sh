@@ -1,3 +1,2 @@
 #!/usr/bin/env bash
-./node_modules/.bin/tsc
-NODE_PATH=./dist/ node examples/$1/index.js
+cd examples/$1/ && npm install > "/dev/null" 2>&1 && node index.js

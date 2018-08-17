@@ -1,4 +1,4 @@
-import { Block } from "../../../index"
+import { Block } from "./interfaces"
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
@@ -56,8 +56,8 @@ export abstract class AbstractActionReader {
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
 
-      const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockHash : "INVALID"
-      const actualHash = unvalidatedBlockData.previousBlockHash
+      const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockInfo.blockHash : "INVALID"
+      const actualHash = unvalidatedBlockData.blockInfo.previousBlockHash
 
       // Continue if the new block is on the same chain as our history, or if we've just started
       if (expectedHash === actualHash || this.blockHistory.length === 0) {
@@ -67,7 +67,7 @@ export abstract class AbstractActionReader {
         }
         this.blockHistory.splice(0, this.blockHistory.length - this.maxHistoryLength) // Trim history
         this.currentBlockData = blockData // Replaced with the real current block
-        this.currentBlockNumber = this.currentBlockData.blockNumber
+        this.currentBlockNumber = this.currentBlockData.blockInfo.blockNumber
       } else {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
@@ -107,28 +107,30 @@ export abstract class AbstractActionReader {
       if (block === undefined) {
         throw Error ("block history should not have undefined entries.")
       }
-      this.currentBlockData = await this.getBlock(block.blockNumber)
+      this.currentBlockData = await this.getBlock(block.blockInfo.blockNumber)
       blocksToRewind = 1
     }
 
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
       const [cachedPreviousBlockData] = this.blockHistory.slice(-1)
-      const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockNumber)
+      const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockInfo.blockNumber)
       // TODO:
       // add null guards
       const currentBlock = this.currentBlockData
       if (currentBlock !== null) {
-        if (currentBlock.previousBlockHash === previousBlockData.blockHash) {
-          console.info(`✓ BLOCK ${currentBlock.blockNumber} MATCH:`)
-          console.info(`  expected: ${currentBlock.previousBlockHash}`)
-          console.info(`  received: ${previousBlockData.blockHash}`)
-          console.info(`Rewinding ${blocksToRewind!} blocks to block (${currentBlock.blockNumber})...`)
+        const { blockInfo: currentBlockInfo } = currentBlock
+        const { blockInfo: previousBlockInfo } = previousBlockData
+        if (currentBlockInfo.previousBlockHash === previousBlockInfo.blockHash) {
+          console.info(`✓ BLOCK ${currentBlockInfo.blockNumber} MATCH:`)
+          console.info(`  expected: ${currentBlockInfo.previousBlockHash}`)
+          console.info(`  received: ${previousBlockInfo.blockHash}`)
+          console.info(`Rewinding ${blocksToRewind!} blocks to block (${currentBlockInfo.blockNumber})...`)
           break
         }
-        console.info(`✕ BLOCK ${currentBlock.blockNumber} MISMATCH:`)
-        console.info(`  expected: ${currentBlock.previousBlockHash}`)
-        console.info(`  received: ${previousBlockData.blockHash}`)
+        console.info(`✕ BLOCK ${currentBlockInfo.blockNumber} MISMATCH:`)
+        console.info(`  expected: ${currentBlockInfo.previousBlockHash}`)
+        console.info(`  received: ${previousBlockInfo.blockHash}`)
         console.info("Rollback history has been exhausted!")
       }
 
@@ -158,7 +160,7 @@ export abstract class AbstractActionReader {
     // Check if block exists in history
     let toDelete = -1
     for (let i = this.blockHistory.length - 1; i >= 0; i--) {
-      if (this.blockHistory[i].blockNumber === blockNumber) {
+      if (this.blockHistory[i].blockInfo.blockNumber === blockNumber) {
         break
       } else {
         toDelete += 1
