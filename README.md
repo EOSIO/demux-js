@@ -1,4 +1,4 @@
-# demux-js
+# demux-js [![Build Status](https://travis-ci.org/EOSIO/demux-js.svg?branch=develop)](https://travis-ci.org/EOSIO/demux-js)
 
 Demux is a backend infrastructure pattern for sourcing blockchain events to deterministically update queryable datastores and trigger side effects. This library serves as a reference implementation of that pattern for use with Node applications.
 
@@ -62,43 +62,50 @@ There are other solutions to the above problems that involve legacy persistence 
 This library provides the following classes:
 
 * [**`AbstractActionReader`**](https://eosio.github.io/demux-js/classes/abstractactionreader.html): Abstract class used for implementing your own Action Readers
-    * [`NodeosActionReader`](https://eosio.github.io/demux-js/classes/nodeosactionreader.html): Action reader that reads actions from EOS Nodeos nodes
-
 
 * [**`AbstractActionHandler`**](https://eosio.github.io/demux-js/classes/abstractactionhandler.html): Abstract class used for implementing your own Action Handlers   
-    * [`MassiveActionHandler`](https://eosio.github.io/demux-js/classes/massiveactionhandler.html): Handles actions backed by Postgres using [MassiveJS](https://github.com/dmfay/massive-js)
-
 
 * [**`BaseActionWatcher`**](https://eosio.github.io/demux-js/classes/baseactionwatcher.html): Base class that implements a ready-to-use Action Watcher
 
 #### [**View full API documentation here.**](https://eosio.github.io/demux-js/)
 
+## Class Implementations
+
+Repository | Description
+---|---
+[EOSIO / demux-js-eos](https://github.com/EOSIO/demux-js-eos) * | Action Reader implementations for EOSIO blockchains
+[EOSIO / demux-js-postgres](https://github.com/EOSIO/demux-js-postgres) * | Action Handler implementation for Postgres databases
+
+*\* Officially supported by Block.one*
+
+To get your project listed, add it here and submit a PR!
+
+
 ## Example
 
 ```js
-const {
-  readers: {
-    eos: { NodeosActionReader } // Let's read from an EOS node
-  },
-  watchers: { BaseActionWatcher }, // Don't need anything special, so let's use the base Action Watcher
-} = require("demux-js")
+// Let's read from an EOS node
+const { NodeosActionReader } = require("demux-eos")
 
-// Assuming you've already created a subclass of AbstractActionHandler
+// Assuming you've created your own subclass of AbstractActionHandler
 const MyActionHandler = require("./MyActionHandler")
 
+// Ties everything together in a polling loop
+const  { BaseActionWatcher } = require("demux-js")
+
 // Import Updaters and Effects, which are arrays of objects:
-// [ { actionType:string, (updater|effect):function }, ... ] 
+// [ { actionType: string, (updater|effect): function }, ... ] 
 const updaters = require("./updaters")
 const effects = require("./effects")
-
-const actionHandler = new MyActionHandler(
-  updaters,
-  effects,
-)
 
 const actionReader = new NodeosActionReader(
   "http://some-nodeos-endpoint:8888", // Locally hosted node needed for reasonable indexing speed
   12345678, // First actions relevant to this dapp happen at this block
+)
+
+const actionHandler = new MyActionHandler(
+  updaters,
+  effects,
 )
 
 const actionWatcher = new BaseActionWatcher(

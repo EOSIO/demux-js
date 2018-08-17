@@ -1,3 +1,4 @@
-export { handlers } from "./demux/handlers"
-export { readers } from "./demux/readers"
-export { watchers } from "./demux/watchers"
+export { Action, Block, BlockInfo, Effect, IndexState, Updater } from "./interfaces"
+export { AbstractActionHandler } from "./AbstractActionHandler"
+export { AbstractActionReader } from "./AbstractActionReader"
+export { BaseActionWatcher } from "./BaseActionWatcher"

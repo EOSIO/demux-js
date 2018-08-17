@@ -1,14 +1,6 @@
-declare module "demux-js"
-
-export const handlers: any
-export const readers: any
-export const watchers: any
-
 export interface Block {
   actions: Action[]
-  blockHash: string
-  blockNumber: number
-  previousBlockHash: string
+  blockInfo: BlockInfo
 }
 
 export interface IndexState {
@@ -20,6 +12,7 @@ export interface BlockInfo {
   blockHash: string
   blockNumber: number
   previousBlockHash: string
+  timestamp: Date
 }
 
 export interface Action {
