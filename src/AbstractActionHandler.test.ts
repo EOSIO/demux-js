@@ -1,5 +1,5 @@
-import { Block, IndexState } from "./interfaces"
 import { AbstractActionHandler } from "./AbstractActionHandler"
+import { Block, IndexState } from "./interfaces"
 
 class TestActionHandler extends AbstractActionHandler {
   // tslint:disable-next-line
