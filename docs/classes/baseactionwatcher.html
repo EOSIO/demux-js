@@ -936,18 +936,6 @@ img { max-width: 100%; }
 				</li>
 			</ul>
 		</li>
-		<li class=" tsd-kind-class">
-			<a href="jsonactionreader.html" class="tsd-kind-icon">Json<wbr>Action<wbr>Reader</a>
-		</li>
-		<li class=" tsd-kind-class">
-			<a href="massiveactionhandler.html" class="tsd-kind-icon">Massive<wbr>Action<wbr>Handler</a>
-		</li>
-		<li class=" tsd-kind-class">
-			<a href="nodeosactionreader.html" class="tsd-kind-icon">Nodeos<wbr>Action<wbr>Reader</a>
-		</li>
-		<li class=" tsd-kind-class">
-			<a href="nodeosblock.html" class="tsd-kind-icon">Nodeos<wbr>Block</a>
-		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/action.html" class="tsd-kind-icon">Action</a>
 		</li>
@@ -961,37 +949,10 @@ img { max-width: 100%; }
 			<a href="../interfaces/effect.html" class="tsd-kind-icon">Effect</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="../interfaces/eosaction.html" class="tsd-kind-icon">Eos<wbr>Action</a>
-		</li>
-		<li class=" tsd-kind-interface">
-			<a href="../interfaces/eosauthorization.html" class="tsd-kind-icon">Eos<wbr>Authorization</a>
-		</li>
-		<li class=" tsd-kind-interface">
-			<a href="../interfaces/eospayload.html" class="tsd-kind-icon">Eos<wbr>Payload</a>
-		</li>
-		<li class=" tsd-kind-interface">
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/updater.html" class="tsd-kind-icon">Updater</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#eos" class="tsd-kind-icon">eos</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#handlers" class="tsd-kind-icon">handlers</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#postgres" class="tsd-kind-icon">postgres</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#readers" class="tsd-kind-icon">readers</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#testing" class="tsd-kind-icon">testing</a>
-		</li>
-		<li class=" tsd-kind-object-literal">
-			<a href="../index.html#watchers" class="tsd-kind-icon">watchers</a>
 		</li>
 	</ul>
 </nav>
@@ -1001,6 +962,8 @@ img { max-width: 100%; }
 			<div class="tsd-comment tsd-typography">
 				<div class="lead">
 					<p>Cooredinates implementations of <code>AbstractActionReader</code>s and <code>AbstractActionHandler</code>s in
+						a polling loop.
+						Cooredinates implementations of <code>AbstractActionReader</code>s and <code>AbstractActionHandler</code>s in
 					a polling loop.</p>
 				</div>
 			</div>
@@ -1053,7 +1016,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L8">src/demux/watchers/BaseActionWatcher.ts:8</a></li>
+								<li>Defined in dist/BaseActionWatcher.d.ts:10</li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1078,20 +1041,22 @@ img { max-width: 100%; }
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 				<a name="actionhandler" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> action<wbr>Handler</h3>
-				<div class="tsd-signature tsd-kind-icon">action<wbr>Handler<span class="tsd-signature-symbol">:</span> <a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></div>
+				<div class="tsd-signature tsd-kind-icon">action<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AbstractActionHandler</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L11">src/demux/watchers/BaseActionWatcher.ts:11</a></li>
+						<li>Defined in dist/BaseActionWatcher.d.ts:9</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/BaseActionWatcher.ts#L11">src/BaseActionWatcher.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 				<a name="actionreader" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> action<wbr>Reader</h3>
-				<div class="tsd-signature tsd-kind-icon">action<wbr>Reader<span class="tsd-signature-symbol">:</span> <a href="abstractactionreader.html" class="tsd-signature-type">AbstractActionReader</a></div>
+				<div class="tsd-signature tsd-kind-icon">action<wbr>Reader<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AbstractActionReader</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L10">src/demux/watchers/BaseActionWatcher.ts:10</a></li>
+						<li>Defined in dist/BaseActionWatcher.d.ts:8</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/BaseActionWatcher.ts#L10">src/BaseActionWatcher.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1101,7 +1066,8 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">poll<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L12">src/demux/watchers/BaseActionWatcher.ts:12</a></li>
+						<li>Defined in dist/BaseActionWatcher.d.ts:10</li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/BaseActionWatcher.ts#L12">src/BaseActionWatcher.ts:12</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1118,7 +1084,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L18">src/demux/watchers/BaseActionWatcher.ts:18</a></li>
+								<li>Defined in dist/BaseActionWatcher.d.ts:15</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1140,7 +1106,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/1fa12f0/src/demux/watchers/BaseActionWatcher.ts#L26">src/demux/watchers/BaseActionWatcher.ts:26</a></li>
+								<li>Defined in dist/BaseActionWatcher.d.ts:19</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
