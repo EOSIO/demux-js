@@ -23,7 +23,7 @@ export class BaseActionWatcher {
   /**
    * Uses the given actionReader and actionHandler to poll and process new blocks.
    */
-  protected async watch() {
+  public async watch() {
     // Record start time
     const startTime = new Date().getTime()
 
