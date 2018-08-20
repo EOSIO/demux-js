@@ -1,4 +1,4 @@
-const { handlers: { AbstractActionHandler } } = require("demux-js")
+const { handlers: { AbstractActionHandler } } = require("demux")
 
 const state = { volumeBySymbol: {}, totalTransfers: 0, indexState: { blockNumber: 0, blockHash: "" } } // Initial state
 

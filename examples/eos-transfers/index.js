@@ -1,10 +1,8 @@
-const { watchers } = require("demux-js")
+const { BaseActionWatcher } = require("demux")
 const { NodeosActionReader } = require("demux-eos") // eslint-disable-line
 const ObjectActionHandler = require("./ObjectActionHandler")
 const updaters = require("./updaters")
 const effects = require("./effects")
-
-const { BaseActionWatcher } = watchers
 
 const actionHandler = new ObjectActionHandler(
   updaters,
