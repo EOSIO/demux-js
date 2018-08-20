@@ -7,10 +7,10 @@ Demux is a backend infrastructure pattern for sourcing blockchain events to dete
 
 ```bash
 # Using yarn
-yarn add demux-js
+yarn add demux
 
 # Using npm
-npm install demux-js --save
+npm install demux --save
 ```
 ## Overview
 
@@ -91,7 +91,7 @@ const { NodeosActionReader } = require("demux-eos")
 const MyActionHandler = require("./MyActionHandler")
 
 // Ties everything together in a polling loop
-const  { BaseActionWatcher } = require("demux-js")
+const  { BaseActionWatcher } = require("demux")
 
 // Import Updaters and Effects, which are arrays of objects:
 // [ { actionType: string, (updater|effect): function }, ... ] 

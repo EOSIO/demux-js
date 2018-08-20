@@ -2,4 +2,5 @@ src
 tsconfig.json
 tslint.json
 dist/**/*.test.*
-examples/**/node_modules
+examples/
+docs/
