@@ -2,7 +2,7 @@ import { AbstractActionHandler } from "./AbstractActionHandler"
 import { AbstractActionReader } from "./AbstractActionReader"
 
 /**
- * Cooredinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
+ * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
  * a polling loop.
  */
 export class BaseActionWatcher {
@@ -23,7 +23,7 @@ export class BaseActionWatcher {
   /**
    * Uses the given actionReader and actionHandler to poll and process new blocks.
    */
-  public async watch() {
+  public async watch(isReplay: boolean = false) {
     // Record start time
     const startTime = new Date().getTime()
 
@@ -40,6 +40,7 @@ export class BaseActionWatcher {
           blockData,
           isRollback,
           this.actionReader.isFirstBlock,
+          isReplay,
         )
       }
 
@@ -62,6 +63,6 @@ export class BaseActionWatcher {
     }
 
     // Schedule next iteration
-    setTimeout(async () => await this.watch(), waitTime)
+    setTimeout(async () => await this.watch(false), waitTime)
   }
 }
