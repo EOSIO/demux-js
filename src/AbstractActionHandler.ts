@@ -27,7 +27,7 @@ export abstract class AbstractActionHandler {
   ): Promise<[boolean, number]> {
     const { blockInfo } = block
 
-    if (isRollback) {
+    if (isRollback || (isReplay && isFirstBlock)) {
       await this.rollbackTo(blockInfo.blockNumber - 1)
     }
 
@@ -130,7 +130,7 @@ export abstract class AbstractActionHandler {
   /**
    * Will run when a rollback block number is passed to handleActions. Implement this method to
    * handle reversing actions full blocks at a time, until the last applied block is the block
-   * number passed to this method. If replay is true, effects should not be processed
+   * number passed to this method.
    */
   protected abstract async rollbackTo(blockNumber: number): Promise<void>
 

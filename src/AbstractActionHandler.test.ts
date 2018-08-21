@@ -5,8 +5,10 @@ class TestActionHandler extends AbstractActionHandler {
   // tslint:disable-next-line
   public async handleWithState() {}
 
-  // tslint:disable-next-line
-  public async rollbackTo() {}
+  public async rollbackTo(blockNumber: number) {
+    this.setLastProcessedBlockNumber(blockNumber)
+    this.setLastProcessedBlockHash("")
+  }
 
   public setLastProcessedBlockHash(hash: string) {
     this.lastProcessedBlockHash = hash
@@ -25,10 +27,22 @@ class TestActionHandler extends AbstractActionHandler {
   }
 
   // tslint:disable-next-line
-  protected async loadIndexState(): Promise<IndexState> { return { blockNumber: 0, blockHash: "" } }
+  protected async loadIndexState(): Promise<IndexState> {
+    return { blockNumber: 3, blockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8" }
+  }
 
   // tslint:disable-next-line
-  protected async updateIndexState() {}
+  protected async updateIndexState(state: any, block: Block, isReplay: boolean) {}
+}
+
+const firstRawBlock = {
+  actions: [],
+  blockInfo: {
+    blockHash: "0000000000000000000000000000000000000000000000000000000000000000",
+    blockNumber: 1,
+    previousBlockHash: "",
+    timestamp: new Date("2018-06-09T11:56:29.000"),
+  },
 }
 
 const rawBlock = {
@@ -72,13 +86,13 @@ const rawBlock = {
   ],
   blockInfo: {
     blockHash: "000f4241873a9aef0daefd47d8821495b6f61c4d1c73544419eb0ddc22a9e906",
-    blockNumber: 20,
+    blockNumber: 4,
     previousBlockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8",
     timestamp: new Date("2018-06-09T11:56:39.000"),
   },
 }
 
-describe("BaseActionHandler", () => {
+describe("Action Handler", () => {
   let actionHandler: TestActionHandler
   let block: Block
 
@@ -114,8 +128,8 @@ describe("BaseActionHandler", () => {
 
     block = {
       blockInfo: {
-        blockHash: "",
-        blockNumber: 0,
+        blockHash: "0000000000000000000000000000000000000000000000000000000000000000",
+        blockNumber: 1,
         previousBlockHash: "",
         timestamp: new Date("2018-06-06T11:53:37.000"),
       },
@@ -158,30 +172,23 @@ describe("BaseActionHandler", () => {
     expect(notRunEffect).not.toHaveBeenCalled()
   })
 
-  it("seeks to the correct block when we've already processed blocks and are on the first block (replay)", async () => {
-    actionHandler.setLastProcessedBlockHash("abcd")
-    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(rawBlock, false, true)
+  it("retrieves indexState when processing first block", async () => {
+    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(firstRawBlock, false, true)
     expect(needToSeek).toBe(true)
-    expect(seekBlockNum).toBe(1)
-    actionHandler.setLastProcessedBlockHash("")
+    expect(seekBlockNum).toBe(4)
   })
 
   it("seeks to the next block needed when block number doesn't match last processed block", async () => {
-    actionHandler.setLastProcessedBlockNumber(18)
+    actionHandler.setLastProcessedBlockNumber(2)
     const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(rawBlock, false, false)
     expect(needToSeek).toBe(true)
-    expect(seekBlockNum).toBe(19)
-    actionHandler.setLastProcessedBlockNumber(0)
+    expect(seekBlockNum).toBe(3)
   })
 
   it("throws error if previous block hash and last processed don't match up", async () => {
-    actionHandler.setLastProcessedBlockNumber(19)
+    actionHandler.setLastProcessedBlockNumber(3)
     actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
-
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
-    expect(actionHandler.handleBlock(rawBlock, false, false)).rejects.toEqual(expectedError)
-
-    actionHandler.setLastProcessedBlockHash("")
-    actionHandler.setLastProcessedBlockNumber(0)
+    await expect(actionHandler.handleBlock(rawBlock, false, false)).rejects.toEqual(expectedError)
   })
 })
