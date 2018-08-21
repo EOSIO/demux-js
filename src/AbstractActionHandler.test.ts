@@ -26,13 +26,12 @@ class TestActionHandler extends AbstractActionHandler {
     this.runEffects(state, block, context)
   }
 
-  // tslint:disable-next-line
   protected async loadIndexState(): Promise<IndexState> {
     return { blockNumber: 3, blockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8" }
   }
 
   // tslint:disable-next-line
-  protected async updateIndexState(state: any, block: Block, isReplay: boolean) {}
+  protected async updateIndexState() {}
 }
 
 const firstRawBlock = {
