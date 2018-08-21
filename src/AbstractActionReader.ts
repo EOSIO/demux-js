@@ -71,6 +71,9 @@ export abstract class AbstractActionReader {
       } else {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
+        console.info("!! Fork detected !!")
+        console.info(`  expected: ${expectedHash}`)
+        console.info(`  received: ${actualHash}`)
         await this.rollback()
         isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
@@ -95,9 +98,7 @@ export abstract class AbstractActionReader {
    *
    * @return {Promise<void>}
    */
-  public async rollback() {
-    console.info("!! Fork detected !!")
-
+  protected async rollback() {
     let blocksToRewind: number
     // Rewind at least 1 block back
     if (this.blockHistory.length > 0) {
@@ -115,8 +116,6 @@ export abstract class AbstractActionReader {
     while (this.blockHistory.length > 0) {
       const [cachedPreviousBlockData] = this.blockHistory.slice(-1)
       const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockInfo.blockNumber)
-      // TODO:
-      // add null guards
       const currentBlock = this.currentBlockData
       if (currentBlock !== null) {
         const { blockInfo: currentBlockInfo } = currentBlock
@@ -141,6 +140,7 @@ export abstract class AbstractActionReader {
     if (this.blockHistory.length === 0) {
       await this.rollbackExhausted()
     }
+    this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
   }
 
   /**
@@ -151,9 +151,14 @@ export abstract class AbstractActionReader {
     this.currentBlockData = null
     this.headBlockNumber = 0
 
+    if (blockNumber < this.startAtBlock) {
+      throw Error("Cannot seek to block before configured startAtBlock.")
+    }
+
     // If we're going back to the first block, we don't want to get the preceding block
     if (blockNumber === 1) {
       this.blockHistory = []
+      this.currentBlockNumber = 0
       return
     }
 
