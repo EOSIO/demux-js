@@ -1,21 +1,6 @@
-import { AbstractActionReader } from "./AbstractActionReader"
 import { Block } from "./interfaces"
-
-class TestActionReader extends AbstractActionReader {
-  public blockchain: Block[] = []
-
-  public getBlockHistory(): Block[] {
-    return this.blockHistory
-  }
-
-  public async getHeadBlockNumber(): Promise<number> {
-    return this.blockchain[this.blockchain.length - 1].blockInfo.blockNumber
-  }
-
-  public async getBlock(blockNumber: number): Promise<Block> {
-    return this.blockchain[blockNumber - 1]
-  }
-}
+import blockchains from "./testHelpers/blockchains"
+import { TestActionReader } from "./testHelpers/TestActionReader"
 
 describe("Action Reader", () => {
   let actionReader: TestActionReader
@@ -29,92 +14,8 @@ describe("Action Reader", () => {
     actionReaderStartAt3 = new TestActionReader(3)
     actionReaderNegative = new TestActionReader(-1)
 
-    blockchain = [
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "0000000000000000000000000000000000000000000000000000000000000000",
-          blockNumber: 1,
-          previousBlockHash: "",
-          timestamp: new Date("2018-06-06T11:53:37.000"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "0000000000000000000000000000000000000000000000000000000000000001",
-          blockNumber: 2,
-          previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000000",
-          timestamp: new Date("2018-06-06T11:53:37.500"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "0000000000000000000000000000000000000000000000000000000000000002",
-          blockNumber: 3,
-          previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000001",
-          timestamp: new Date("2018-06-06T11:53:38.000"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
-          blockNumber: 4,
-          previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000002",
-          timestamp: new Date("2018-06-06T11:53:38.500"),
-        },
-      },
-    ]
-
-    forked = [
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "0000000000000000000000000000000000000000000000000000000000000000",
-          blockNumber: 1,
-          previousBlockHash: "",
-          timestamp: new Date("2018-06-06T11:53:37.000"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "0000000000000000000000000000000000000000000000000000000000000001",
-          blockNumber: 2,
-          previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000000",
-          timestamp: new Date("2018-06-06T11:53:37.500"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "foo",
-          blockNumber: 3,
-          previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000001",
-          timestamp: new Date("2018-06-06T11:53:38.000"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "wrench",
-          blockNumber: 4,
-          previousBlockHash: "foo",
-          timestamp: new Date("2018-06-06T11:53:38.500"),
-        },
-      },
-      {
-        actions: [],
-        blockInfo: {
-          blockHash: "madeit",
-          blockNumber: 5,
-          previousBlockHash: "wrench",
-          timestamp: new Date("2018-06-06T11:53:39.000"),
-        },
-      },
-    ]
+    blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
+    forked = JSON.parse(JSON.stringify(blockchains.forked))
 
     actionReader.blockchain = blockchain
     actionReaderStartAt3.blockchain = blockchain
@@ -183,5 +84,14 @@ describe("Action Reader", () => {
     const [block3, isRollback3] = await actionReader.nextBlock()
     expect(isRollback3).toBe(false)
     expect(block3.blockInfo.blockHash).toBe("madeit")
+  })
+
+  it("indicates when the same block is returned", async () => {
+    await actionReader.nextBlock()
+    await actionReader.nextBlock()
+    await actionReader.nextBlock()
+    await actionReader.nextBlock()
+    const [block, isReplay, isNewBlock] = await actionReader.nextBlock()
+    expect(isNewBlock).toBe(false)
   })
 })
