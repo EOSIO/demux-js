@@ -36,9 +36,10 @@ export abstract class AbstractActionReader {
    * Loads the next block with chainInterface after validating, updating all relevant state.
    * If block fails validation, rollback will be called, and will update state to last block unseen.
    */
-  public async nextBlock(): Promise<[Block, boolean]> {
+  public async nextBlock(): Promise<[Block, boolean, boolean]> {
     let blockData = null
     let isRollback = false
+    let isNewBlock = false
 
     // If we're on the head block, refresh current head block
     if (this.currentBlockNumber === this.headBlockNumber || !this.headBlockNumber) {
@@ -67,11 +68,16 @@ export abstract class AbstractActionReader {
         }
         this.blockHistory.splice(0, this.blockHistory.length - this.maxHistoryLength) // Trim history
         this.currentBlockData = blockData // Replaced with the real current block
+        isNewBlock = true
         this.currentBlockNumber = this.currentBlockData.blockInfo.blockNumber
       } else {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
+        console.info("!! Fork detected !!")
+        console.info(`  expected: ${expectedHash}`)
+        console.info(`  received: ${actualHash}`)
         await this.rollback()
+        isNewBlock = true
         isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
         this.headBlockNumber = await this.getHeadBlockNumber()
@@ -85,7 +91,47 @@ export abstract class AbstractActionReader {
       throw Error("currentBlockData must not be null.")
     }
 
-    return [this.currentBlockData, isRollback]
+    return [this.currentBlockData, isRollback, isNewBlock]
+  }
+
+  /**
+   * Move to the specified block.
+   */
+  public async seekToBlock(blockNumber: number): Promise<void> {
+    // Clear current block data
+    this.currentBlockData = null
+    this.headBlockNumber = 0
+
+    if (blockNumber < this.startAtBlock) {
+      throw Error("Cannot seek to block before configured startAtBlock.")
+    }
+
+    // If we're going back to the first block, we don't want to get the preceding block
+    if (blockNumber === 1) {
+      this.blockHistory = []
+      this.currentBlockNumber = 0
+      return
+    }
+
+    // Check if block exists in history
+    let toDelete = -1
+    for (let i = this.blockHistory.length - 1; i >= 0; i--) {
+      if (this.blockHistory[i].blockInfo.blockNumber === blockNumber) {
+        break
+      } else {
+        toDelete += 1
+      }
+    }
+    if (toDelete >= 0) {
+      this.blockHistory.splice(toDelete)
+      this.currentBlockData = this.blockHistory.pop() || null
+    }
+
+    // Load current block
+    this.currentBlockNumber = blockNumber - 1
+    if (!this.currentBlockData) {
+      this.currentBlockData = await this.getBlock(this.currentBlockNumber)
+    }
   }
 
   /**
@@ -95,9 +141,7 @@ export abstract class AbstractActionReader {
    *
    * @return {Promise<void>}
    */
-  public async rollback() {
-    console.info("!! Fork detected !!")
-
+  protected async rollback() {
     let blocksToRewind: number
     // Rewind at least 1 block back
     if (this.blockHistory.length > 0) {
@@ -115,8 +159,6 @@ export abstract class AbstractActionReader {
     while (this.blockHistory.length > 0) {
       const [cachedPreviousBlockData] = this.blockHistory.slice(-1)
       const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockInfo.blockNumber)
-      // TODO:
-      // add null guards
       const currentBlock = this.currentBlockData
       if (currentBlock !== null) {
         const { blockInfo: currentBlockInfo } = currentBlock
@@ -141,41 +183,7 @@ export abstract class AbstractActionReader {
     if (this.blockHistory.length === 0) {
       await this.rollbackExhausted()
     }
-  }
-
-  /**
-   * Move to the specified block.
-   */
-  public async seekToBlock(blockNumber: number): Promise<void> {
-    // Clear current block data
-    this.currentBlockData = null
-    this.headBlockNumber = 0
-
-    // If we're going back to the first block, we don't want to get the preceding block
-    if (blockNumber === 1) {
-      this.blockHistory = []
-      return
-    }
-
-    // Check if block exists in history
-    let toDelete = -1
-    for (let i = this.blockHistory.length - 1; i >= 0; i--) {
-      if (this.blockHistory[i].blockInfo.blockNumber === blockNumber) {
-        break
-      } else {
-        toDelete += 1
-      }
-    }
-    if (toDelete >= 0) {
-      this.blockHistory.splice(toDelete)
-      this.currentBlockData = this.blockHistory.pop() || null
-    }
-
-    // Load current block
-    this.currentBlockNumber = blockNumber - 1
-    if (!this.currentBlockData) {
-      this.currentBlockData = await this.getBlock(this.currentBlockNumber)
-    }
+    this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
   }
 
   /**

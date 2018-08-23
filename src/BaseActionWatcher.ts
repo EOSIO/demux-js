@@ -2,7 +2,7 @@ import { AbstractActionHandler } from "./AbstractActionHandler"
 import { AbstractActionReader } from "./AbstractActionReader"
 
 /**
- * Cooredinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
+ * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
  * a polling loop.
  */
 export class BaseActionWatcher {
@@ -16,23 +16,36 @@ export class BaseActionWatcher {
    * Starts a polling loop running in replay mode.
    */
   public async replay() {
-    await this.actionReader.seekToBlock(this.actionReader.startAtBlock)
-    await this.watch()
+    await this.watch(true)
   }
 
   /**
-   * Uses the given actionReader and actionHandler to poll and process new blocks.
+   * Start a polling loop
    */
-  public async watch() {
-    // Record start time
+  public async watch(isReplay: boolean = false) {
     const startTime = new Date().getTime()
 
-    // Process blocks until we're at the head block
+    await this.checkForBlocks(isReplay)
+
+    const endTime = new Date().getTime()
+    const duration = endTime - startTime
+    let waitTime = this.pollInterval - duration
+    if (waitTime < 0) {
+      waitTime = 0
+    }
+
+    setTimeout(async () => await this.watch(false), waitTime)
+  }
+
+  /**
+   * Use the actionReader and actionHandler to process new blocks.
+   */
+  protected async checkForBlocks(isReplay: boolean = false) {
     let headBlockNumber = 0
     while (!headBlockNumber || this.actionReader.currentBlockNumber < headBlockNumber) {
-      const [blockData, isRollback] = await this.actionReader.nextBlock()
+      const [blockData, isRollback, isNewBlock] = await this.actionReader.nextBlock()
+      if (!isNewBlock) { break }
 
-      // Handle block (and the actions within them)
       let needToSeek = false
       let seekBlockNum = 0
       if (blockData) {
@@ -40,28 +53,15 @@ export class BaseActionWatcher {
           blockData,
           isRollback,
           this.actionReader.isFirstBlock,
+          isReplay,
         )
       }
 
-      // Seek to next needed block at the request of the action handler
       if (needToSeek) {
         await this.actionReader.seekToBlock(seekBlockNum - 1)
       }
 
       headBlockNumber = this.actionReader.headBlockNumber
     }
-
-    // Record end time
-    const endTime = new Date().getTime()
-
-    // Calculate timing for next iteration
-    const duration = endTime - startTime
-    let waitTime = this.pollInterval - duration
-    if (waitTime < 0) {
-      waitTime = 0
-    }
-
-    // Schedule next iteration
-    setTimeout(async () => await this.watch(), waitTime)
   }
 }
