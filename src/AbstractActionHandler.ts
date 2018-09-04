@@ -29,14 +29,9 @@ export abstract class AbstractActionHandler {
 
     if (isRollback || (isReplay && isFirstBlock)) {
       await this.rollbackTo(blockInfo.blockNumber - 1)
-    }
-
-    if (!this.lastProcessedBlockHash && this.lastProcessedBlockNumber === 0) {
-      const { blockNumber: indexStateBlockNumber, blockHash: indexStateBlockHash } = await this.loadIndexState()
-      if (indexStateBlockNumber && indexStateBlockHash) {
-        this.lastProcessedBlockNumber = indexStateBlockNumber
-        this.lastProcessedBlockHash = indexStateBlockHash
-      }
+      await this.refreshIndexState()
+    } else if (!this.lastProcessedBlockHash && this.lastProcessedBlockNumber === 0) {
+      await this.refreshIndexState()
     }
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
@@ -62,7 +57,7 @@ export abstract class AbstractActionHandler {
       }
     }
 
-    const handleWithArgs: (state: any, context?: any) => void = async (state: any, context: any = {}) => {
+    const handleWithArgs: (state: any, context?: any) => Promise<void> = async (state: any, context: any = {}) => {
       await this.handleActions(state, block, context, isReplay)
     }
     await this.handleWithState(handleWithArgs)
@@ -153,5 +148,11 @@ export abstract class AbstractActionHandler {
     await this.updateIndexState(state, block, isReplay, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
+  }
+
+  private async refreshIndexState() {
+    const { blockNumber, blockHash } = await this.loadIndexState()
+    this.lastProcessedBlockNumber = blockNumber
+    this.lastProcessedBlockHash = blockHash
   }
 }
