@@ -167,13 +167,12 @@ export abstract class AbstractActionReader {
           console.info(`✓ BLOCK ${currentBlockInfo.blockNumber} MATCH:`)
           console.info(`  expected: ${currentBlockInfo.previousBlockHash}`)
           console.info(`  received: ${previousBlockInfo.blockHash}`)
-          console.info(`Rewinding ${blocksToRewind!} blocks to block (${currentBlockInfo.blockNumber})...`)
+          console.info(`Rolling back ${blocksToRewind!} blocks to block ${currentBlockInfo.blockNumber}...`)
           break
         }
         console.info(`✕ BLOCK ${currentBlockInfo.blockNumber} MISMATCH:`)
         console.info(`  expected: ${currentBlockInfo.previousBlockHash}`)
         console.info(`  received: ${previousBlockInfo.blockHash}`)
-        console.info("Rollback history has been exhausted!")
       }
 
       this.currentBlockData = previousBlockData
@@ -191,6 +190,7 @@ export abstract class AbstractActionReader {
    * then only instantiate with `onlyIrreversible` set to true.
    */
   protected rollbackExhausted() {
+    console.info("Rollback history has been exhausted!")
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }
 }
