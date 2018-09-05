@@ -95,9 +95,17 @@ export abstract class AbstractActionHandler {
     const { actions, blockInfo } = block
     for (const action of actions) {
       for (const updater of this.updaters) {
-        if (action.type === updater.actionType) {
-          const { payload } = action
-          await updater.updater(state, payload, blockInfo, context)
+                                                                                                                 
+        // Wildcard support ( *::transfer ) or ( eosio::* )
+        const searchableTypes = [
+            action.type,
+            `*::${action.type.split('::')[1]}`,
+            `${action.type.split('::')[0]}::*`
+        ];
+
+        if (searchableTypes.includes(updater.actionType)) {
+            const { payload } = action;
+            yield updater.updater(state, payload, blockInfo, context);
         }
       }
     }
