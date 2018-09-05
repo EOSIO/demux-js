@@ -36,7 +36,7 @@ describe("BaseActionWatcher", () => {
 
     const updaters = [{
       actionType: "eosio.token::transfer",
-      updater: async (state, payload) => {
+      updater: async (state: any, payload: any) => {
         if (!state.totalTransferred) {
           state.totalTransferred = parseFloat(payload.data.quantity.amount)
         } else {

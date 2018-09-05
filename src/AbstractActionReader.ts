@@ -73,10 +73,11 @@ export abstract class AbstractActionReader {
       } else {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
-        console.info("!! Fork detected !!")
-        console.info(`  expected: ${expectedHash}`)
-        console.info(`  received: ${actualHash}`)
-        await this.rollback()
+        console.info("!! FORK DETECTED !!")
+        console.info(`  MISMATCH:`)
+        console.info(`    ✓ NEW Block ${unvalidatedBlockData.blockInfo.blockNumber} previous: ${actualHash}`)
+        console.info(`    ✕ OLD Block ${this.currentBlockNumber} id:       ${expectedHash}`)
+        await this.resolveFork()
         isNewBlock = true
         isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
@@ -141,46 +142,36 @@ export abstract class AbstractActionReader {
    *
    * @return {Promise<void>}
    */
-  protected async rollback() {
-    let blocksToRewind: number
-    // Rewind at least 1 block back
-    if (this.blockHistory.length > 0) {
-      // TODO:
-      // check and throw error if undefined
-      const block = this.blockHistory.pop()
-      if (block === undefined) {
-        throw Error ("block history should not have undefined entries.")
-      }
-      this.currentBlockData = await this.getBlock(block.blockInfo.blockNumber)
-      blocksToRewind = 1
+  protected async resolveFork() {
+    if (this.currentBlockData === null) {
+      throw Error("`currentBlockData` must not be null when initiating fork resolution.")
     }
 
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
-      const [cachedPreviousBlockData] = this.blockHistory.slice(-1)
-      const previousBlockData = await this.getBlock(cachedPreviousBlockData.blockInfo.blockNumber)
-      const currentBlock = this.currentBlockData
-      if (currentBlock !== null) {
-        const { blockInfo: currentBlockInfo } = currentBlock
+      const [previousBlockData] = this.blockHistory.slice(-1)
+      console.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
+      this.currentBlockData = await this.getBlock(this.currentBlockData.blockInfo.blockNumber)
+      if (this.currentBlockData !== null) {
+        const { blockInfo: currentBlockInfo } = this.currentBlockData
         const { blockInfo: previousBlockInfo } = previousBlockData
         if (currentBlockInfo.previousBlockHash === previousBlockInfo.blockHash) {
-          console.info(`✓ BLOCK ${currentBlockInfo.blockNumber} MATCH:`)
-          console.info(`  expected: ${currentBlockInfo.previousBlockHash}`)
-          console.info(`  received: ${previousBlockInfo.blockHash}`)
-          console.info(`Rolling back ${blocksToRewind!} blocks to block ${currentBlockInfo.blockNumber}...`)
+          console.info("  MATCH:")
+          console.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`) // tslint:disable-line
+          console.info(`    ✓ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
+          console.info("!! FORK RESOLVED !!")
           break
         }
-        console.info(`✕ BLOCK ${currentBlockInfo.blockNumber} MISMATCH:`)
-        console.info(`  expected: ${currentBlockInfo.previousBlockHash}`)
-        console.info(`  received: ${previousBlockInfo.blockHash}`)
+        console.info("  MISMATCH:")
+        console.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`)
+        console.info(`    ✕ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
       }
 
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
-      blocksToRewind! += 1
     }
     if (this.blockHistory.length === 0) {
-      await this.rollbackExhausted()
+      await this.historyExhausted()
     }
     this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
   }
@@ -189,7 +180,7 @@ export abstract class AbstractActionReader {
    * When history is exhausted in rollback(), this is run to handle the situation. If left unimplemented,
    * then only instantiate with `onlyIrreversible` set to true.
    */
-  protected rollbackExhausted() {
+  protected historyExhausted() {
     console.info("Rollback history has been exhausted!")
     throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
   }

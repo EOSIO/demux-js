@@ -74,13 +74,16 @@ describe("Action Reader", () => {
     await actionReader.nextBlock()
     await actionReader.nextBlock()
     await actionReader.nextBlock()
+
     actionReader.blockchain = forked
     const [block, isRollback] = await actionReader.nextBlock()
     expect(isRollback).toBe(true)
     expect(block.blockInfo.blockHash).toBe("foo")
+
     const [block2, isRollback2] = await actionReader.nextBlock()
     expect(isRollback2).toBe(false)
     expect(block2.blockInfo.blockHash).toBe("wrench")
+
     const [block3, isRollback3] = await actionReader.nextBlock()
     expect(isRollback3).toBe(false)
     expect(block3.blockInfo.blockHash).toBe("madeit")
