@@ -28,8 +28,8 @@ export abstract class AbstractActionHandler {
     const { blockInfo } = block
 
     if (isRollback || (isReplay && isFirstBlock)) {
-      const rollbackCount = this.lastProcessedBlockNumber - blockInfo.blockNumber - 1
       const rollbackBlockNumber = blockInfo.blockNumber - 1
+      const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
       console.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
       await this.rollbackTo(rollbackBlockNumber)
       await this.refreshIndexState()
