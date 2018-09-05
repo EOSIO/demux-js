@@ -34,7 +34,7 @@ export abstract class AbstractActionReader {
 
   /**
    * Loads the next block with chainInterface after validating, updating all relevant state.
-   * If block fails validation, rollback will be called, and will update state to last block unseen.
+   * If block fails validation, resolveFork will be called, and will update state to last block unseen.
    */
   public async nextBlock(): Promise<[Block, boolean, boolean]> {
     let blockData = null
@@ -137,7 +137,7 @@ export abstract class AbstractActionReader {
 
   /**
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with
-   * newly fetched blocks. Rollback is finished when either the current block's previous hash
+   * newly fetched blocks. Fork resolution is finished when either the current block's previous hash
    * matches the previous block's hash, or when history is exhausted.
    *
    * @return {Promise<void>}
@@ -177,11 +177,11 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * When history is exhausted in rollback(), this is run to handle the situation. If left unimplemented,
+   * When history is exhausted in resolveFork(), this is run to handle the situation. If left unimplemented,
    * then only instantiate with `onlyIrreversible` set to true.
    */
   protected historyExhausted() {
-    console.info("Rollback history has been exhausted!")
-    throw Error("Rollback history has been exhausted, and no rollback exhaustion handling has been implemented.")
+    console.info("Fork resolution history has been exhausted!")
+    throw Error("Fork resolution history has been exhausted, and no history exhaustion handling has been implemented.")
   }
 }
