@@ -4,3 +4,9 @@ tslint.json
 dist/**/*.test.*
 examples/
 docs/
+.idea
+yarn-error.log
+.travis.yml
+.eslintrc.json
+README.md
+build-docs.sh
