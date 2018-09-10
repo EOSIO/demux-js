@@ -75,6 +75,7 @@ Repository | Description
 ---|---
 [EOSIO / demux-js-eos](https://github.com/EOSIO/demux-js-eos) * | Action Reader implementations for EOSIO blockchains
 [EOSIO / demux-js-postgres](https://github.com/EOSIO/demux-js-postgres) * | Action Handler implementation for Postgres databases
+[Zapata / demux-js-bitshares](https://github.com/Zapata/demux-js-bitshares) | Action Reader implementations for BitShares blockchain
 
 *\* Officially supported by Block.one*
 
