@@ -16,6 +16,18 @@ export abstract class AbstractActionHandler {
   ) {
   }
 
+
+  actionMatch(blockAction: string, filterAction: string) {
+    if (blockAction === filterAction) return true;
+    let [receiver, action] = blockAction.split("::")
+    let [_receiver, _action] = filterAction.split("::")
+    if ((_receiver === "*") || (_action === "*")) {
+      if ((receiver === _receiver) || (action === _action)) return true;
+    }
+    return false
+  }
+
+
   /**
    * Receive block, validate, and handle actions with updaters and effects
    */
@@ -98,7 +110,7 @@ export abstract class AbstractActionHandler {
     const { actions, blockInfo } = block
     for (const action of actions) {
       for (const updater of this.updaters) {
-        if (action.type === updater.actionType) {
+        if (this.actionMatch(action.type, updater.actionType)) {
           const { payload } = action
           await updater.updater(state, payload, blockInfo, context)
         }
@@ -117,7 +129,7 @@ export abstract class AbstractActionHandler {
     const { actions, blockInfo } = block
     for (const action of actions) {
       for (const effect of this.effects) {
-        if (action.type === effect.actionType) {
+        if (this.actionMatch(action.type, effect.actionType)) {
           const { payload } = action
           effect.effect(state, payload, blockInfo, context)
         }
