@@ -6,6 +6,8 @@ export interface Block {
 export interface IndexState {
   blockNumber: number
   blockHash: string
+  handlerVersion: string
+  isReplay: boolean
 }
 
 export interface BlockInfo {
@@ -20,12 +22,36 @@ export interface Action {
   payload: any
 }
 
-export interface Updater {
+export interface ActionListener {
+  name: string
   actionType: string
-  updater: (state: any, payload: any, blockInfo: BlockInfo, context: any) => void
 }
 
-export interface Effect {
-  actionType: string
-  effect: (state: any, payload: any, blockInfo: BlockInfo, context: any) => void
+export type ActionCallback = (
+  state: any,
+  payload: any,
+  blockInfo: BlockInfo,
+  context: any,
+) => void | string | Promise<void> | Promise<string>
+
+export type StatelessActionCallback = (
+  payload: any,
+  blockInfo: BlockInfo,
+  context: any,
+) => void | Promise<void>
+
+export interface Updater extends ActionListener {
+  apply: ActionCallback
+  revert?: ActionCallback
+}
+
+export interface Effect extends ActionListener {
+  run: StatelessActionCallback
+  onRollback?: StatelessActionCallback
+}
+
+export interface HandlerVersion {
+  name: string
+  updaters: Updater[]
+  effects: Effect[]
 }
