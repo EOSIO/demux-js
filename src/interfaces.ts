@@ -23,8 +23,7 @@ export interface Action {
 }
 
 export interface ActionListener {
-  name: string
-  actionType: string
+  actionName: string
 }
 
 export type ActionCallback = (
@@ -36,7 +35,7 @@ export type ActionCallback = (
 
 export type StatelessActionCallback = (
   payload: any,
-  blockInfo: BlockInfo,
+  block: Block,
   context: any,
 ) => void | Promise<void>
 
@@ -51,7 +50,7 @@ export interface Effect extends ActionListener {
 }
 
 export interface HandlerVersion {
-  name: string
+  versionName: string
   updaters: Updater[]
   effects: Effect[]
 }

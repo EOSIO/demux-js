@@ -13,38 +13,40 @@ describe("Action Handler", () => {
   const runEffect = jest.fn()
 
   beforeAll(() => {
-    actionHandler = new TestActionHandler(
-      [
+    actionHandler = new TestActionHandler([{
+      versionName: "v1",
+      updaters: [
         {
-          actionType: "eosio.token::transfer",
-          updater: runUpdater,
+          actionName: "eosio.token::transfer",
+          apply: runUpdater,
         },
         {
-          actionType: "eosio.token::issue",
-          updater: notRunUpdater,
-        },
-      ],
-      [
-        {
-          actionType: "eosio.token::transfer",
-          effect: runEffect,
-        },
-        {
-          actionType: "eosio.token::issue",
-          effect: notRunEffect,
+          actionName: "eosio.token::issue",
+          apply: notRunUpdater,
         },
       ],
-    )
+      effects: [
+        {
+          actionName: "eosio.token::transfer",
+          run: runEffect,
+        },
+        {
+          actionName: "eosio.token::issue",
+          run: notRunEffect,
+        },
+      ],
+    }])
   })
 
   it("runs the correct updater based on action type", async () => {
-    await actionHandler._runUpdaters({}, blockchain[1], {})
+    await actionHandler._applyUpdaters({}, blockchain[1], {})
     expect(runUpdater).toHaveBeenCalled()
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
-  it("runs the correct effect based on action type", () => {
-    actionHandler._runEffects({}, blockchain[1], {})
+  it("runs the correct effect based on action type", async () => {
+    const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], {})
+    actionHandler._runEffects(versionedActions, blockchain[1], {})
     expect(runEffect).toHaveBeenCalled()
     expect(notRunEffect).not.toHaveBeenCalled()
   })

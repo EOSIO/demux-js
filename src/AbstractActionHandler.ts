@@ -1,4 +1,4 @@
-import { Action, Block, BlockInfo, HandlerVersion, IndexState, } from "./interfaces"
+import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through
@@ -7,8 +7,8 @@ import { Action, Block, BlockInfo, HandlerVersion, IndexState, } from "./interfa
  * `loadIndexState`.
  */
 export abstract class AbstractActionHandler {
-  private lastProcessedBlockNumber: number = 0
-  private lastProcessedBlockHash: string = ""
+  protected lastProcessedBlockNumber: number = 0
+  protected lastProcessedBlockHash: string = ""
   private handlerVersionName: string = "v1"
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
@@ -109,7 +109,7 @@ export abstract class AbstractActionHandler {
       let updaterIndex = -1
       for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
         updaterIndex += 1
-        if (action.type === updater.actionType) {
+        if (action.type === updater.actionName) {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
           versionedActions.push([action, this.handlerVersionName])
@@ -140,14 +140,14 @@ export abstract class AbstractActionHandler {
    */
   protected runEffects(
     versionedActions: Array<[Action, string]>,
-    blockInfo: BlockInfo,
+    block: Block,
     context: any,
-  ): void {
+  ) {
     for (const [action, handlerVersionName] of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
-        if (action.type === effect.actionType) {
+        if (action.type === effect.actionName) {
           const { payload } = action
-          effect.run(payload, blockInfo, context)
+          effect.run(payload, block, context)
         }
       }
     }
@@ -173,7 +173,7 @@ export abstract class AbstractActionHandler {
 
     const versionedActions = await this.applyUpdaters(state, block, context)
     if (!isReplay) {
-      this.runEffects(versionedActions, blockInfo, context)
+      this.runEffects(versionedActions, block, context)
     }
 
     await this.updateIndexState(state, block, isReplay, context)
@@ -186,18 +186,18 @@ export abstract class AbstractActionHandler {
       throw new Error("Must have at least one handler version.")
     }
     for (const handlerVersion of handlerVersions) {
-      if (this.handlerVersionMap.hasOwnProperty(handlerVersion.name)) {
-        throw new Error(`Handler version name '${handlerVersion.name}' already exists. ` +
+      if (this.handlerVersionMap.hasOwnProperty(handlerVersion.versionName)) {
+        throw new Error(`Handler version name '${handlerVersion.versionName}' already exists. ` +
                         "Handler versions must have unique names.")
       }
-      this.handlerVersionMap[handlerVersion.name] = handlerVersion
+      this.handlerVersionMap[handlerVersion.versionName] = handlerVersion
     }
     if (!this.handlerVersionMap.hasOwnProperty(this.handlerVersionName)) {
       console.warn(`No Handler Version found with name '${this.handlerVersionName}': starting with ` +
-                   `'${handlerVersions[0].name}' instead.`)
-      this.handlerVersionName = handlerVersions[0].name
-    } else if (handlerVersions[0].name !== "v1") {
-      console.warn(`First Handler Version '${handlerVersions[0].name}' is not '${this.handlerVersionName}', ` +
+                   `'${handlerVersions[0].versionName}' instead.`)
+      this.handlerVersionName = handlerVersions[0].versionName
+    } else if (handlerVersions[0].versionName !== "v1") {
+      console.warn(`First Handler Version '${handlerVersions[0].versionName}' is not '${this.handlerVersionName}', ` +
                    `and there is also '${this.handlerVersionName}' present. Handler Version ` +
                    `'${this.handlerVersionName}' will be used, even though it is not first.`)
     }
