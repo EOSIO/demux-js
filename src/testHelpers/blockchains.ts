@@ -166,4 +166,59 @@ export default {
       actions: [],
     },
   ],
+  upgradeHandler: [
+    {
+      blockInfo: {
+        blockHash: "0000000000000000000000000000000000000000000000000000000000000001",
+        blockNumber: 1,
+        previousBlockHash: "",
+        timestamp: new Date("2018-06-06T11:53:37.500"),
+      },
+      actions: [
+        {
+          payload: {
+            account: "eosio.token",
+            actionIndex: 0,
+            authorization: [],
+            data: {
+              quantity: {
+                amount: "42.00000",
+                symbol: "EOS",
+              },
+            },
+            name: "transfer",
+            transactionId: "1",
+          },
+          type: "eosio.token::transfer",
+        },
+        {
+          payload: {
+            account: "mycontract",
+            actionIndex: 1,
+            authorization: [],
+            data: { versionName: "v2" },
+            name: "upgrade",
+            transactionId: "1",
+          },
+          type: "mycontract::upgrade",
+        },
+        {
+          payload: {
+            account: "eosio.token",
+            actionIndex: 2,
+            authorization: [],
+            data: {
+              quantity: {
+                amount: "42.00000",
+                symbol: "EOS",
+              },
+            },
+            name: "issue",
+            transactionId: "1",
+          },
+          type: "eosio.token::issue",
+        },
+      ],
+    },
+  ],
 }

@@ -1,4 +1,4 @@
-import { Block, Effect, IndexState, Updater } from "./interfaces"
+import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through
@@ -9,11 +9,13 @@ import { Block, Effect, IndexState, Updater } from "./interfaces"
 export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
   protected lastProcessedBlockHash: string = ""
+  protected handlerVersionName: string = "v1"
+  private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   constructor(
-    protected updaters: Updater[],
-    protected effects: Effect[],
+    handlerVersions: HandlerVersion[],
   ) {
+    this.initHandlerVersions(handlerVersions)
   }
 
   /**
@@ -33,8 +35,10 @@ export abstract class AbstractActionHandler {
       console.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
       await this.rollbackTo(rollbackBlockNumber)
       await this.refreshIndexState()
-    } else if (!this.lastProcessedBlockHash && this.lastProcessedBlockNumber === 0) {
+      await this.refreshHandlerVersionState()
+    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === "") {
       await this.refreshIndexState()
+      await this.refreshHandlerVersionState()
     }
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
@@ -81,6 +85,10 @@ export abstract class AbstractActionHandler {
    */
   protected abstract async loadIndexState(): Promise<IndexState>
 
+  protected abstract async updateHandlerVersionState(handlerVersionName: string): Promise<void>
+
+  protected abstract async loadHandlerVersionState(): Promise<string>
+
   /**
    * Calls handleActions with the appropriate state passed by calling the `handle` parameter function.
    * Optionally, pass in a `context` object as a second parameter.
@@ -90,36 +98,49 @@ export abstract class AbstractActionHandler {
   /**
    * Process actions against deterministically accumulating updater functions.
    */
-  protected async runUpdaters(
+  protected async applyUpdaters(
     state: any,
     block: Block,
     context: any,
-  ): Promise<void> {
+  ): Promise<Array<[Action, string]>> {
+    const versionedActions = [] as Array<[Action, string]>
     const { actions, blockInfo } = block
     for (const action of actions) {
-      for (const updater of this.updaters) {
+      let updaterIndex = -1
+      for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
+        updaterIndex += 1
         if (action.type === updater.actionType) {
           const { payload } = action
-          await updater.updater(state, payload, blockInfo, context)
+          const newVersion = await updater.apply(state, payload, blockInfo, context)
+          versionedActions.push([action, this.handlerVersionName])
+          if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
+            this.warnHandlerVersionNonexistent(newVersion)
+          } else if (newVersion) {
+            console.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
+            this.warnSkippingUpdaters(updaterIndex, action.type)
+            await this.updateHandlerVersionState(newVersion)
+            this.handlerVersionName = newVersion
+            break
+          }
         }
       }
     }
+    return versionedActions
   }
 
   /**
    * Process actions against asynchronous side effects.
    */
   protected runEffects(
-    state: any,
+    versionedActions: Array<[Action, string]>,
     block: Block,
     context: any,
-  ): void {
-    const { actions, blockInfo } = block
-    for (const action of actions) {
-      for (const effect of this.effects) {
+  ) {
+    for (const [action, handlerVersionName] of versionedActions) {
+      for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (action.type === effect.actionType) {
           const { payload } = action
-          effect.effect(state, payload, blockInfo, context)
+          effect.run(payload, block, context)
         }
       }
     }
@@ -133,7 +154,7 @@ export abstract class AbstractActionHandler {
   protected abstract async rollbackTo(blockNumber: number): Promise<void>
 
   /**
-   * Calls `runUpdaters` and `runEffects` on the given actions
+   * Calls `applyUpdaters` and `runEffects` on the given actions
    */
   protected async handleActions(
     state: any,
@@ -143,9 +164,9 @@ export abstract class AbstractActionHandler {
   ): Promise<void> {
     const { blockInfo } = block
 
-    await this.runUpdaters(state, block, context)
+    const versionedActions = await this.applyUpdaters(state, block, context)
     if (!isReplay) {
-      this.runEffects(state, block, context)
+      this.runEffects(versionedActions, block, context)
     }
 
     await this.updateIndexState(state, block, isReplay, context)
@@ -153,9 +174,49 @@ export abstract class AbstractActionHandler {
     this.lastProcessedBlockHash = blockInfo.blockHash
   }
 
+  private initHandlerVersions(handlerVersions: HandlerVersion[]) {
+    if (handlerVersions.length === 0) {
+      throw new Error("Must have at least one handler version.")
+    }
+    for (const handlerVersion of handlerVersions) {
+      if (this.handlerVersionMap.hasOwnProperty(handlerVersion.versionName)) {
+        throw new Error(`Handler version name '${handlerVersion.versionName}' already exists. ` +
+                        "Handler versions must have unique names.")
+      }
+      this.handlerVersionMap[handlerVersion.versionName] = handlerVersion
+    }
+    if (!this.handlerVersionMap.hasOwnProperty(this.handlerVersionName)) {
+      console.warn(`No Handler Version found with name '${this.handlerVersionName}': starting with ` +
+                   `'${handlerVersions[0].versionName}' instead.`)
+      this.handlerVersionName = handlerVersions[0].versionName
+    } else if (handlerVersions[0].versionName !== "v1") {
+      console.warn(`First Handler Version '${handlerVersions[0].versionName}' is not '${this.handlerVersionName}', ` +
+                   `and there is also '${this.handlerVersionName}' present. Handler Version ` +
+                   `'${this.handlerVersionName}' will be used, even though it is not first.`)
+    }
+  }
+
+  private warnHandlerVersionNonexistent(newVersion: string) {
+    console.warn(`Attempted to switch to handler version '${newVersion}', however this version ` +
+      `does not exist. Handler will continue as version '${this.handlerVersionName}'`)
+  }
+
+  private warnSkippingUpdaters(updaterIndex: number, actionType: string) {
+    const remainingUpdaters = this.handlerVersionMap[this.handlerVersionName].updaters.length - updaterIndex - 1
+    if (remainingUpdaters) {
+      console.warn(`Handler Version was updated to version '${this.handlerVersionName}' while there ` +
+        `were still ${remainingUpdaters} updaters left! These updaters will be skipped for the ` +
+        `current action '${actionType}'.`)
+    }
+  }
+
   private async refreshIndexState() {
     const { blockNumber, blockHash } = await this.loadIndexState()
     this.lastProcessedBlockNumber = blockNumber
     this.lastProcessedBlockHash = blockHash
+  }
+
+  private async refreshHandlerVersionState() {
+    this.handlerVersionName = await this.loadHandlerVersionState()
   }
 }
