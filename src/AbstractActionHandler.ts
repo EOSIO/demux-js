@@ -115,17 +115,11 @@ export abstract class AbstractActionHandler {
           versionedActions.push([action, this.handlerVersionName])
           if (newVersion) {
             if (!this.handlerVersionMap.hasOwnProperty(newVersion)) {
-              console.warn(`Attempted to switch to handler version '${newVersion}', however this version ` +
-                           `does not exist. Handler will continue as version '${this.handlerVersionName}'`)
+              this.warnHandlerVersionNonexistent(newVersion)
               continue
             }
             console.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
-            const remainingUpdaters = this.handlerVersionMap[this.handlerVersionName].updaters.length - updaterIndex - 1
-            if (remainingUpdaters) {
-              console.warn(`Handler Version was updated to version '${this.handlerVersionName}' while there ` +
-                           `were still ${remainingUpdaters} updaters left! These updaters will be skipped for the ` +
-                           `current action '${action.type}'.`)
-            }
+            this.warnSkippingUpdaters(updaterIndex, action.type)
             await this.updateHandlerVersionState(newVersion)
             this.handlerVersionName = newVersion
             break
@@ -201,6 +195,20 @@ export abstract class AbstractActionHandler {
       console.warn(`First Handler Version '${handlerVersions[0].versionName}' is not '${this.handlerVersionName}', ` +
                    `and there is also '${this.handlerVersionName}' present. Handler Version ` +
                    `'${this.handlerVersionName}' will be used, even though it is not first.`)
+    }
+  }
+
+  private warnHandlerVersionNonexistent(newVersion: string) {
+    console.warn(`Attempted to switch to handler version '${newVersion}', however this version ` +
+      `does not exist. Handler will continue as version '${this.handlerVersionName}'`)
+  }
+
+  private warnSkippingUpdaters(updaterIndex: number, actionType: string) {
+    const remainingUpdaters = this.handlerVersionMap[this.handlerVersionName].updaters.length - updaterIndex - 1
+    if (remainingUpdaters) {
+      console.warn(`Handler Version was updated to version '${this.handlerVersionName}' while there ` +
+        `were still ${remainingUpdaters} updaters left! These updaters will be skipped for the ` +
+        `current action '${actionType}'.`)
     }
   }
 
