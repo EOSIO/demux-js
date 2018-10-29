@@ -23,7 +23,7 @@ export interface Action {
 }
 
 export interface ActionListener {
-  actionName: string
+  actionType: string
 }
 
 export type ActionCallback = (

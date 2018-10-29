@@ -26,25 +26,25 @@ describe("Action Handler", () => {
         versionName: "v1",
         updaters: [
           {
-            actionName: "eosio.token::transfer",
+            actionType: "eosio.token::transfer",
             apply: runUpdater,
           },
           {
-            actionName: "mycontract::upgrade",
+            actionType: "mycontract::upgrade",
             apply: runUpgradeUpdater,
           },
           {
-            actionName: "eosio.token::issue",
+            actionType: "eosio.token::issue",
             apply: notRunUpdater,
           },
         ],
         effects: [
           {
-            actionName: "eosio.token::transfer",
+            actionType: "eosio.token::transfer",
             run: runEffect,
           },
           {
-            actionName: "eosio.token::issue",
+            actionType: "eosio.token::issue",
             run: notRunEffect,
           },
         ],
@@ -53,21 +53,21 @@ describe("Action Handler", () => {
         versionName: "v2",
         updaters: [
           {
-            actionName: "eosio.token::transfer",
+            actionType: "eosio.token::transfer",
             apply: notRunUpdaterAfterUpgrade,
           },
           {
-            actionName: "eosio.token::issue",
+            actionType: "eosio.token::issue",
             apply: runUpdaterAfterUpgrade,
           },
         ],
         effects: [
           {
-            actionName: "eosio.token::transfer",
+            actionType: "eosio.token::transfer",
             run: notRunEffectAfterUpgrade,
           },
           {
-            actionName: "eosio.token::issue",
+            actionType: "eosio.token::issue",
             run: runEffectAfterUpgrade,
           },
         ],

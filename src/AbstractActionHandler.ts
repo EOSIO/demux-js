@@ -109,7 +109,7 @@ export abstract class AbstractActionHandler {
       let updaterIndex = -1
       for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
         updaterIndex += 1
-        if (action.type === updater.actionName) {
+        if (action.type === updater.actionType) {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
           versionedActions.push([action, this.handlerVersionName])
@@ -146,7 +146,7 @@ export abstract class AbstractActionHandler {
   ) {
     for (const [action, handlerVersionName] of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
-        if (action.type === effect.actionName) {
+        if (action.type === effect.actionType) {
           const { payload } = action
           effect.run(payload, block, context)
         }

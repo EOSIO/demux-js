@@ -35,7 +35,7 @@ describe("BaseActionWatcher", () => {
     actionReaderNegative.blockchain = blockchain
 
     const updaters = [{
-      actionName: "eosio.token::transfer",
+      actionType: "eosio.token::transfer",
       apply: async (state: any, payload: any) => {
         if (!state.totalTransferred) {
           state.totalTransferred = parseFloat(payload.data.quantity.amount)
@@ -45,7 +45,7 @@ describe("BaseActionWatcher", () => {
       },
     }]
     const effects = [{
-      actionName: "eosio.token::transfer",
+      actionType: "eosio.token::transfer",
       run: runEffect,
     }]
 
