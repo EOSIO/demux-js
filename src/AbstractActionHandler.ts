@@ -35,10 +35,8 @@ export abstract class AbstractActionHandler {
       console.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
       await this.rollbackTo(rollbackBlockNumber)
       await this.refreshIndexState()
-      await this.refreshHandlerVersionState()
     } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === "") {
       await this.refreshIndexState()
-      await this.refreshHandlerVersionState()
     }
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
@@ -75,7 +73,13 @@ export abstract class AbstractActionHandler {
    * Updates the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state, coinciding with the block
    * that has just been processed. These are the same values read by `updateIndexState()`.
    */
-  protected abstract async updateIndexState(state: any, block: Block, isReplay: boolean, context?: any): Promise<void>
+  protected abstract async updateIndexState(
+    state: any,
+    block: Block,
+    isReplay: boolean,
+    handlerVersionName: string,
+    context?: any,
+  ): Promise<void>
 
   /**
    * Returns a promise for the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state,
@@ -84,10 +88,6 @@ export abstract class AbstractActionHandler {
    * @returns A promise that resolves to an `IndexState`
    */
   protected abstract async loadIndexState(): Promise<IndexState>
-
-  protected abstract async updateHandlerVersionState(handlerVersionName: string): Promise<void>
-
-  protected abstract async loadHandlerVersionState(): Promise<string>
 
   /**
    * Calls handleActions with the appropriate state passed by calling the `handle` parameter function.
@@ -101,6 +101,7 @@ export abstract class AbstractActionHandler {
   protected async applyUpdaters(
     state: any,
     block: Block,
+    isReplay: boolean,
     context: any,
   ): Promise<Array<[Action, string]>> {
     const versionedActions = [] as Array<[Action, string]>
@@ -118,7 +119,7 @@ export abstract class AbstractActionHandler {
           } else if (newVersion) {
             console.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
             this.warnSkippingUpdaters(updaterIndex, action.type)
-            await this.updateHandlerVersionState(newVersion)
+            await this.updateIndexState(state, block, isReplay, newVersion, context)
             this.handlerVersionName = newVersion
             break
           }
@@ -164,12 +165,12 @@ export abstract class AbstractActionHandler {
   ): Promise<void> {
     const { blockInfo } = block
 
-    const versionedActions = await this.applyUpdaters(state, block, context)
+    const versionedActions = await this.applyUpdaters(state, block, isReplay, context)
     if (!isReplay) {
       this.runEffects(versionedActions, block, context)
     }
 
-    await this.updateIndexState(state, block, isReplay, context)
+    await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
   }
@@ -211,12 +212,9 @@ export abstract class AbstractActionHandler {
   }
 
   private async refreshIndexState() {
-    const { blockNumber, blockHash } = await this.loadIndexState()
+    const { blockNumber, blockHash, handlerVersionName } = await this.loadIndexState()
     this.lastProcessedBlockNumber = blockNumber
     this.lastProcessedBlockHash = blockHash
-  }
-
-  private async refreshHandlerVersionState() {
-    this.handlerVersionName = await this.loadHandlerVersionState()
+    this.handlerVersionName = handlerVersionName
   }
 }

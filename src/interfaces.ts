@@ -6,7 +6,7 @@ export interface Block {
 export interface IndexState {
   blockNumber: number
   blockHash: string
-  handlerVersion: string
+  handlerVersionName: string
   isReplay: boolean
 }
 

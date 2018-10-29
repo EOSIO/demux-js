@@ -3,7 +3,7 @@ import { Action, Block, IndexState } from "../interfaces"
 
 export class TestActionHandler extends AbstractActionHandler {
   public state: any = {
-    indexState: { blockNumber: 0, blockHash: "", isReplay: false, handlerVersion: "v1" },
+    indexState: { blockNumber: 0, blockHash: "", isReplay: false, handlerVersionName: "v1" },
   }
 
   get _handlerVersionName() { return this.handlerVersionName }
@@ -26,8 +26,13 @@ export class TestActionHandler extends AbstractActionHandler {
     this.lastProcessedBlockNumber = num
   }
 
-  public async _applyUpdaters(state: any, block: Block, context: any): Promise<Array<[Action, string]>> {
-    return this.applyUpdaters(state, block, context)
+  public async _applyUpdaters(
+    state: any,
+    block: Block,
+    isReplay: boolean,
+    context: any,
+  ): Promise<Array<[Action, string]>> {
+    return this.applyUpdaters(state, block, isReplay, context)
   }
 
   public _runEffects(
@@ -42,16 +47,8 @@ export class TestActionHandler extends AbstractActionHandler {
     return this.state.indexState
   }
 
-  protected async updateIndexState(state: any, block: Block) {
+  protected async updateIndexState(state: any, block: Block, isReplay: boolean, handlerVersionName: string) {
     const { blockNumber, blockHash } = block.blockInfo
-    state.indexState = { blockNumber, blockHash }
-  }
-
-  protected async loadHandlerVersionState(): Promise<string> {
-    return this.state.indexState.handlerVersion
-  }
-
-  protected async updateHandlerVersionState(handlerVersionName: string) {
-    this.state.indexState.handlerVersion = handlerVersionName
+    state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
   }
 }
