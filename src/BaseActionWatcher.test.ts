@@ -64,6 +64,8 @@ describe("BaseActionWatcher", () => {
       indexState: {
         blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
         blockNumber: 4,
+        handlerVersionName: "v1",
+        isReplay: false,
       },
       totalTransferred: 66,
     })
@@ -76,6 +78,8 @@ describe("BaseActionWatcher", () => {
       indexState: {
         blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
         blockNumber: 4,
+        handlerVersionName: "v1",
+        isReplay: false,
       },
       totalTransferred: 24,
     })
@@ -88,6 +92,8 @@ describe("BaseActionWatcher", () => {
       indexState: {
         blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
         blockNumber: 4,
+        handlerVersionName: "v1",
+        isReplay: false,
       },
       totalTransferred: 24,
     })
@@ -125,6 +131,8 @@ describe("BaseActionWatcher", () => {
       indexState: {
         blockHash: "newblock",
         blockNumber: 5,
+        handlerVersionName: "v1",
+        isReplay: false,
       },
       totalTransferred: 189,
     })
