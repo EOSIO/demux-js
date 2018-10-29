@@ -113,11 +113,9 @@ export abstract class AbstractActionHandler {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
           versionedActions.push([action, this.handlerVersionName])
-          if (newVersion) {
-            if (!this.handlerVersionMap.hasOwnProperty(newVersion)) {
-              this.warnHandlerVersionNonexistent(newVersion)
-              continue
-            }
+          if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
+            this.warnHandlerVersionNonexistent(newVersion)
+          } else if (newVersion) {
             console.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
             this.warnSkippingUpdaters(updaterIndex, action.type)
             await this.updateHandlerVersionState(newVersion)
