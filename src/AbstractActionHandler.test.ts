@@ -1,41 +1,78 @@
 import { TestActionHandler } from "./testHelpers/TestActionHandler"
 import blockchains from "./testHelpers/blockchains"
 
-const { blockchain } = blockchains
+const { blockchain, upgradeHandler } = blockchains
 
 describe("Action Handler", () => {
   let actionHandler: TestActionHandler
 
-  const notRunUpdater = jest.fn()
-  const notRunEffect = jest.fn()
-
   const runUpdater = jest.fn()
   const runEffect = jest.fn()
 
-  beforeAll(() => {
-    actionHandler = new TestActionHandler([{
-      versionName: "v1",
-      updaters: [
-        {
-          actionName: "eosio.token::transfer",
-          apply: runUpdater,
-        },
-        {
-          actionName: "eosio.token::issue",
-          apply: notRunUpdater,
-        },
-      ],
-      effects: [
-        {
-          actionName: "eosio.token::transfer",
-          run: runEffect,
-        },
-        {
-          actionName: "eosio.token::issue",
-          run: notRunEffect,
-        },
-      ],
-    }])
+  const notRunUpdater = jest.fn()
+  const notRunEffect = jest.fn()
+
+  const runUpgradeUpdater = jest.fn().mockReturnValue("v2")
+
+  const runUpdaterAfterUpgrade = jest.fn()
+  const runEffectAfterUpgrade = jest.fn()
+
+  const notRunUpdaterAfterUpgrade = jest.fn()
+  const notRunEffectAfterUpgrade = jest.fn()
+
+  beforeEach(() => {
+    actionHandler = new TestActionHandler([
+      {
+        versionName: "v1",
+        updaters: [
+          {
+            actionName: "eosio.token::transfer",
+            apply: runUpdater,
+          },
+          {
+            actionName: "mycontract::upgrade",
+            apply: runUpgradeUpdater,
+          },
+          {
+            actionName: "eosio.token::issue",
+            apply: notRunUpdater,
+          },
+        ],
+        effects: [
+          {
+            actionName: "eosio.token::transfer",
+            run: runEffect,
+          },
+          {
+            actionName: "eosio.token::issue",
+            run: notRunEffect,
+          },
+        ],
+      },
+      {
+        versionName: "v2",
+        updaters: [
+          {
+            actionName: "eosio.token::transfer",
+            apply: notRunUpdaterAfterUpgrade,
+          },
+          {
+            actionName: "eosio.token::issue",
+            apply: runUpdaterAfterUpgrade,
+          },
+        ],
+        effects: [
+          {
+            actionName: "eosio.token::transfer",
+            run: notRunEffectAfterUpgrade,
+          },
+          {
+            actionName: "eosio.token::issue",
+            run: runEffectAfterUpgrade,
+          },
+        ],
+      },
+    ])
   })
 
   it("runs the correct updater based on action type", async () => {
@@ -73,5 +110,19 @@ describe("Action Handler", () => {
     actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
     await expect(actionHandler.handleBlock(blockchain[3], false, false)).rejects.toEqual(expectedError)
+  })
+
+  it("upgrades the action handler correctly", async () => {
+    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {})
+    actionHandler._runEffects(versionedActions, upgradeHandler[0], {})
+
+    expect(actionHandler._handlerVersionName).toEqual("v2")
+    expect(runUpdater).toHaveBeenCalled()
+    expect(runUpgradeUpdater).toHaveBeenCalled()
+    expect(notRunUpdater).not.toHaveBeenCalled()
+    expect(notRunUpdaterAfterUpgrade).not.toHaveBeenCalled()
+    expect(runUpdaterAfterUpgrade).toHaveBeenCalled()
+    expect(notRunEffectAfterUpgrade).not.toHaveBeenCalled()
+    expect(runEffectAfterUpgrade).toHaveBeenCalled()
   })
 })

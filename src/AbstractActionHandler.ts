@@ -9,7 +9,7 @@ import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
 export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
   protected lastProcessedBlockHash: string = ""
-  private handlerVersionName: string = "v1"
+  protected handlerVersionName: string = "v1"
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   constructor(
@@ -120,13 +120,14 @@ export abstract class AbstractActionHandler {
               continue
             }
             console.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
-            await this.updateHandlerVersionState(newVersion)
-            this.handlerVersionName = newVersion
-            const remainingUpdaters = updaterIndex - this.handlerVersionMap[this.handlerVersionName].updaters.length - 1
+            const remainingUpdaters = this.handlerVersionMap[this.handlerVersionName].updaters.length - updaterIndex - 1
             if (remainingUpdaters) {
               console.warn(`Handler Version was updated to version '${this.handlerVersionName}' while there ` +
-                           `were still ${remainingUpdaters} updaters left! These updaters will be skipped.`)
+                           `were still ${remainingUpdaters} updaters left! These updaters will be skipped for the ` +
+                           `current action '${action.type}'.`)
             }
+            await this.updateHandlerVersionState(newVersion)
+            this.handlerVersionName = newVersion
             break
           }
         }

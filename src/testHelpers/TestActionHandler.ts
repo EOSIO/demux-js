@@ -6,6 +6,8 @@ export class TestActionHandler extends AbstractActionHandler {
     indexState: { blockNumber: 0, blockHash: "", isReplay: false, handlerVersion: "v1" },
   }
 
+  get _handlerVersionName() { return this.handlerVersionName }
+
   // tslint:disable-next-line
   public async handleWithState(handle: (state: any) => void) {
     await handle(this.state)
