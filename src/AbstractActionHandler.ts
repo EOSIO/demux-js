@@ -5,6 +5,9 @@ import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
  * `Updater`s and `Effect`s of the current `HandlerVersion`. Pass an object exposing a persistence API as `state` to the
  * `handleWithState` method. Persist and retrieve information about the last block processed with `updateIndexState` and
  * `loadIndexState`. Implement `rollbackTo` to handle when a fork is encountered.
+ *
+ * @param handerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default version
+ *                        name is `"v1"`.
  */
 export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
