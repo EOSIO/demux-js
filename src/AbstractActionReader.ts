@@ -162,6 +162,8 @@ export abstract class AbstractActionReader {
       throw Error("`currentBlockData` must not be null when initiating fork resolution.")
     }
 
+    const { lastIrreversibleBlockNumber } = this.currentBlockData.blockInfo
+
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
       const [previousBlockData] = this.blockHistory.slice(-1)
@@ -184,19 +186,14 @@ export abstract class AbstractActionReader {
 
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
+      if (this.blockHistory.length === 0) {
+        if (this.currentBlockData.blockInfo.blockNumber <= lastIrreversibleBlockNumber) {
+          throw new Error("Last irreversible block has been passed without resolving fork")
+        }
+        this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
+      }
     }
-    if (this.blockHistory.length === 0) {
-      await this.historyExhausted()
-    }
-    this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
-  }
 
-  /**
-   * When history is exhausted in resolveFork(), this is run to handle the situation. If left unimplemented,
-   * then only instantiate with `onlyIrreversible` set to true.
-   */
-  protected historyExhausted() {
-    console.info("Fork resolution history has been exhausted!")
-    throw Error("Fork resolution history has been exhausted, and no history exhaustion handling has been implemented.")
+    this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
   }
 }
