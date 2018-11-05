@@ -1,10 +1,12 @@
 import { AbstractActionHandler } from "../AbstractActionHandler"
-import { Block, IndexState } from "../interfaces"
+import { Action, Block, IndexState } from "../interfaces"
 
 export class TestActionHandler extends AbstractActionHandler {
   public state: any = {
-    indexState: { blockNumber: 0, blockHash: "" },
+    indexState: { blockNumber: 0, blockHash: "", isReplay: false, handlerVersionName: "v1" },
   }
+
+  get _handlerVersionName() { return this.handlerVersionName }
 
   // tslint:disable-next-line
   public async handleWithState(handle: (state: any) => void) {
@@ -24,20 +26,29 @@ export class TestActionHandler extends AbstractActionHandler {
     this.lastProcessedBlockNumber = num
   }
 
-  public async _runUpdaters(state: any, block: Block, context: any) {
-    await this.runUpdaters(state, block, context)
+  public async _applyUpdaters(
+    state: any,
+    block: Block,
+    isReplay: boolean,
+    context: any,
+  ): Promise<Array<[Action, string]>> {
+    return this.applyUpdaters(state, block, isReplay, context)
   }
 
-  public _runEffects(state: any, block: Block, context: any) {
-    this.runEffects(state, block, context)
+  public _runEffects(
+    versionedActions: Array<[Action, string]>,
+    block: Block,
+    context: any,
+  ) {
+    this.runEffects(versionedActions, block, context)
   }
 
   protected async loadIndexState(): Promise<IndexState> {
     return this.state.indexState
   }
 
-  protected async updateIndexState(state: any, block: Block) {
+  protected async updateIndexState(state: any, block: Block, isReplay: boolean, handlerVersionName: string) {
     const { blockNumber, blockHash } = block.blockInfo
-    state.indexState = { blockNumber, blockHash }
+    state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
   }
 }

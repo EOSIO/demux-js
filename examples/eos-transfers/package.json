@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "demux": "^1.0.3",
-    "demux-eos": "1.0.1"
+    "demux-eos": "2.0.0"
   },
   "scripts": {
     "start": "node index.js"
