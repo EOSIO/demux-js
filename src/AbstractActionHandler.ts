@@ -1,10 +1,10 @@
 import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
 
 /**
- * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through
- * `Updater`s and `Effect`s. Pass an object exposing a persistence API as `state` in the `handleWithState`
- * method. Persist and retrieve information about the last block processed with `updateIndexState` and
- * `loadIndexState`.
+ * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
+ * `Updater`s and `Effect`s of the current `HandlerVersion`. Pass an object exposing a persistence API as `state` to the
+ * `handleWithState` method. Persist and retrieve information about the last block processed with `updateIndexState` and
+ * `loadIndexState`. Implement `rollbackTo` to handle when a fork is encountered.
  */
 export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
@@ -90,13 +90,17 @@ export abstract class AbstractActionHandler {
   protected abstract async loadIndexState(): Promise<IndexState>
 
   /**
-   * Calls handleActions with the appropriate state passed by calling the `handle` parameter function.
-   * Optionally, pass in a `context` object as a second parameter.
+   * Must call the passed-in `handle` function within this method, passing in a state object that will be passed in to
+   * the `state` parameter to all calls of `Updater.apply`. Optionally, pass in a `context` object as a second
+   * parameter, which can be utilized to share state across `Updater.apply` and `Effect.run` calls on a per-block basis.
    */
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
-   * Process actions against deterministically accumulating updater functions.
+   * Process actions against deterministically accumulating `Updater` functions. Returns a promise of versioned actions
+   * for consumption by `runEffects`, to make sure the correct effects are run on blocks that include a `HandlerVersion`
+   * change. To change a `HandlerVersion`, have an `Updater` function return the `versionName` of the corresponding
+   * `HandlerVersion` you want to change to.
    */
   protected async applyUpdaters(
     state: any,
@@ -130,7 +134,7 @@ export abstract class AbstractActionHandler {
   }
 
   /**
-   * Process actions against asynchronous side effects.
+   * Process versioned actions against asynchronous side effects.
    */
   protected runEffects(
     versionedActions: Array<[Action, string]>,
