@@ -76,13 +76,13 @@ describe("Action Handler", () => {
   })
 
   it("runs the correct updater based on action type", async () => {
-    await actionHandler._applyUpdaters({}, blockchain[1], {})
+    await actionHandler._applyUpdaters({}, blockchain[1], false, {})
     expect(runUpdater).toHaveBeenCalled()
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
   it("runs the correct effect based on action type", async () => {
-    const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], {})
+    const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], false, {})
     actionHandler._runEffects(versionedActions, blockchain[1], {})
     expect(runEffect).toHaveBeenCalled()
     expect(notRunEffect).not.toHaveBeenCalled()
@@ -113,7 +113,7 @@ describe("Action Handler", () => {
   })
 
   it("upgrades the action handler correctly", async () => {
-    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {})
+    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], false, {})
     actionHandler._runEffects(versionedActions, upgradeHandler[0], {})
 
     expect(actionHandler._handlerVersionName).toEqual("v2")

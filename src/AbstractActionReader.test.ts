@@ -94,7 +94,7 @@ describe("Action Reader", () => {
     await actionReader.nextBlock()
     await actionReader.nextBlock()
     await actionReader.nextBlock()
-    const [block, isReplay, isNewBlock] = await actionReader.nextBlock()
+    const isNewBlock = (await actionReader.nextBlock())[2]
     expect(isNewBlock).toBe(false)
   })
 })
