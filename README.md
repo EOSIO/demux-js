@@ -59,6 +59,8 @@ There are other solutions to the above problems that involve legacy persistence 
 
 ## Usage
 
+#### [**View full API documentation here.**](https://eosio.github.io/demux-js/)
+
 This library provides the following classes:
 
 * [**`AbstractActionReader`**](https://eosio.github.io/demux-js/classes/abstractactionreader.html): Abstract class used for implementing your own Action Readers
@@ -67,7 +69,21 @@ This library provides the following classes:
 
 * [**`BaseActionWatcher`**](https://eosio.github.io/demux-js/classes/baseactionwatcher.html): Base class that implements a ready-to-use Action Watcher
 
-#### [**View full API documentation here.**](https://eosio.github.io/demux-js/)
+In order to process actions, we need the following things:
+
+- An implementation of an `AbstractActionReader`
+- An implementation of an `AbstractActionHandler`
+- At least one `HandlerVersion`, which contains `Updater` and `Effect` action listeners
+
+After we have these things, we need to:
+
+- Instantiate the implemented `AbstractActionHandler`, passing in the `HandlerVersion` and any other needed configuration
+- Instantiate the implemented `AbstractActionReader` with any needed configuration
+- Instantiate a `BaseActionWatcher`, passing in the above Handler and Reader instances
+- Call `watch()` on the Watcher
+
+#### [Learn from a full example](examples/eos-transfers)
+
 
 ## Class Implementations
 
@@ -80,42 +96,3 @@ Repository | Description
 *\* Officially supported by Block.one*
 
 To get your project listed, add it here and submit a PR!
-
-
-## Example
-
-```js
-// Let's read from an EOS node
-const { NodeosActionReader } = require("demux-eos")
-
-// Assuming you've created your own subclass of AbstractActionHandler
-const MyActionHandler = require("./MyActionHandler")
-
-// Ties everything together in a polling loop
-const  { BaseActionWatcher } = require("demux")
-
-// Import Updaters and Effects, which are arrays of objects:
-// [ { actionType: string, (updater|effect): function }, ... ] 
-const updaters = require("./updaters")
-const effects = require("./effects")
-
-const actionReader = new NodeosActionReader(
-  "http://some-nodeos-endpoint:8888", // Locally hosted node needed for reasonable indexing speed
-  12345678, // First actions relevant to this dapp happen at this block
-)
-
-const actionHandler = new MyActionHandler(
-  updaters,
-  effects,
-)
-
-const actionWatcher = new BaseActionWatcher(
-  actionReader,
-  actionHandler,
-  250, // Poll at twice the block interval for less latency
-)
-
-actionWatcher.watch() // Start watch loop
-```
-
-For more complete examples, [see the examples directory](examples/).
