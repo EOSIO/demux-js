@@ -57,9 +57,23 @@ There are other solutions to the above problems that involve legacy persistence 
 1. Actions run their corresponding Effects, triggering external events
 1. Client queries API for updated data
 
+
+## Class Implementations
+
+Repository | Description
+---|---
+[EOSIO / demux-js-eos](https://github.com/EOSIO/demux-js-eos) * | Action Reader implementations for EOSIO blockchains
+[EOSIO / demux-js-postgres](https://github.com/EOSIO/demux-js-postgres) * | Action Handler implementation for Postgres databases
+[Zapata / demux-js-bitshares](https://github.com/Zapata/demux-js-bitshares) | Action Reader implementations for BitShares blockchain
+
+*\* Officially supported by Block.one*
+
+To get your project listed, add it here and submit a PR!
+
+
 ## Usage
 
-#### [**View full API documentation here.**](https://eosio.github.io/demux-js/)
+
 
 This library provides the following classes:
 
@@ -73,7 +87,7 @@ In order to process actions, we need the following things:
 
 - An implementation of an `AbstractActionReader`
 - An implementation of an `AbstractActionHandler`
-- At least one `HandlerVersion`, which contains `Updater` and `Effect` action listeners
+- At least one `HandlerVersion`, which contain `Updater` and `Effect` arrays
 
 After we have these things, we need to:
 
@@ -82,17 +96,6 @@ After we have these things, we need to:
 - Instantiate a `BaseActionWatcher`, passing in the above Handler and Reader instances
 - Call `watch()` on the Watcher
 
-#### [Learn from a full example](examples/eos-transfers)
+### [**API documentation**](https://eosio.github.io/demux-js/)
 
-
-## Class Implementations
-
-Repository | Description
----|---
-[EOSIO / demux-js-eos](https://github.com/EOSIO/demux-js-eos) * | Action Reader implementations for EOSIO blockchains
-[EOSIO / demux-js-postgres](https://github.com/EOSIO/demux-js-postgres) * | Action Handler implementation for Postgres databases
-[Zapata / demux-js-bitshares](https://github.com/Zapata/demux-js-bitshares) | Action Reader implementations for BitShares blockchain
-
-*\* Officially supported by Block.one*
-
-To get your project listed, add it here and submit a PR!
+### [Learn from a full example](examples/eos-transfers)
