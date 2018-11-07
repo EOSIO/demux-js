@@ -2,18 +2,6 @@ import { Block } from "./interfaces"
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
- *
- * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative values,
- *                          this will start at (most recent block + startAtBlock), effectively tailing the chain. Be
- *                          careful when using this feature, as this will make your starting block dynamic.
- *
- * @param onlyIrreversible  When false (default), `getHeadBlockNumber` will load the most recent block number. When
- *                          true, `getHeadBlockNumber` will return the block number of the most recent irreversible
- *                          block. Keep in mind that `getHeadBlockNumber` is an abstract method and this functionality
- *                          is the responsibility of the implementing class.
- *
- * @param maxHistoryLength  This determines how many blocks in the past are cached. This is used for determining
- *                          block validity during both normal operation and when rolling back.
  */
 export abstract class AbstractActionReader {
   public headBlockNumber: number = 0
@@ -22,6 +10,19 @@ export abstract class AbstractActionReader {
   protected currentBlockData: Block | null = null
   protected blockHistory: Block[] = []
 
+ /**
+  * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative
+  *                          values, this will start at (most recent block + startAtBlock), effectively tailing the
+  *                          chain. Be careful when using this feature, as this will make your starting block dynamic.
+  *
+  * @param onlyIrreversible  When false (default), `getHeadBlockNumber` will load the most recent block number. When
+  *                          true, `getHeadBlockNumber` will return the block number of the most recent irreversible
+  *                          block. Keep in mind that `getHeadBlockNumber` is an abstract method and this functionality
+  *                          is the responsibility of the implementing class.
+  *
+  * @param maxHistoryLength  This determines how many blocks in the past are cached. This is used for determining
+  *                          block validity during both normal operation and when rolling back.
+  */
   constructor(
     public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,

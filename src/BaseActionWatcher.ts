@@ -4,12 +4,13 @@ import { AbstractActionReader } from "./AbstractActionReader"
 /**
  * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
  * a polling loop.
- *
- * @param actionReader    An instance of an implemented `AbstractActionReader`
- * @param actionHandler   An instance of an implemented `AbstractActionHandler`
- * @param pollInterval    Number of milliseconds between each polling loop iteration
  */
 export class BaseActionWatcher {
+  /**
+   * @param actionReader    An instance of an implemented `AbstractActionReader`
+   * @param actionHandler   An instance of an implemented `AbstractActionHandler`
+   * @param pollInterval    Number of milliseconds between each polling loop iteration
+   */
   constructor(
     protected actionReader: AbstractActionReader,
     protected actionHandler: AbstractActionHandler,

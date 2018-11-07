@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AbstractActionHandler | demux-js</title>
+	<title>AbstractActionHandler | demux</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -879,7 +879,7 @@ img { max-width: 100%; }
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="../index.html">demux-js</a></strong>
+					<strong><a href="../index.html">demux</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -913,8 +913,11 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-constructor tsd-parent-kind-class">
 					<a href="abstractactionhandler.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionhandler.html#handlerversionmap" class="tsd-kind-icon">handler<wbr>Version<wbr>Map</a>
+				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a href="abstractactionhandler.html#effects" class="tsd-kind-icon">effects</a>
+					<a href="abstractactionhandler.html#handlerversionname" class="tsd-kind-icon">handler<wbr>Version<wbr>Name</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#lastprocessedblockhash" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash</a>
@@ -922,8 +925,8 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#lastprocessedblocknumber" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a href="abstractactionhandler.html#updaters" class="tsd-kind-icon">updaters</a>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a href="abstractactionhandler.html#applyupdaters" class="tsd-kind-icon">apply<wbr>Updaters</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#handleactions" class="tsd-kind-icon">handle<wbr>Actions</a>
@@ -934,8 +937,14 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#handlewithstate" class="tsd-kind-icon">handle<wbr>With<wbr>State</a>
 				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionhandler.html#inithandlerversions" class="tsd-kind-icon">init<wbr>Handler<wbr>Versions</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#loadindexstate" class="tsd-kind-icon">load<wbr>Index<wbr>State</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionhandler.html#refreshindexstate" class="tsd-kind-icon">refresh<wbr>Index<wbr>State</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#rollbackto" class="tsd-kind-icon">rollback<wbr>To</a>
@@ -944,10 +953,13 @@ img { max-width: 100%; }
 					<a href="abstractactionhandler.html#runeffects" class="tsd-kind-icon">run<wbr>Effects</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a href="abstractactionhandler.html#runupdaters" class="tsd-kind-icon">run<wbr>Updaters</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#updateindexstate" class="tsd-kind-icon">update<wbr>Index<wbr>State</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionhandler.html#warnhandlerversionnonexistent" class="tsd-kind-icon">warn<wbr>Handler<wbr>Version<wbr>Nonexistent</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionhandler.html#warnskippingupdaters" class="tsd-kind-icon">warn<wbr>Skipping<wbr>Updaters</a>
 				</li>
 			</ul>
 		</li>
@@ -961,6 +973,9 @@ img { max-width: 100%; }
 			<a href="../interfaces/action.html" class="tsd-kind-icon">Action</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/actionlistener.html" class="tsd-kind-icon">Action<wbr>Listener</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/block.html" class="tsd-kind-icon">Block</a>
 		</li>
 		<li class=" tsd-kind-interface">
@@ -970,10 +985,19 @@ img { max-width: 100%; }
 			<a href="../interfaces/effect.html" class="tsd-kind-icon">Effect</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/handlerversion.html" class="tsd-kind-icon">Handler<wbr>Version</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/updater.html" class="tsd-kind-icon">Updater</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="../index.html#actioncallback" class="tsd-kind-icon">Action<wbr>Callback</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="../index.html#statelessactioncallback" class="tsd-kind-icon">Stateless<wbr>Action<wbr>Callback</a>
 		</li>
 	</ul>
 </nav>
@@ -982,14 +1006,10 @@ img { max-width: 100%; }
 		<section class="tsd-panel tsd-comment">
 			<div class="tsd-comment tsd-typography">
 				<div class="lead">
-					<p>Takes <code>block</code>s output from implementations of <code>AbstractActionReader</code> and processes their actions through
-						<code>Updater</code>s and <code>Effect</code>s. Pass an object exposing a persistence API as <code>state</code> in the <code>handleWithState</code>
-						method. Persist and retrieve information about the last block processed with <code>updateIndexState</code> and
-						<code>loadIndexState</code>.
-						Takes <code>block</code>s output from implementations of <code>AbstractActionReader</code> and processes their actions through
-						<code>Updater</code>s and <code>Effect</code>s. Pass an object exposing a persistence API as <code>state</code> in the <code>handleWithState</code>
-						method. Persist and retrieve information about the last block processed with <code>updateIndexState</code> and
-					<code>loadIndexState</code>.</p>
+					<p>Takes <code>block</code>s output from implementations of <code>AbstractActionReader</code> and processes their actions through the
+						<code>Updater</code>s and <code>Effect</code>s of the current <code>HandlerVersion</code>. Pass an object exposing a persistence API as <code>state</code> to the
+						<code>handleWithState</code> method. Persist and retrieve information about the last block processed with <code>updateIndexState</code> and
+					<code>loadIndexState</code>. Implement <code>rollbackTo</code> to handle when a fork is encountered.</p>
 				</div>
 			</div>
 		</section>
@@ -1014,23 +1034,27 @@ img { max-width: 100%; }
 					<section class="tsd-index-section tsd-is-private-protected">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#effects" class="tsd-kind-icon">effects</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#handlerversionmap" class="tsd-kind-icon">handler<wbr>Version<wbr>Map</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#handlerversionname" class="tsd-kind-icon">handler<wbr>Version<wbr>Name</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#lastprocessedblockhash" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#lastprocessedblocknumber" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#updaters" class="tsd-kind-icon">updaters</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#applyupdaters" class="tsd-kind-icon">apply<wbr>Updaters</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#handleactions" class="tsd-kind-icon">handle<wbr>Actions</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionhandler.html#handleblock" class="tsd-kind-icon">handle<wbr>Block</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#handlewithstate" class="tsd-kind-icon">handle<wbr>With<wbr>State</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#inithandlerversions" class="tsd-kind-icon">init<wbr>Handler<wbr>Versions</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#loadindexstate" class="tsd-kind-icon">load<wbr>Index<wbr>State</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#refreshindexstate" class="tsd-kind-icon">refresh<wbr>Index<wbr>State</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#rollbackto" class="tsd-kind-icon">rollback<wbr>To</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#runeffects" class="tsd-kind-icon">run<wbr>Effects</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#runupdaters" class="tsd-kind-icon">run<wbr>Updaters</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#updateindexstate" class="tsd-kind-icon">update<wbr>Index<wbr>State</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#warnhandlerversionnonexistent" class="tsd-kind-icon">warn<wbr>Handler<wbr>Version<wbr>Nonexistent</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#warnskippingupdaters" class="tsd-kind-icon">warn<wbr>Skipping<wbr>Updaters</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1042,22 +1066,27 @@ img { max-width: 100%; }
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">new <wbr>Abstract<wbr>Action<wbr>Handler<span class="tsd-signature-symbol">(</span>updaters<span class="tsd-signature-symbol">: </span><a href="../interfaces/updater.html" class="tsd-signature-type">Updater</a><span class="tsd-signature-symbol">[]</span>, effects<span class="tsd-signature-symbol">: </span><a href="../interfaces/effect.html" class="tsd-signature-type">Effect</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></li>
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Abstract<wbr>Action<wbr>Handler<span class="tsd-signature-symbol">(</span>handlerVersions<span class="tsd-signature-symbol">: </span><a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:12</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L15">src/AbstractActionHandler.ts:15</a></li>
 							</ul>
 						</aside>
+						<div class="tsd-comment tsd-typography">
+						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>updaters: <a href="../interfaces/updater.html" class="tsd-signature-type">Updater</a><span class="tsd-signature-symbol">[]</span></h5>
-							</li>
-							<li>
-								<h5>effects: <a href="../interfaces/effect.html" class="tsd-signature-type">Effect</a><span class="tsd-signature-symbol">[]</span></h5>
+								<h5>handlerVersions: <a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a><span class="tsd-signature-symbol">[]</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>An array of <code>HandlerVersion</code>s that are to be used when processing blocks. The default
+										version name is <code>&quot;v1&quot;</code>.</p>
+									</div>
+								</div>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></h4>
@@ -1067,14 +1096,31 @@ img { max-width: 100%; }
 		</section>
 		<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
 			<h2>Properties</h2>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-				<a name="effects" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> effects</h3>
-				<div class="tsd-signature tsd-kind-icon">effects<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Effect</span><span class="tsd-signature-symbol">[]</span></div>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<a name="handlerversionmap" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> handler<wbr>Version<wbr>Map</h3>
+				<div class="tsd-signature tsd-kind-icon">handler<wbr>Version<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in dist/AbstractActionHandler.d.ts:10</li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L15">src/AbstractActionHandler.ts:15</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L15">src/AbstractActionHandler.ts:15</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-index-signature">
+							<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a></h5>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+				<a name="handlerversionname" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> handler<wbr>Version<wbr>Name</h3>
+				<div class="tsd-signature tsd-kind-icon">handler<wbr>Version<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v1&quot;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L14">src/AbstractActionHandler.ts:14</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1084,8 +1130,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in dist/AbstractActionHandler.d.ts:12</li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L11">src/AbstractActionHandler.ts:11</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L13">src/AbstractActionHandler.ts:13</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1095,25 +1140,53 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in dist/AbstractActionHandler.d.ts:11</li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L10">src/AbstractActionHandler.ts:10</a></li>
-					</ul>
-				</aside>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-				<a name="updaters" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> updaters</h3>
-				<div class="tsd-signature tsd-kind-icon">updaters<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Updater</span><span class="tsd-signature-symbol">[]</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in dist/AbstractActionHandler.d.ts:9</li>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L14">src/AbstractActionHandler.ts:14</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L12">src/AbstractActionHandler.ts:12</a></li>
 					</ul>
 				</aside>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+				<a name="applyupdaters" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> apply<wbr>Updaters</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<li class="tsd-signature tsd-kind-icon">apply<wbr>Updaters<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L111">src/AbstractActionHandler.ts:111</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Process actions against deterministically accumulating <code>Updater</code> functions. Returns a promise of versioned actions
+									for consumption by <code>runEffects</code>, to make sure the correct effects are run on blocks that include a <code>HandlerVersion</code>
+									change. To change a <code>HandlerVersion</code>, have an <code>Updater</code> function return the <code>versionName</code> of the corresponding
+								<code>HandlerVersion</code> you want to change to.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>state: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>block: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
+							</li>
+							<li>
+								<h5>isReplay: <span class="tsd-signature-type">boolean</span></h5>
+							</li>
+							<li>
+								<h5>context: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 				<a name="handleactions" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> handle<wbr>Actions</h3>
@@ -1124,12 +1197,12 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:52</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L170">src/AbstractActionHandler.ts:170</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Calls <code>runUpdaters</code> and <code>runEffects</code> on the given actions</p>
+								<p>Calls <code>applyUpdaters</code> and <code>runEffects</code> on the given actions</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1155,13 +1228,13 @@ img { max-width: 100%; }
 				<a name="handleblock" class="tsd-anchor"></a>
 				<h3>handle<wbr>Block</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">handle<wbr>Block<span class="tsd-signature-symbol">(</span>block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, isRollback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, isFirstBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, isReplay<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">handle<wbr>Block<span class="tsd-signature-symbol">(</span>block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, isRollback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, isFirstBlock<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, isReplay<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:17</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L30">src/AbstractActionHandler.ts:30</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1181,7 +1254,7 @@ img { max-width: 100%; }
 								<h5>isFirstBlock: <span class="tsd-signature-type">boolean</span></h5>
 							</li>
 							<li>
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> isReplay: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></h5>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> isReplay: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1193,60 +1266,19 @@ img { max-width: 100%; }
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> handle<wbr>With<wbr>State</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<li class="tsd-signature tsd-kind-icon">handle<wbr>With<wbr>State<span class="tsd-signature-symbol">(</span>handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					<li class="tsd-signature tsd-kind-icon">handle<wbr>With<wbr>State<span class="tsd-signature-symbol">(</span>handle<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:34</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L103">src/AbstractActionHandler.ts:103</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Calls handleActions with the appropriate state passed by calling the <code>handle</code> parameter function.
-								Optionally, pass in a <code>context</code> object as a second parameter.</p>
-							</div>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>handle: <span class="tsd-signature-type">function</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter-siganture">
-										<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-										</ul>
-										<ul class="tsd-descriptions">
-											<li class="tsd-description">
-												<h4 class="tsd-parameters-title">Parameters</h4>
-												<ul class="tsd-parameters">
-													<li>
-														<h5>state: <span class="tsd-signature-type">any</span></h5>
-													</li>
-													<li>
-														<h5><span class="tsd-flag ts-flagOptional">Optional</span> context: <span class="tsd-signature-type">any</span></h5>
-													</li>
-												</ul>
-												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-											</li>
-										</ul>
-									</li>
-								</ul>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L90">src/AbstractActionHandler.ts:90</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>Calls handleActions with the appropriate state passed by calling the <code>handle</code> parameter function.
-								Optionally, pass in a <code>context</code> object as a second parameter.</p>
+								<p>Must call the passed-in <code>handle</code> function within this method, passing in a state object that will be passed in to
+									the <code>state</code> parameter to all calls of <code>Updater.apply</code>. Optionally, pass in a <code>context</code> object as a second
+								parameter, which can be utilized to share state across <code>Updater.apply</code> and <code>Effect.run</code> calls on a per-block basis.</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1280,18 +1312,40 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-				<a name="loadindexstate" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> load<wbr>Index<wbr>State</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">load<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/indexstate.html" class="tsd-signature-type">IndexState</a><span class="tsd-signature-symbol">&gt;</span></li>
-					<li class="tsd-signature tsd-kind-icon">load<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexState</span><span class="tsd-signature-symbol">&gt;</span></li>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="inithandlerversions" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Handler<wbr>Versions</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">init<wbr>Handler<wbr>Versions<span class="tsd-signature-symbol">(</span>handlerVersions<span class="tsd-signature-symbol">: </span><a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:29</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L188">src/AbstractActionHandler.ts:188</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>handlerVersions: <a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+				<a name="loadindexstate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> load<wbr>Index<wbr>State</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<li class="tsd-signature tsd-kind-icon">load<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/indexstate.html" class="tsd-signature-type">IndexState</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L96">src/AbstractActionHandler.ts:96</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1304,21 +1358,22 @@ img { max-width: 100%; }
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/indexstate.html" class="tsd-signature-type">IndexState</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						<p>A promise that resolves to an <code>IndexState</code></p>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="refreshindexstate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> refresh<wbr>Index<wbr>State</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">refresh<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L84">src/AbstractActionHandler.ts:84</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L224">src/AbstractActionHandler.ts:224</a></li>
 							</ul>
 						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>Returns a promise for the <code>lastProcessedBlockNumber</code> and <code>lastProcessedBlockHash</code> meta state,
-									coinciding with the block that has just been processed.
-								These are the same values written by <code>updateIndexState()</code>.</p>
-							</div>
-						</div>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IndexState</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						<p>A promise that resolves to an <code>IndexState</code></p>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -1327,41 +1382,19 @@ img { max-width: 100%; }
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> rollback<wbr>To</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<li class="tsd-signature tsd-kind-icon">rollback<wbr>To<span class="tsd-signature-symbol">(</span>blockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					<li class="tsd-signature tsd-kind-icon">rollback<wbr>To<span class="tsd-signature-symbol">(</span>blockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:48</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L165">src/AbstractActionHandler.ts:165</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
 								<p>Will run when a rollback block number is passed to handleActions. Implement this method to
 									handle reversing actions full blocks at a time, until the last applied block is the block
-								number passed to this method. If replay is true, effects should not be processed</p>
-							</div>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>blockNumber: <span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L135">src/AbstractActionHandler.ts:135</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>Will run when a rollback block number is passed to handleActions. Implement this method to
-									handle reversing actions full blocks at a time, until the last applied block is the block
-								number passed to this method. If replay is true, effects should not be processed</p>
+								number passed to this method.</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1378,24 +1411,24 @@ img { max-width: 100%; }
 				<a name="runeffects" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> run<wbr>Effects</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">run<wbr>Effects<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">run<wbr>Effects<span class="tsd-signature-symbol">(</span>versionedActions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:42</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L145">src/AbstractActionHandler.ts:145</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Process actions against asynchronous side effects.</p>
+								<p>Process versioned actions against asynchronous side effects.</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>state: <span class="tsd-signature-type">any</span></h5>
+								<h5>versionedActions: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h5>
 							</li>
 							<li>
 								<h5>block: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
@@ -1409,21 +1442,22 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-				<a name="runupdaters" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> run<wbr>Updaters</h3>
+				<a name="updateindexstate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> update<wbr>Index<wbr>State</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">run<wbr>Updaters<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">update<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, handlerVersionName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:38</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L82">src/AbstractActionHandler.ts:82</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Process actions against deterministically accumulating updater functions.</p>
+								<p>Updates the <code>lastProcessedBlockNumber</code> and <code>lastProcessedBlockHash</code> meta state, coinciding with the block
+								that has just been processed. These are the same values read by <code>updateIndexState()</code>.</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1435,78 +1469,65 @@ img { max-width: 100%; }
 								<h5>block: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
 							</li>
 							<li>
-								<h5>context: <span class="tsd-signature-type">any</span></h5>
+								<h5>isReplay: <span class="tsd-signature-type">boolean</span></h5>
+							</li>
+							<li>
+								<h5>handlerVersionName: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> context: <span class="tsd-signature-type">any</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-				<a name="updateindexstate" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> update<wbr>Index<wbr>State</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">update<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					<li class="tsd-signature tsd-kind-icon">update<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Block</span>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="warnhandlerversionnonexistent" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> warn<wbr>Handler<wbr>Version<wbr>Nonexistent</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">warn<wbr>Handler<wbr>Version<wbr>Nonexistent<span class="tsd-signature-symbol">(</span>newVersion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in dist/AbstractActionHandler.d.ts:22</li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L210">src/AbstractActionHandler.ts:210</a></li>
 							</ul>
 						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>Updates the <code>lastProcessedBlockNumber</code> and <code>lastProcessedBlockHash</code> meta state, coinciding with the block
-								that has just been processed. These are the same values read by <code>updateIndexState()</code>.</p>
-							</div>
-						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>state: <span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li>
-								<h5>block: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
-							</li>
-							<li>
-								<h5>isReplay: <span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li>
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> context: <span class="tsd-signature-type">any</span></h5>
+								<h5>newVersion: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="warnskippingupdaters" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> warn<wbr>Skipping<wbr>Updaters</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">warn<wbr>Skipping<wbr>Updaters<span class="tsd-signature-symbol">(</span>updaterIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, actionType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/02729b2/src/AbstractActionHandler.ts#L76">src/AbstractActionHandler.ts:76</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionHandler.ts#L215">src/AbstractActionHandler.ts:215</a></li>
 							</ul>
 						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>Updates the <code>lastProcessedBlockNumber</code> and <code>lastProcessedBlockHash</code> meta state, coinciding with the block
-								that has just been processed. These are the same values read by <code>updateIndexState()</code>.</p>
-							</div>
-						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>state: <span class="tsd-signature-type">any</span></h5>
+								<h5>updaterIndex: <span class="tsd-signature-type">number</span></h5>
 							</li>
 							<li>
-								<h5>block: <span class="tsd-signature-type">Block</span></h5>
-							</li>
-							<li>
-								<h5>isReplay: <span class="tsd-signature-type">boolean</span></h5>
-							</li>
-							<li>
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> context: <span class="tsd-signature-type">any</span></h5>
+								<h5>actionType: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 					</li>
 				</ul>
 			</section>
