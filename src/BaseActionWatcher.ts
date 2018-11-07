@@ -6,6 +6,11 @@ import { AbstractActionReader } from "./AbstractActionReader"
  * a polling loop.
  */
 export class BaseActionWatcher {
+  /**
+   * @param actionReader    An instance of an implemented `AbstractActionReader`
+   * @param actionHandler   An instance of an implemented `AbstractActionHandler`
+   * @param pollInterval    Number of milliseconds between each polling loop iteration
+   */
   constructor(
     protected actionReader: AbstractActionReader,
     protected actionHandler: AbstractActionHandler,

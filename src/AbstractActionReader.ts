@@ -10,6 +10,19 @@ export abstract class AbstractActionReader {
   protected currentBlockData: Block | null = null
   protected blockHistory: Block[] = []
 
+ /**
+  * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative
+  *                          values, this will start at (most recent block + startAtBlock), effectively tailing the
+  *                          chain. Be careful when using this feature, as this will make your starting block dynamic.
+  *
+  * @param onlyIrreversible  When false (default), `getHeadBlockNumber` will load the most recent block number. When
+  *                          true, `getHeadBlockNumber` will return the block number of the most recent irreversible
+  *                          block. Keep in mind that `getHeadBlockNumber` is an abstract method and this functionality
+  *                          is the responsibility of the implementing class.
+  *
+  * @param maxHistoryLength  This determines how many blocks in the past are cached. This is used for determining
+  *                          block validity during both normal operation and when rolling back.
+  */
   constructor(
     public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
@@ -19,22 +32,22 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * Loads the head block number, returning an int.
+   * Loads the head block number, returning a promise for an int.
    * If onlyIrreversible is true, return the most recent irreversible block number
-   * @return {Promise<number>}
    */
   public abstract async getHeadBlockNumber(): Promise<number>
 
   /**
-   * Loads a block with the given block number
-   * @param {number} blockNumber - Number of the block to retrieve
-   * @returns {Block}
+   * Loads a block with the given block number, returning a promise for a `Block`.
    */
   public abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
-   * Loads the next block with chainInterface after validating, updating all relevant state.
-   * If block fails validation, resolveFork will be called, and will update state to last block unseen.
+   * Loads, processes, and returns the next block, updating all relevant state. Return value at index 0 is the `Block`
+   * instance; return value at index 1 boolean `isRollback` determines if the implemented `AbstractActionHandler` needs
+   * to potentially reverse processed blocks (in the event of a fork); return value at index 2 boolean `isNewBlock`
+   * indicates if the `Block` instance returned is the same one that was just returned from the last call of
+   * `nextBlock`.
    */
   public async nextBlock(): Promise<[Block, boolean, boolean]> {
     let blockData = null
@@ -96,7 +109,11 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * Move to the specified block.
+   * Changes the state of the `AbstractActionReader` instance to have just processed the block at the given block
+   * number. If the block exists in its temporary block history, it will use this, otherwise it will fetch the block
+   * using `getBlock`.
+   *
+   * The next time `nextBlock()` is called, it will load the block after this input block number.
    */
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
@@ -139,8 +156,6 @@ export abstract class AbstractActionReader {
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with
    * newly fetched blocks. Fork resolution is finished when either the current block's previous hash
    * matches the previous block's hash, or when history is exhausted.
-   *
-   * @return {Promise<void>}
    */
   protected async resolveFork() {
     if (this.currentBlockData === null) {
