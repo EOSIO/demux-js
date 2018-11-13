@@ -29,7 +29,7 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "example": "./run-example.sh",
-    "lint": "tslint -c tslint.json src/**/*.ts",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "jest",
     "build-docs": "./build-docs.sh"
   },
