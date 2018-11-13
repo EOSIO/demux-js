@@ -6,7 +6,6 @@ import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
  * `handleWithState` method. Persist and retrieve information about the last block processed with `updateIndexState` and
  * `loadIndexState`. Implement `rollbackTo` to handle when a fork is encountered.
  *
-
  */
 export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
@@ -123,7 +122,6 @@ export abstract class AbstractActionHandler {
         if (action.type === updater.actionType) {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
-          versionedActions.push([action, this.handlerVersionName])
           if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
             this.warnHandlerVersionNonexistent(newVersion)
           } else if (newVersion) {
@@ -135,6 +133,7 @@ export abstract class AbstractActionHandler {
           }
         }
       }
+      versionedActions.push([action, this.handlerVersionName])
     }
     return versionedActions
   }

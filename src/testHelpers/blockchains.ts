@@ -81,6 +81,21 @@ export default {
           },
           type: "eosio.system::regproducer",
         },
+        {
+          payload: {
+            account: "eosio",
+            actionIndex: 0,
+            authorization: [],
+            data: {
+              bidder: "qwertyuiopas",
+              newname: "a",
+              bid: "20000.0000 EOS",
+            },
+            name: "transfer",
+            transactionId: "1",
+          },
+          type: "eosio::bidname",
+        },
       ],
     },
     {
@@ -190,6 +205,21 @@ export default {
             transactionId: "1",
           },
           type: "eosio.token::transfer",
+        },
+        {
+          payload: {
+            account: "eosio",
+            actionIndex: 0,
+            authorization: [],
+            data: {
+              bidder: "qwertyuiopas",
+              newname: "a",
+              bid: "20000.0000 EOS",
+            },
+            name: "transfer",
+            transactionId: "1",
+          },
+          type: "eosio::bidname",
         },
         {
           payload: {
