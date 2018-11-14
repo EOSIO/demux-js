@@ -14,8 +14,6 @@ export interface BlockInfo {
   blockNumber: number
   blockHash: string
   previousBlockHash: string
-  lastIrreversibleBlockNumber: number
-  lastIrreversibleBlockHash: number
   timestamp: Date
 }
 
