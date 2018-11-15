@@ -1,24 +1,25 @@
 import blockchains from "./testHelpers/blockchains"
 import { TestActionHandler } from "./testHelpers/TestActionHandler"
+import { ActionCallback, StatelessActionCallback } from "./interfaces"
 
 const { blockchain, upgradeHandler } = blockchains
 
 describe("Action Handler", () => {
   let actionHandler: TestActionHandler
 
-  let runUpdater
-  let runEffect
+  let runUpdater: ActionCallback
+  let runEffect: StatelessActionCallback
 
-  let notRunUpdater
-  let notRunEffect
+  let notRunUpdater: ActionCallback
+  let notRunEffect: StatelessActionCallback
 
-  let runUpgradeUpdater
+  let runUpgradeUpdater: ActionCallback
 
-  let runUpdaterAfterUpgrade
-  let runEffectAfterUpgrade
+  let runUpdaterAfterUpgrade: ActionCallback
+  let runEffectAfterUpgrade: StatelessActionCallback
 
-  let notRunUpdaterAfterUpgrade
-  let notRunEffectAfterUpgrade
+  let notRunUpdaterAfterUpgrade: ActionCallback
+  let notRunEffectAfterUpgrade: StatelessActionCallback
 
   beforeEach(() => {
     runUpdater = jest.fn()

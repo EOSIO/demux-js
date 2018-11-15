@@ -35,17 +35,17 @@
   },
   "jest": {
     "moduleFileExtensions": [
+      "js",
       "ts",
-      "tsx",
-      "js"
+      "tsx"
     ],
-    "transform": {
-      "^.+\\.(tsx?)$": "ts-jest"
-    },
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "tsconfig.json"
+        "tsConfig": "tsconfig.json"
       }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/src/.*(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "testEnvironment": "node"
