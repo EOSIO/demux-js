@@ -159,6 +159,11 @@ export abstract class AbstractActionReader {
     if (!this.currentBlockData) {
       this.currentBlockData = await this.getBlock(this.currentBlockNumber)
     }
+
+    // Fetch block if there is no history
+    if (this.blockHistory.length === 0) {
+      await this.addPreviousBlockToHistory(false)
+    }
   }
 
   /**
@@ -171,8 +176,15 @@ export abstract class AbstractActionReader {
       throw Error("`currentBlockData` must not be null when initiating fork resolution.")
     }
 
+    if (this.blockHistory.length === 0) {
+      await this.addPreviousBlockToHistory()
+    }
+
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
+      if (this.blockHistory.length === 0) {
+        await this.addPreviousBlockToHistory()
+      }
       const [previousBlockData] = this.blockHistory.slice(-1)
       console.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
       this.currentBlockData = await this.getBlock(this.currentBlockData.blockInfo.blockNumber)
@@ -193,12 +205,6 @@ export abstract class AbstractActionReader {
 
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
-      if (this.blockHistory.length === 0) {
-        if (this.currentBlockData.blockInfo.blockNumber <= this.lastIrreversibleBlockNumber) {
-          throw new Error("Last irreversible block has been passed without resolving fork")
-        }
-        this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
-      }
     }
 
     this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
@@ -211,5 +217,16 @@ export abstract class AbstractActionReader {
     } else {
       return this.getHeadBlockNumber()
     }
+  }
+
+  private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
+    if (!this.currentBlockData) {
+      throw Error("`currentBlockData` must not be null when initiating fork resolution.")
+    }
+
+    if (this.currentBlockData.blockInfo.blockNumber <= this.lastIrreversibleBlockNumber && checkIrreversiblility) {
+      throw new Error("Last irreversible block has been passed without resolving fork")
+    }
+    this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
   }
 }
