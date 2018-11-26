@@ -11,8 +11,8 @@ export interface IndexState {
 }
 
 export interface BlockInfo {
-  blockHash: string
   blockNumber: number
+  blockHash: string
   previousBlockHash: string
   timestamp: Date
 }

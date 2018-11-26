@@ -1,6 +1,6 @@
 {
   "name": "demux",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "author": {
     "name": "Julien Heller",
     "url": "https://block.one/"
@@ -29,23 +29,23 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "example": "./run-example.sh",
-    "lint": "tslint -c tslint.json src/**/*.ts",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "jest",
     "build-docs": "./build-docs.sh"
   },
   "jest": {
     "moduleFileExtensions": [
+      "js",
       "ts",
-      "tsx",
-      "js"
+      "tsx"
     ],
-    "transform": {
-      "^.+\\.(tsx?)$": "ts-jest"
-    },
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "tsconfig.json"
+        "tsConfig": "tsconfig.json"
       }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/src/.*(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "testEnvironment": "node"

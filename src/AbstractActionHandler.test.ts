@@ -1,26 +1,41 @@
-import { TestActionHandler } from "./testHelpers/TestActionHandler"
 import blockchains from "./testHelpers/blockchains"
+import { TestActionHandler } from "./testHelpers/TestActionHandler"
+import { ActionCallback, StatelessActionCallback } from "./interfaces"
 
 const { blockchain, upgradeHandler } = blockchains
 
 describe("Action Handler", () => {
   let actionHandler: TestActionHandler
 
-  const runUpdater = jest.fn()
-  const runEffect = jest.fn()
+  let runUpdater: ActionCallback
+  let runEffect: StatelessActionCallback
 
-  const notRunUpdater = jest.fn()
-  const notRunEffect = jest.fn()
+  let notRunUpdater: ActionCallback
+  let notRunEffect: StatelessActionCallback
 
-  const runUpgradeUpdater = jest.fn().mockReturnValue("v2")
+  let runUpgradeUpdater: ActionCallback
 
-  const runUpdaterAfterUpgrade = jest.fn()
-  const runEffectAfterUpgrade = jest.fn()
+  let runUpdaterAfterUpgrade: ActionCallback
+  let runEffectAfterUpgrade: StatelessActionCallback
 
-  const notRunUpdaterAfterUpgrade = jest.fn()
-  const notRunEffectAfterUpgrade = jest.fn()
+  let notRunUpdaterAfterUpgrade: ActionCallback
+  let notRunEffectAfterUpgrade: StatelessActionCallback
 
   beforeEach(() => {
+    runUpdater = jest.fn()
+    runEffect = jest.fn()
+
+    notRunUpdater = jest.fn()
+    notRunEffect = jest.fn()
+
+    runUpgradeUpdater = jest.fn().mockReturnValue("v2")
+
+    runUpdaterAfterUpgrade = jest.fn()
+    runEffectAfterUpgrade = jest.fn()
+
+    notRunUpdaterAfterUpgrade = jest.fn()
+    notRunEffectAfterUpgrade = jest.fn()
+
     actionHandler = new TestActionHandler([
       {
         versionName: "v1",
@@ -41,6 +56,10 @@ describe("Action Handler", () => {
         effects: [
           {
             actionType: "eosio.token::transfer",
+            run: runEffect,
+          },
+          {
+            actionType: "eosio::bidname",
             run: runEffect,
           },
           {
@@ -77,14 +96,14 @@ describe("Action Handler", () => {
 
   it("runs the correct updater based on action type", async () => {
     await actionHandler._applyUpdaters({}, blockchain[1], false, {})
-    expect(runUpdater).toHaveBeenCalled()
+    expect(runUpdater).toHaveBeenCalledTimes(1)
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
   it("runs the correct effect based on action type", async () => {
     const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], false, {})
     actionHandler._runEffects(versionedActions, blockchain[1], {})
-    expect(runEffect).toHaveBeenCalled()
+    expect(runEffect).toHaveBeenCalledTimes(2)
     expect(notRunEffect).not.toHaveBeenCalled()
   })
 
@@ -117,12 +136,13 @@ describe("Action Handler", () => {
     actionHandler._runEffects(versionedActions, upgradeHandler[0], {})
 
     expect(actionHandler._handlerVersionName).toEqual("v2")
-    expect(runUpdater).toHaveBeenCalled()
-    expect(runUpgradeUpdater).toHaveBeenCalled()
+    expect(runUpdater).toHaveBeenCalledTimes(1)
+    expect(runEffect).toHaveBeenCalledTimes(2)
+    expect(runUpgradeUpdater).toHaveBeenCalledTimes(1)
     expect(notRunUpdater).not.toHaveBeenCalled()
     expect(notRunUpdaterAfterUpgrade).not.toHaveBeenCalled()
-    expect(runUpdaterAfterUpgrade).toHaveBeenCalled()
+    expect(runUpdaterAfterUpgrade).toHaveBeenCalledTimes(1)
     expect(notRunEffectAfterUpgrade).not.toHaveBeenCalled()
-    expect(runEffectAfterUpgrade).toHaveBeenCalled()
+    expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
   })
 })

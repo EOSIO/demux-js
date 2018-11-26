@@ -8,8 +8,23 @@ export abstract class AbstractActionReader {
   public currentBlockNumber: number
   public isFirstBlock: boolean = true
   protected currentBlockData: Block | null = null
+  protected lastIrreversibleBlockNumber: number = 0
   protected blockHistory: Block[] = []
+  private isFirstRun: boolean = true
 
+ /**
+  * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative
+  *                          values, this will start at (most recent block + startAtBlock), effectively tailing the
+  *                          chain. Be careful when using this feature, as this will make your starting block dynamic.
+  *
+  * @param onlyIrreversible  When false (default), `getHeadBlockNumber` will load the most recent block number. When
+  *                          true, `getHeadBlockNumber` will return the block number of the most recent irreversible
+  *                          block. Keep in mind that `getHeadBlockNumber` is an abstract method and this functionality
+  *                          is the responsibility of the implementing class.
+  *
+  * @param maxHistoryLength  This determines how many blocks in the past are cached. This is used for determining
+  *                          block validity during both normal operation and when rolling back.
+  */
   constructor(
     public startAtBlock: number = 1,
     protected onlyIrreversible: boolean = false,
@@ -19,22 +34,28 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * Loads the head block number, returning an int.
-   * If onlyIrreversible is true, return the most recent irreversible block number
-   * @return {Promise<number>}
+   * Loads the number of the latest block.
    */
   public abstract async getHeadBlockNumber(): Promise<number>
 
   /**
-   * Loads a block with the given block number
-   * @param {number} blockNumber - Number of the block to retrieve
-   * @returns {Block}
+   * Loads the number of the most recent irreversible block.
+   */
+  public abstract async getLastIrreversibleBlockNumber(): Promise<number>
+
+  /**
+   * Loads a block with the given block number, returning a promise for a `Block`.
+   *
+   * @param blockNumber  The number of the block to load
    */
   public abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
-   * Loads the next block with chainInterface after validating, updating all relevant state.
-   * If block fails validation, resolveFork will be called, and will update state to last block unseen.
+   * Loads, processes, and returns the next block, updating all relevant state. Return value at index 0 is the `Block`
+   * instance; return value at index 1 boolean `isRollback` determines if the implemented `AbstractActionHandler` needs
+   * to potentially reverse processed blocks (in the event of a fork); return value at index 2 boolean `isNewBlock`
+   * indicates if the `Block` instance returned is the same one that was just returned from the last call of
+   * `nextBlock`.
    */
   public async nextBlock(): Promise<[Block, boolean, boolean]> {
     let blockData = null
@@ -43,14 +64,15 @@ export abstract class AbstractActionReader {
 
     // If we're on the head block, refresh current head block
     if (this.currentBlockNumber === this.headBlockNumber || !this.headBlockNumber) {
-      this.headBlockNumber = await this.getHeadBlockNumber()
+      this.headBlockNumber = await this.getLatestNeededBlockNumber()
     }
 
     // If currentBlockNumber is negative, it means we wrap to the end of the chain (most recent blocks)
-    // This should only ever happen when we first start, so we check that there's no block history
-    if (this.currentBlockNumber < 0 && this.blockHistory.length === 0) {
+    if (this.currentBlockNumber < 0 && this.isFirstRun) {
       this.currentBlockNumber = this.headBlockNumber + this.currentBlockNumber
       this.startAtBlock = this.currentBlockNumber + 1
+    } else if (this.isFirstRun) {
+      this.isFirstRun = false
     }
 
     // If we're now behind one or more new blocks, process them
@@ -81,7 +103,7 @@ export abstract class AbstractActionReader {
         isNewBlock = true
         isRollback = true // Signal action handler that we must roll back
         // Reset for safety, as new fork could have less blocks than the previous fork
-        this.headBlockNumber = await this.getHeadBlockNumber()
+        this.headBlockNumber = await this.getLatestNeededBlockNumber()
       }
     }
 
@@ -96,7 +118,11 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * Move to the specified block.
+   * Changes the state of the `AbstractActionReader` instance to have just processed the block at the given block
+   * number. If the block exists in its temporary block history, it will use this, otherwise it will fetch the block
+   * using `getBlock`.
+   *
+   * The next time `nextBlock()` is called, it will load the block after this input block number.
    */
   public async seekToBlock(blockNumber: number): Promise<void> {
     // Clear current block data
@@ -133,22 +159,32 @@ export abstract class AbstractActionReader {
     if (!this.currentBlockData) {
       this.currentBlockData = await this.getBlock(this.currentBlockNumber)
     }
+
+    // Fetch block if there is no history
+    if (this.blockHistory.length === 0) {
+      await this.addPreviousBlockToHistory(false)
+    }
   }
 
   /**
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with
    * newly fetched blocks. Fork resolution is finished when either the current block's previous hash
    * matches the previous block's hash, or when history is exhausted.
-   *
-   * @return {Promise<void>}
    */
   protected async resolveFork() {
     if (this.currentBlockData === null) {
       throw Error("`currentBlockData` must not be null when initiating fork resolution.")
     }
 
+    if (this.blockHistory.length === 0) {
+      await this.addPreviousBlockToHistory()
+    }
+
     // Pop off blocks from cached block history and compare them with freshly fetched blocks
     while (this.blockHistory.length > 0) {
+      if (this.blockHistory.length === 0) {
+        await this.addPreviousBlockToHistory()
+      }
       const [previousBlockData] = this.blockHistory.slice(-1)
       console.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
       this.currentBlockData = await this.getBlock(this.currentBlockData.blockInfo.blockNumber)
@@ -170,18 +206,27 @@ export abstract class AbstractActionReader {
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
     }
-    if (this.blockHistory.length === 0) {
-      await this.historyExhausted()
-    }
+
     this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
   }
 
-  /**
-   * When history is exhausted in resolveFork(), this is run to handle the situation. If left unimplemented,
-   * then only instantiate with `onlyIrreversible` set to true.
-   */
-  protected historyExhausted() {
-    console.info("Fork resolution history has been exhausted!")
-    throw Error("Fork resolution history has been exhausted, and no history exhaustion handling has been implemented.")
+  private async getLatestNeededBlockNumber() {
+    this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
+    if (this.onlyIrreversible) {
+      return this.lastIrreversibleBlockNumber
+    } else {
+      return this.getHeadBlockNumber()
+    }
+  }
+
+  private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
+    if (!this.currentBlockData) {
+      throw Error("`currentBlockData` must not be null when initiating fork resolution.")
+    }
+
+    if (this.currentBlockData.blockInfo.blockNumber <= this.lastIrreversibleBlockNumber && checkIrreversiblility) {
+      throw new Error("Last irreversible block has been passed without resolving fork")
+    }
+    this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
   }
 }

@@ -6,4 +6,5 @@ before_install:
   - npm install -g typescript
 script:
   - npm run lint
+  - npm run test
 
