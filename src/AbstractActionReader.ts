@@ -1,3 +1,4 @@
+import * as Logger from "bunyan"
 import { Block } from "./interfaces"
 
 /**
@@ -11,6 +12,7 @@ export abstract class AbstractActionReader {
   protected lastIrreversibleBlockNumber: number = 0
   protected blockHistory: Block[] = []
   private isFirstRun: boolean = true
+  private log: Logger
 
  /**
   * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative
@@ -31,6 +33,7 @@ export abstract class AbstractActionReader {
     protected maxHistoryLength: number = 600,
   ) {
     this.currentBlockNumber = startAtBlock - 1
+    this.log = Logger.createLogger({ name: "demux" })
   }
 
   /**
@@ -95,10 +98,10 @@ export abstract class AbstractActionReader {
       } else {
         // Since the new block did not match our history, we can assume our history is wrong
         // and need to roll back
-        console.info("!! FORK DETECTED !!")
-        console.info(`  MISMATCH:`)
-        console.info(`    ✓ NEW Block ${unvalidatedBlockData.blockInfo.blockNumber} previous: ${actualHash}`)
-        console.info(`    ✕ OLD Block ${this.currentBlockNumber} id:       ${expectedHash}`)
+        this.log.info("!! FORK DETECTED !!")
+        this.log.info(`  MISMATCH:`)
+        this.log.info(`    ✓ NEW Block ${unvalidatedBlockData.blockInfo.blockNumber} previous: ${actualHash}`)
+        this.log.info(`    ✕ OLD Block ${this.currentBlockNumber} id:       ${expectedHash}`)
         await this.resolveFork()
         isNewBlock = true
         isRollback = true // Signal action handler that we must roll back
@@ -186,21 +189,21 @@ export abstract class AbstractActionReader {
         await this.addPreviousBlockToHistory()
       }
       const [previousBlockData] = this.blockHistory.slice(-1)
-      console.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
+      this.log.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
       this.currentBlockData = await this.getBlock(this.currentBlockData.blockInfo.blockNumber)
       if (this.currentBlockData !== null) {
         const { blockInfo: currentBlockInfo } = this.currentBlockData
         const { blockInfo: previousBlockInfo } = previousBlockData
         if (currentBlockInfo.previousBlockHash === previousBlockInfo.blockHash) {
-          console.info("  MATCH:")
-          console.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`) // tslint:disable-line
-          console.info(`    ✓ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
-          console.info("!! FORK RESOLVED !!")
+          this.log.info("  MATCH:")
+          this.log.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`) // tslint:disable-line
+          this.log.info(`    ✓ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
+          this.log.info("!! FORK RESOLVED !!")
           break
         }
-        console.info("  MISMATCH:")
-        console.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`)
-        console.info(`    ✕ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
+        this.log.info("  MISMATCH:")
+        this.log.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`)
+        this.log.info(`    ✕ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
       }
 
       this.currentBlockData = previousBlockData
