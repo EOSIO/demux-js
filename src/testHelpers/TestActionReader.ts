@@ -8,6 +8,10 @@ export class TestActionReader extends AbstractActionReader {
     return this.blockchain[this.blockchain.length - 1].blockInfo.blockNumber
   }
 
+  public async getLastIrreversibleBlockNumber(): Promise<number> {
+    return this.getHeadBlockNumber()
+  }
+
   public async getBlock(blockNumber: number): Promise<Block> {
     return this.blockchain[blockNumber - 1]
   }
