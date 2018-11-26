@@ -7,4 +7,8 @@ before_install:
 script:
   - npm run lint
   - npm run test
-
+deploy:
+  provider: script
+  script: bash scripts/publish.sh
+  on:
+    branch: develop
