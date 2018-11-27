@@ -27,6 +27,7 @@
     "typescript": "^2.9.2"
   },
   "scripts": {
+    "build": "tsc",
     "compile": "tsc",
     "watch": "tsc -w",
     "example": "./run-example.sh",
