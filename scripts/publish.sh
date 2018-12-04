@@ -23,7 +23,7 @@ make_version() {
   git checkout -- .
   
   # Echo the status to the log so that we can see it is OK
-  git status 
+  git status
 
   # Run the deploy build and increment the package versions
   current_commit="$(git rev-parse --short HEAD)";
