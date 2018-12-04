@@ -11,6 +11,7 @@
   "types": "dist/index.d.ts",
   "repository": "https://github.com/EOSIO/demux-js",
   "devDependencies": {
+    "@types/bunyan": "^1.8.5",
     "@types/jest": "^23.1.4",
     "@types/node": "^10.5.1",
     "@types/request-promise-native": "^1.0.15",
@@ -26,6 +27,7 @@
     "typescript": "^2.9.2"
   },
   "scripts": {
+    "build": "tsc",
     "compile": "tsc",
     "watch": "tsc -w",
     "example": "./run-example.sh",
@@ -49,5 +51,8 @@
     },
     "testRegex": "(/src/.*(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "testEnvironment": "node"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.12"
   }
 }
