@@ -1,3 +1,4 @@
+import * as Logger from "bunyan"
 import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
 
 /**
@@ -12,6 +13,7 @@ export abstract class AbstractActionHandler {
   protected lastProcessedBlockHash: string = ""
   protected handlerVersionName: string = "v1"
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
+  private log: Logger
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
@@ -21,6 +23,7 @@ export abstract class AbstractActionHandler {
     handlerVersions: HandlerVersion[],
   ) {
     this.initHandlerVersions(handlerVersions)
+    this.log = Logger.createLogger({ name: "demux" })
   }
 
   /**
@@ -37,7 +40,7 @@ export abstract class AbstractActionHandler {
     if (isRollback || (isReplay && isFirstBlock)) {
       const rollbackBlockNumber = blockInfo.blockNumber - 1
       const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
-      console.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
+      this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
       await this.rollbackTo(rollbackBlockNumber)
       await this.refreshIndexState()
     } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === "") {
@@ -125,7 +128,7 @@ export abstract class AbstractActionHandler {
           if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
             this.warnHandlerVersionNonexistent(newVersion)
           } else if (newVersion) {
-            console.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
+            this.log.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
             this.warnSkippingUpdaters(updaterIndex, action.type)
             await this.updateIndexState(state, block, isReplay, newVersion, context)
             this.handlerVersionName = newVersion
@@ -196,27 +199,10 @@ export abstract class AbstractActionHandler {
       this.handlerVersionMap[handlerVersion.versionName] = handlerVersion
     }
     if (!this.handlerVersionMap.hasOwnProperty(this.handlerVersionName)) {
-      console.warn(`No Handler Version found with name '${this.handlerVersionName}': starting with ` +
-                   `'${handlerVersions[0].versionName}' instead.`)
       this.handlerVersionName = handlerVersions[0].versionName
+      this.warnMissingHandlerVersion(handlerVersions[0].versionName)
     } else if (handlerVersions[0].versionName !== "v1") {
-      console.warn(`First Handler Version '${handlerVersions[0].versionName}' is not '${this.handlerVersionName}', ` +
-                   `and there is also '${this.handlerVersionName}' present. Handler Version ` +
-                   `'${this.handlerVersionName}' will be used, even though it is not first.`)
-    }
-  }
-
-  private warnHandlerVersionNonexistent(newVersion: string) {
-    console.warn(`Attempted to switch to handler version '${newVersion}', however this version ` +
-      `does not exist. Handler will continue as version '${this.handlerVersionName}'`)
-  }
-
-  private warnSkippingUpdaters(updaterIndex: number, actionType: string) {
-    const remainingUpdaters = this.handlerVersionMap[this.handlerVersionName].updaters.length - updaterIndex - 1
-    if (remainingUpdaters) {
-      console.warn(`Handler Version was updated to version '${this.handlerVersionName}' while there ` +
-        `were still ${remainingUpdaters} updaters left! These updaters will be skipped for the ` +
-        `current action '${actionType}'.`)
+      this.warnIncorrectFirstHandler(handlerVersions[0].versionName)
     }
   }
 
@@ -225,5 +211,30 @@ export abstract class AbstractActionHandler {
     this.lastProcessedBlockNumber = blockNumber
     this.lastProcessedBlockHash = blockHash
     this.handlerVersionName = handlerVersionName
+  }
+
+  private warnMissingHandlerVersion(actualVersion: string) {
+    this.log.warn(`No Handler Version found with name '${this.handlerVersionName}': starting with ` +
+      `'${actualVersion}' instead.`)
+  }
+
+  private warnIncorrectFirstHandler(actualVersion: string) {
+    this.log.warn(`First Handler Version '${actualVersion}' is not '${this.handlerVersionName}', ` +
+      `and there is also '${this.handlerVersionName}' present. Handler Version ` +
+      `'${this.handlerVersionName}' will be used, even though it is not first.`)
+  }
+
+  private warnHandlerVersionNonexistent(newVersion: string) {
+    this.log.warn(`Attempted to switch to handler version '${newVersion}', however this version ` +
+      `does not exist. Handler will continue as version '${this.handlerVersionName}'`)
+  }
+
+  private warnSkippingUpdaters(updaterIndex: number, actionType: string) {
+    const remainingUpdaters = this.handlerVersionMap[this.handlerVersionName].updaters.length - updaterIndex - 1
+    if (remainingUpdaters) {
+      this.log.warn(`Handler Version was updated to version '${this.handlerVersionName}' while there ` +
+        `were still ${remainingUpdaters} updaters left! These updaters will be skipped for the ` +
+        `current action '${actionType}'.`)
+    }
   }
 }

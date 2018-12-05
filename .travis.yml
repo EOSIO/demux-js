@@ -3,8 +3,13 @@ language: node_js
 node_js:
   - '10.0.0'
 before_install:
+  - npm i -g npm@6.4.1
   - npm install -g typescript
 script:
   - npm run lint
   - npm run test
-
+deploy:
+  provider: script
+  script: bash scripts/publish.sh
+  on:
+    branch: develop
