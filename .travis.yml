@@ -11,6 +11,7 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: bash scripts/publish.sh
+  script: 
+    - ./scripts/publish.sh
   on:
     branch: develop
