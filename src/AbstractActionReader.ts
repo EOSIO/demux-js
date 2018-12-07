@@ -11,8 +11,8 @@ export abstract class AbstractActionReader {
   protected currentBlockData: Block | null = null
   protected lastIrreversibleBlockNumber: number = 0
   protected blockHistory: Block[] = []
+  protected log: Logger
   private isFirstRun: boolean = true
-  private log: Logger
 
  /**
   * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative
