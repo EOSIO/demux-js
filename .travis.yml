@@ -5,11 +5,25 @@ node_js:
 before_install:
   - npm i -g npm@6.4.1
   - npm install -g typescript
-script:
-  - npm run lint
-  - npm run test
-deploy:
-  provider: script
-  script: bash scripts/publish.sh
-  on:
-    branch: develop
+stages:
+  - test
+  - name: deploy
+    if: (NOT type IN (pull_request)) AND (branch = develop)
+jobs:
+  include:
+    - stage: test
+      name: "Lint and Test"
+      script:
+        - npm run lint
+        - npm run test
+    - stage: deploy    
+      name: "Deploy to NPM"
+      script:
+        - npm run build
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: 
+          - ./scripts/publish.sh
+        on:
+          branch: develop

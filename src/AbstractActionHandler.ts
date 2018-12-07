@@ -12,8 +12,8 @@ export abstract class AbstractActionHandler {
   protected lastProcessedBlockNumber: number = 0
   protected lastProcessedBlockHash: string = ""
   protected handlerVersionName: string = "v1"
+  protected log: Logger
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
-  private log: Logger
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
