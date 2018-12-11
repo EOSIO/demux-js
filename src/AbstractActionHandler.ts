@@ -105,6 +105,20 @@ export abstract class AbstractActionHandler {
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
+   * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are
+   * subscribed to. When this returns true, their corresponding functions will run.
+   *
+   * By default, this method tests for direct equivalence between the incoming candidate type and the type that is
+   * subscribed. Override this method to extend this functionality (e.g. wildcards).
+   *
+   * @param candidateType   The incoming action's type
+   * @param subscribedType  The type the Updater of Effect is subscribed to
+   */
+  protected matchActionType(candidateType: string, subscribedType: string): boolean {
+    return candidateType === subscribedType
+  }
+
+  /**
    * Process actions against deterministically accumulating `Updater` functions. Returns a promise of versioned actions
    * for consumption by `runEffects`, to make sure the correct effects are run on blocks that include a `HandlerVersion`
    * change. To change a `HandlerVersion`, have an `Updater` function return the `versionName` of the corresponding
@@ -122,7 +136,7 @@ export abstract class AbstractActionHandler {
       let updaterIndex = -1
       for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
         updaterIndex += 1
-        if (action.type === updater.actionType) {
+        if (this.matchActionType(action.type, updater.actionType)) {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
           if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
@@ -151,7 +165,7 @@ export abstract class AbstractActionHandler {
   ) {
     for (const [action, handlerVersionName] of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
-        if (action.type === effect.actionType) {
+        if (this.matchActionType(action.type, effect.actionType)) {
           const { payload } = action
           effect.run(payload, block, context)
         }
