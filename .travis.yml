@@ -1,29 +1,42 @@
 sudo: false
 language: node_js
 node_js:
-  - '10.0.0'
+- '10.0.0'
 before_install:
-  - npm i -g npm@6.4.1
-  - npm install -g typescript
+- npm i -g npm@6.4.1
+- npm install -g typescript
 stages:
-  - test
-  - name: deploy
-    if: (NOT type IN (pull_request)) AND (branch = develop)
+- test
+- name: publish-edge
+  if: (NOT type IN (pull_request)) AND (branch = develop)
+- name: publish-latest
+  # Travis assigns the tag to branch for some reason. This matches any valid semver version.
+  if: branch =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
 jobs:
   include:
-    - stage: test
-      name: "Lint and Test"
-      script:
-        - npm run lint
-        - npm run test
-    - stage: deploy    
-      name: "Deploy to NPM"
-      script:
-        - npm run build
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script: 
-          - ./scripts/publish.sh
-        on:
-          branch: develop
+  - stage: test
+    name: "Lint and Test"
+    script:
+    - npm run lint
+    - npm run test
+  - stage: publish-edge
+    name: "Publish @edge to NPM"
+    script:
+    - npm run build
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: ./scripts/publish-edge.sh
+      on:
+        branch: develop
+  - stage: publish-latest
+    name: "Publish @latest to NPM"
+    script:
+    - npm run build
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: ./scripts/publish-latest.sh
+      on:
+        all_branches: true
+        condition: $TRAVIS_TAG =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
