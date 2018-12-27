@@ -112,23 +112,36 @@ describe("Action Handler", () => {
       blockNumber: 3,
       blockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8",
     }
-    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockchain[0], false, true)
-    expect(needToSeek).toBe(true)
+    const blockMeta = {
+      isRollback: false,
+      isFirstBlock: true,
+      isNewBlock: true,
+    }
+    const seekBlockNum = await actionHandler.handleBlock(blockchain[0], blockMeta, false)
     expect(seekBlockNum).toBe(4)
   })
 
   it("seeks to the next block needed when block number doesn't match last processed block", async () => {
     actionHandler.setLastProcessedBlockNumber(2)
-    const [needToSeek, seekBlockNum] = await actionHandler.handleBlock(blockchain[3], false, false)
-    expect(needToSeek).toBe(true)
+    const blockMeta = {
+      isRollback: false,
+      isFirstBlock: false,
+      isNewBlock: true,
+    }
+    const seekBlockNum = await actionHandler.handleBlock(blockchain[3], blockMeta, false)
     expect(seekBlockNum).toBe(3)
   })
 
   it("throws error if previous block hash and last processed don't match up", async () => {
     actionHandler.setLastProcessedBlockNumber(3)
     actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
+    const blockMeta = {
+      isRollback: false,
+      isFirstBlock: false,
+      isNewBlock: true,
+    }
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
-    await expect(actionHandler.handleBlock(blockchain[3], false, false)).rejects.toEqual(expectedError)
+    await expect(actionHandler.handleBlock(blockchain[3], blockMeta, false)).rejects.toEqual(expectedError)
   })
 
   it("upgrades the action handler correctly", async () => {

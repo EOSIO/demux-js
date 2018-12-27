@@ -11,8 +11,8 @@ describe("Action Reader", () => {
 
   beforeEach(() => {
     actionReader = new TestActionReader()
-    actionReaderStartAt3 = new TestActionReader(3)
-    actionReaderNegative = new TestActionReader(-1)
+    actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
+    actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
     forked = JSON.parse(JSON.stringify(blockchains.forked))
@@ -48,9 +48,9 @@ describe("Action Reader", () => {
     await actionReader.nextBlock()
     await actionReader.nextBlock()
     await actionReader.seekToBlock(1)
-    const [block] = await actionReader.nextBlock()
+    const [block, blockMeta] = await actionReader.nextBlock()
     expect(block.blockInfo.blockNumber).toBe(1)
-    expect(actionReader.isFirstBlock).toBe(true)
+    expect(blockMeta.isFirstBlock).toBe(true)
   })
 
   it("seeks to non-first block", async () => {
@@ -76,16 +76,16 @@ describe("Action Reader", () => {
     await actionReader.nextBlock()
 
     actionReader.blockchain = forked
-    const [block, isRollback] = await actionReader.nextBlock()
-    expect(isRollback).toBe(true)
+    const [block, blockMeta] = await actionReader.nextBlock()
+    expect(blockMeta.isRollback).toBe(true)
     expect(block.blockInfo.blockHash).toBe("foo")
 
-    const [block2, isRollback2] = await actionReader.nextBlock()
-    expect(isRollback2).toBe(false)
+    const [block2, blockMeta2] = await actionReader.nextBlock()
+    expect(blockMeta2.isRollback).toBe(false)
     expect(block2.blockInfo.blockHash).toBe("wrench")
 
-    const [block3, isRollback3] = await actionReader.nextBlock()
-    expect(isRollback3).toBe(false)
+    const [block3, blockMeta3] = await actionReader.nextBlock()
+    expect(blockMeta3.isRollback).toBe(false)
     expect(block3.blockInfo.blockHash).toBe("madeit")
   })
 
@@ -94,7 +94,7 @@ describe("Action Reader", () => {
     await actionReader.nextBlock()
     await actionReader.nextBlock()
     await actionReader.nextBlock()
-    const isNewBlock = (await actionReader.nextBlock())[2]
-    expect(isNewBlock).toBe(false)
+    const blockMeta = (await actionReader.nextBlock())[1]
+    expect(blockMeta.isNewBlock).toBe(false)
   })
 })

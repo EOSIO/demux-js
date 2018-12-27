@@ -26,8 +26,8 @@ describe("BaseActionWatcher", () => {
 
   beforeEach(() => {
     actionReader = new TestActionReader()
-    actionReaderStartAt3 = new TestActionReader(3)
-    actionReaderNegative = new TestActionReader(-1)
+    actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
+    actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
     actionReader.blockchain = blockchain
