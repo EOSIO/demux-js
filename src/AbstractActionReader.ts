@@ -1,38 +1,34 @@
 import * as Logger from "bunyan"
-import { Block, BlockInfo } from "./interfaces"
+import { ActionReaderConfig, Block, BlockInfo, BlockMeta } from "./interfaces"
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
  */
 export abstract class AbstractActionReader {
+  public startAtBlock: number
   public headBlockNumber: number = 0
   public currentBlockNumber: number
-  public isFirstBlock: boolean = true
+  public currentBlockMeta: BlockMeta | null = null
+  protected onlyIrreversible: boolean
+  protected maxHistoryLength: number
   protected currentBlockData: Block | null = null
   protected lastIrreversibleBlockNumber: number = 0
   protected blockHistory: Block[] = []
   protected log: Logger
   private isFirstRun: boolean = true
 
- /**
-  * @param startAtBlock      For positive values, this sets the first block that this will start at. For negative
-  *                          values, this will start at (most recent block + startAtBlock), effectively tailing the
-  *                          chain. Be careful when using this feature, as this will make your starting block dynamic.
-  *
-  * @param onlyIrreversible  When false (default), `getHeadBlockNumber` will load the most recent block number. When
-  *                          true, `getHeadBlockNumber` will return the block number of the most recent irreversible
-  *                          block. Keep in mind that `getHeadBlockNumber` is an abstract method and this functionality
-  *                          is the responsibility of the implementing class.
-  *
-  * @param maxHistoryLength  This determines how many blocks in the past are cached. This is used for determining
-  *                          block validity during both normal operation and when rolling back.
-  */
-  constructor(
-    public startAtBlock: number = 1,
-    protected onlyIrreversible: boolean = false,
-    protected maxHistoryLength: number = 600,
-  ) {
-    this.currentBlockNumber = startAtBlock - 1
+  constructor(config?: ActionReaderConfig) {
+    const configWithDefaults = {
+      startAtBlock: 1,
+      onlyIrreversible: false,
+      maxHistoryLength: 600,
+      ...(config || {}),
+    }
+    this.startAtBlock = configWithDefaults.startAtBlock
+    this.currentBlockNumber = configWithDefaults.startAtBlock - 1
+    this.onlyIrreversible = configWithDefaults.onlyIrreversible
+    this.maxHistoryLength = configWithDefaults.maxHistoryLength
+
     this.log = Logger.createLogger({ name: "demux" })
   }
 
@@ -60,7 +56,7 @@ export abstract class AbstractActionReader {
    * indicates if the `Block` instance returned is the same one that was just returned from the last call of
    * `nextBlock`.
    */
-  public async nextBlock(): Promise<[Block, boolean, boolean]> {
+  public async nextBlock(): Promise<[Block, BlockMeta]> {
     let blockData = null
     let isRollback = false
     let isNewBlock = false
@@ -108,13 +104,19 @@ export abstract class AbstractActionReader {
     }
 
     // Let handler know if this is the earliest block we'll send
-    this.isFirstBlock = this.currentBlockNumber === this.startAtBlock
+    const isFirstBlock = this.currentBlockNumber === this.startAtBlock
 
     if (this.currentBlockData === null) {
       throw Error("currentBlockData must not be null.")
     }
 
-    return [this.currentBlockData, isRollback, isNewBlock]
+    this.currentBlockMeta = {
+      isRollback,
+      isFirstBlock,
+      isNewBlock,
+    }
+
+    return [this.currentBlockData, this.currentBlockMeta]
   }
 
   /**
