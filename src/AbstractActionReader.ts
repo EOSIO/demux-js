@@ -17,17 +17,17 @@ export abstract class AbstractActionReader {
   protected log: Logger
   private isFirstRun: boolean = true
 
-  constructor(config?: ActionReaderConfig) {
-    const configWithDefaults = {
+  constructor(options: ActionReaderConfig = {}) {
+    const optionsWithDefaults = {
       startAtBlock: 1,
       onlyIrreversible: false,
       maxHistoryLength: 600,
-      ...(config || {}),
+      ...options,
     }
-    this.startAtBlock = configWithDefaults.startAtBlock
-    this.currentBlockNumber = configWithDefaults.startAtBlock - 1
-    this.onlyIrreversible = configWithDefaults.onlyIrreversible
-    this.maxHistoryLength = configWithDefaults.maxHistoryLength
+    this.startAtBlock = optionsWithDefaults.startAtBlock
+    this.currentBlockNumber = optionsWithDefaults.startAtBlock - 1
+    this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
+    this.maxHistoryLength = optionsWithDefaults.maxHistoryLength
 
     this.log = Logger.createLogger({ name: "demux" })
   }
