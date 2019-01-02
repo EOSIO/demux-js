@@ -42,6 +42,7 @@ export interface BlockInfo {
   blockHash: string
   previousBlockHash: string
   timestamp: Date
+  _lastIrreversibleBlockNumber: boolean
 }
 
 export interface Action {
@@ -73,6 +74,7 @@ export interface Updater extends ActionListener {
 
 export interface Effect extends ActionListener {
   run: StatelessActionCallback
+  deferUntilIrreversible?: boolean
   onRollback?: StatelessActionCallback
 }
 
@@ -85,4 +87,12 @@ export interface HandlerVersion {
 export interface VersionedAction {
   action: Action
   handlerVersionName: string
+}
+
+export type CurriedEffectRun = (
+  () => void | Promise<void>
+)
+
+export interface DeferredEffects {
+  [key: number]: CurriedEffectRun[]
 }

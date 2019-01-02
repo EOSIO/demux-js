@@ -1,5 +1,5 @@
 import * as Logger from "bunyan"
-import { Block, BlockMeta, HandlerVersion, IndexState, VersionedAction } from "./interfaces"
+import { Block, BlockMeta, DeferredEffects, HandlerVersion, IndexState, VersionedAction } from "./interfaces"
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -13,6 +13,7 @@ export abstract class AbstractActionHandler {
   protected lastProcessedBlockHash: string = ""
   protected handlerVersionName: string = "v1"
   protected log: Logger
+  private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   /**
@@ -171,7 +172,18 @@ export abstract class AbstractActionHandler {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (this.matchActionType(action.type, effect.actionType)) {
           const { payload } = action
-          effect.run(payload, block, context)
+          if (!effect.deferUntilIrreversible || block.blockInfo.isIrreversible) {
+            effect.run(payload, block, context)
+          } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
+            this.deferredEffects[block.blockInfo.blockNumber] = [
+              () => effect.run(payload, block, context),
+            ]
+          } else {
+            this.deferredEffects[block.blockInfo].push(
+              () => effect.run(payload, block, context),
+            )
+          }
+
         }
       }
     }
@@ -203,6 +215,12 @@ export abstract class AbstractActionHandler {
     await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
+  }
+
+  private runDeferredEffects(lastIrreversibleBlockNumber) {
+    for (const deferredEffect of deferredEffects) {
+
+    }
   }
 
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {
