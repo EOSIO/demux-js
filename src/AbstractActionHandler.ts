@@ -1,5 +1,5 @@
 import * as Logger from "bunyan"
-import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
+import { Block, BlockMeta, HandlerVersion, IndexState, VersionedAction } from "./interfaces"
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -31,11 +31,12 @@ export abstract class AbstractActionHandler {
    */
   public async handleBlock(
     block: Block,
-    isRollback: boolean,
-    isFirstBlock: boolean,
-    isReplay: boolean = false,
-  ): Promise<[boolean, number]> {
+    blockMeta: BlockMeta,
+    isReplay: boolean,
+  ): Promise<number | null> {
     const { blockInfo } = block
+
+    const { isRollback, isFirstBlock } = blockMeta
 
     if (isRollback || (isReplay && isFirstBlock)) {
       const rollbackBlockNumber = blockInfo.blockNumber - 1
@@ -52,17 +53,17 @@ export abstract class AbstractActionHandler {
     // Just processed this block; skip
     if (blockInfo.blockNumber === this.lastProcessedBlockNumber
         && blockInfo.blockHash === this.lastProcessedBlockHash) {
-      return [false, 0]
+      return null
     }
 
     // If it's the first block but we've already processed blocks, seek to next block
     if (isFirstBlock && this.lastProcessedBlockHash) {
-      return [true, nextBlockNeeded]
+      return nextBlockNeeded
     }
     // Only check if this is the block we need if it's not the first block
     if (!isFirstBlock) {
       if (blockInfo.blockNumber !== nextBlockNeeded) {
-        return [true, nextBlockNeeded]
+        return nextBlockNeeded
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
@@ -74,7 +75,7 @@ export abstract class AbstractActionHandler {
       await this.handleActions(state, block, context, isReplay)
     }
     await this.handleWithState(handleWithArgs)
-    return [false, 0]
+    return null
   }
 
   /**
@@ -129,8 +130,8 @@ export abstract class AbstractActionHandler {
     block: Block,
     isReplay: boolean,
     context: any,
-  ): Promise<Array<[Action, string]>> {
-    const versionedActions = [] as Array<[Action, string]>
+  ): Promise<VersionedAction[]> {
+    const versionedActions = [] as VersionedAction[]
     const { actions, blockInfo } = block
     for (const action of actions) {
       let updaterIndex = -1
@@ -150,7 +151,10 @@ export abstract class AbstractActionHandler {
           }
         }
       }
-      versionedActions.push([action, this.handlerVersionName])
+      versionedActions.push({
+        action,
+        handlerVersionName: this.handlerVersionName,
+      })
     }
     return versionedActions
   }
@@ -159,11 +163,11 @@ export abstract class AbstractActionHandler {
    * Process versioned actions against asynchronous side effects.
    */
   protected runEffects(
-    versionedActions: Array<[Action, string]>,
+    versionedActions: VersionedAction[],
     block: Block,
     context: any,
   ) {
-    for (const [action, handlerVersionName] of versionedActions) {
+    for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (this.matchActionType(action.type, effect.actionType)) {
           const { payload } = action

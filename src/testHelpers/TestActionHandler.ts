@@ -1,5 +1,5 @@
 import { AbstractActionHandler } from "../AbstractActionHandler"
-import { Action, Block, IndexState } from "../interfaces"
+import { Block, IndexState, VersionedAction } from "../interfaces"
 
 export class TestActionHandler extends AbstractActionHandler {
   public state: any = {
@@ -31,12 +31,12 @@ export class TestActionHandler extends AbstractActionHandler {
     block: Block,
     isReplay: boolean,
     context: any,
-  ): Promise<Array<[Action, string]>> {
+  ): Promise<VersionedAction[]> {
     return this.applyUpdaters(state, block, isReplay, context)
   }
 
   public _runEffects(
-    versionedActions: Array<[Action, string]>,
+    versionedActions: VersionedAction[],
     block: Block,
     context: any,
   ) {

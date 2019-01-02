@@ -1,6 +1,33 @@
+export interface ActionReaderConfig {
+  /**
+   * For positive values, this sets the first block that this will start at. For negative
+   * values, this will start at (most recent block + startAtBlock), effectively tailing the
+   * chain. Be careful when using this feature, as this will make your starting block dynamic.
+   */
+  startAtBlock?: number
+  /**
+   * When false (default), `getHeadBlockNumber` will load the most recent block number. When
+   * true, `getHeadBlockNumber` will return the block number of the most recent irreversible
+   * block. Keep in mind that `getHeadBlockNumber` is an abstract method and this functionality
+   * is the responsibility of the implementing class.
+   */
+  onlyIrreversible?: boolean
+  /**
+   * This determines how many blocks in the past are cached. This is used for determining
+   * block validity during both normal operation and when rolling back.
+   */
+  maxHistoryLength?: number
+}
+
 export interface Block {
   actions: Action[]
   blockInfo: BlockInfo
+}
+
+export interface BlockMeta {
+  isRollback: boolean
+  isFirstBlock: boolean
+  isNewBlock: boolean
 }
 
 export interface IndexState {
@@ -53,4 +80,9 @@ export interface HandlerVersion {
   versionName: string
   updaters: Updater[]
   effects: Effect[]
+}
+
+export interface VersionedAction {
+  action: Action
+  handlerVersionName: string
 }
