@@ -42,7 +42,6 @@ export interface BlockInfo {
   blockHash: string
   previousBlockHash: string
   timestamp: Date
-  _lastIrreversibleBlockNumber: boolean
 }
 
 export interface Action {

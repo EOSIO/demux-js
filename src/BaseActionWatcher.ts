@@ -48,7 +48,7 @@ export class BaseActionWatcher {
   protected async checkForBlocks(isReplay: boolean = false) {
     let headBlockNumber = 0
     while (!headBlockNumber || this.actionReader.currentBlockNumber < headBlockNumber) {
-      const [blockData, blockMeta] = await this.actionReader.nextBlock()
+      const [blockData, blockMeta, lastIrreversibleBlockNumber] = await this.actionReader.nextBlock()
       if (!blockMeta.isNewBlock) { break }
 
       let seekBlockNum = null
@@ -57,6 +57,7 @@ export class BaseActionWatcher {
           blockData,
           blockMeta,
           isReplay,
+          lastIrreversibleBlockNumber,
         )
       }
 

@@ -56,7 +56,7 @@ export abstract class AbstractActionReader {
    * indicates if the `Block` instance returned is the same one that was just returned from the last call of
    * `nextBlock`.
    */
-  public async nextBlock(): Promise<[Block, BlockMeta]> {
+  public async nextBlock(): Promise<[Block, BlockMeta, number]> {
     let blockData = null
     let isRollback = false
     let isNewBlock = false
@@ -116,7 +116,7 @@ export abstract class AbstractActionReader {
       isNewBlock,
     }
 
-    return [this.currentBlockData, this.currentBlockMeta]
+    return [this.currentBlockData, this.currentBlockMeta, this.lastIrreversibleBlockNumber]
   }
 
   /**

@@ -14,6 +14,7 @@ export abstract class AbstractActionHandler {
   protected handlerVersionName: string = "v1"
   protected log: Logger
   private deferredEffects: DeferredEffects = {}
+  private nextDeferredBlockNumber: number = 0
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   /**
@@ -34,6 +35,7 @@ export abstract class AbstractActionHandler {
     block: Block,
     blockMeta: BlockMeta,
     isReplay: boolean,
+    lastIrreversibleBlockNumber: number,
   ): Promise<number | null> {
     const { blockInfo } = block
 
@@ -73,7 +75,7 @@ export abstract class AbstractActionHandler {
     }
 
     const handleWithArgs: (state: any, context?: any) => Promise<void> = async (state: any, context: any = {}) => {
-      await this.handleActions(state, block, context, isReplay)
+      await this.handleActions(state, block, context, isReplay, lastIrreversibleBlockNumber)
     }
     await this.handleWithState(handleWithArgs)
     return null
@@ -129,8 +131,8 @@ export abstract class AbstractActionHandler {
   protected async applyUpdaters(
     state: any,
     block: Block,
-    isReplay: boolean,
     context: any,
+    isReplay: boolean,
   ): Promise<VersionedAction[]> {
     const versionedActions = [] as VersionedAction[]
     const { actions, blockInfo } = block
@@ -167,21 +169,19 @@ export abstract class AbstractActionHandler {
     versionedActions: VersionedAction[],
     block: Block,
     context: any,
+    lastIrreversibleBlockNumber: number,
   ) {
+    this.runDeferredEffects(lastIrreversibleBlockNumber)
     for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (this.matchActionType(action.type, effect.actionType)) {
           const { payload } = action
-          if (!effect.deferUntilIrreversible || block.blockInfo.isIrreversible) {
+          if (!effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber) {
             effect.run(payload, block, context)
           } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
-            this.deferredEffects[block.blockInfo.blockNumber] = [
-              () => effect.run(payload, block, context),
-            ]
+            this.deferredEffects[block.blockInfo.blockNumber] = [() => effect.run(payload, block, context)]
           } else {
-            this.deferredEffects[block.blockInfo].push(
-              () => effect.run(payload, block, context),
-            )
+            this.deferredEffects[block.blockInfo.blockNumber].push(() => effect.run(payload, block, context))
           }
 
         }
@@ -204,12 +204,13 @@ export abstract class AbstractActionHandler {
     block: Block,
     context: any,
     isReplay: boolean,
+    lastIrreversibleBlockNumber: number,
   ): Promise<void> {
     const { blockInfo } = block
 
-    const versionedActions = await this.applyUpdaters(state, block, isReplay, context)
+    const versionedActions = await this.applyUpdaters(state, block, context, isReplay)
     if (!isReplay) {
-      this.runEffects(versionedActions, block, context)
+      this.runEffects(versionedActions, block, context, lastIrreversibleBlockNumber)
     }
 
     await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)
@@ -217,9 +218,18 @@ export abstract class AbstractActionHandler {
     this.lastProcessedBlockHash = blockInfo.blockHash
   }
 
-  private runDeferredEffects(lastIrreversibleBlockNumber) {
-    for (const deferredEffect of deferredEffects) {
+  private range(start: number, end: number) {
+    return Array(end - start).fill(0).map((_, i: number) => i + start)
+  }
 
+  private runDeferredEffects(lastIrreversibleBlockNumber) {
+    for (const blockNumber of this.range(this.nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
+      if (this.deferredEffects[blockNumber]) {
+        for (const deferredEffect of this.deferredEffects[blockNumber]) {
+          deferredEffect()
+        }
+        delete this.deferredEffects[blockNumber]
+      }
     }
   }
 
