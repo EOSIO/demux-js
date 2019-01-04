@@ -2,6 +2,7 @@ import * as Logger from "bunyan"
 import {
   Block,
   DeferredEffects,
+  Effect,
   HandlerVersion,
   IndexState,
   NextBlock,
@@ -174,20 +175,11 @@ export abstract class AbstractActionHandler {
     context: any,
     nextBlock: NextBlock,
   ) {
-    const { block, lastIrreversibleBlockNumber } = nextBlock
-    this.runDeferredEffects(lastIrreversibleBlockNumber)
+    this.runDeferredEffects(nextBlock.lastIrreversibleBlockNumber)
     for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (this.matchActionType(action.type, effect.actionType)) {
-          const { payload } = action
-          if (!effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber) {
-            effect.run(payload, block, context)
-          } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
-            this.deferredEffects[block.blockInfo.blockNumber] = [() => effect.run(payload, block, context)]
-          } else {
-            this.deferredEffects[block.blockInfo.blockNumber].push(() => effect.run(payload, block, context))
-          }
-
+          this.runOrDeferEffect(effect, action.payload, nextBlock, context)
         }
       }
     }
@@ -224,6 +216,22 @@ export abstract class AbstractActionHandler {
 
   private range(start: number, end: number) {
     return Array(end - start).fill(0).map((_, i: number) => i + start)
+  }
+
+  private runOrDeferEffect(
+    effect: Effect,
+    payload: any,
+    nextBlock: NextBlock,
+    context: any,
+  ) {
+    const { block, lastIrreversibleBlockNumber } = nextBlock
+    if (!effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber) {
+      effect.run(payload, block, context)
+    } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
+      this.deferredEffects[block.blockInfo.blockNumber] = [() => effect.run(payload, block, context)]
+    } else {
+      this.deferredEffects[block.blockInfo.blockNumber].push(() => effect.run(payload, block, context))
+    }
   }
 
   private runDeferredEffects(lastIrreversibleBlockNumber: number) {
