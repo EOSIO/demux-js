@@ -21,7 +21,6 @@ export abstract class AbstractActionHandler {
   protected handlerVersionName: string = "v1"
   protected log: Logger
   private deferredEffects: DeferredEffects = {}
-  private nextDeferredBlockNumber: number = 0
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   /**
@@ -227,8 +226,10 @@ export abstract class AbstractActionHandler {
     return Array(end - start).fill(0).map((_, i: number) => i + start)
   }
 
-  private runDeferredEffects(lastIrreversibleBlockNumber) {
-    for (const blockNumber of this.range(this.nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
+  private runDeferredEffects(lastIrreversibleBlockNumber: number) {
+    const nextDeferredBlockNumber = this.getNextDeferredBlockNumber()
+    if (!nextDeferredBlockNumber) { return }
+    for (const blockNumber of this.range(nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
       if (this.deferredEffects[blockNumber]) {
         for (const deferredEffect of this.deferredEffects[blockNumber]) {
           deferredEffect()
@@ -236,6 +237,14 @@ export abstract class AbstractActionHandler {
         delete this.deferredEffects[blockNumber]
       }
     }
+  }
+
+  private getNextDeferredBlockNumber() {
+    const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
+    if (blockNumbers.length === 0) {
+      return 0
+    }
+    return Math.min(...blockNumbers)
   }
 
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {
