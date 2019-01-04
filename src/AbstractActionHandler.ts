@@ -1,5 +1,12 @@
 import * as Logger from "bunyan"
-import { Block, BlockMeta, DeferredEffects, HandlerVersion, IndexState, VersionedAction } from "./interfaces"
+import {
+  Block,
+  DeferredEffects,
+  HandlerVersion,
+  IndexState,
+  NextBlock,
+  VersionedAction,
+} from "./interfaces"
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -32,13 +39,11 @@ export abstract class AbstractActionHandler {
    * Receive block, validate, and handle actions with updaters and effects
    */
   public async handleBlock(
-    block: Block,
-    blockMeta: BlockMeta,
+    nextBlock: NextBlock,
     isReplay: boolean,
-    lastIrreversibleBlockNumber: number,
   ): Promise<number | null> {
+    const { block, blockMeta } = nextBlock
     const { blockInfo } = block
-
     const { isRollback, isFirstBlock } = blockMeta
 
     if (isRollback || (isReplay && isFirstBlock)) {
@@ -75,7 +80,7 @@ export abstract class AbstractActionHandler {
     }
 
     const handleWithArgs: (state: any, context?: any) => Promise<void> = async (state: any, context: any = {}) => {
-      await this.handleActions(state, block, context, isReplay, lastIrreversibleBlockNumber)
+      await this.handleActions(state, context, nextBlock, isReplay)
     }
     await this.handleWithState(handleWithArgs)
     return null
@@ -167,10 +172,10 @@ export abstract class AbstractActionHandler {
    */
   protected runEffects(
     versionedActions: VersionedAction[],
-    block: Block,
     context: any,
-    lastIrreversibleBlockNumber: number,
+    nextBlock: NextBlock,
   ) {
+    const { block, lastIrreversibleBlockNumber } = nextBlock
     this.runDeferredEffects(lastIrreversibleBlockNumber)
     for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
@@ -201,16 +206,16 @@ export abstract class AbstractActionHandler {
    */
   protected async handleActions(
     state: any,
-    block: Block,
     context: any,
+    nextBlock: NextBlock,
     isReplay: boolean,
-    lastIrreversibleBlockNumber: number,
   ): Promise<void> {
+    const { block } = nextBlock
     const { blockInfo } = block
 
     const versionedActions = await this.applyUpdaters(state, block, context, isReplay)
     if (!isReplay) {
-      this.runEffects(versionedActions, block, context, lastIrreversibleBlockNumber)
+      this.runEffects(versionedActions, context, nextBlock)
     }
 
     await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)

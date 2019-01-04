@@ -44,6 +44,12 @@ export interface BlockInfo {
   timestamp: Date
 }
 
+export interface NextBlock {
+  block: Block
+  blockMeta: BlockMeta
+  lastIrreversibleBlockNumber: number
+}
+
 export interface Action {
   type: string
   payload: any

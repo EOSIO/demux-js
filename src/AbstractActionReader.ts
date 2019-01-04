@@ -1,5 +1,5 @@
 import * as Logger from "bunyan"
-import { ActionReaderConfig, Block, BlockInfo, BlockMeta } from "./interfaces"
+import { ActionReaderConfig, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
@@ -56,7 +56,7 @@ export abstract class AbstractActionReader {
    * indicates if the `Block` instance returned is the same one that was just returned from the last call of
    * `nextBlock`.
    */
-  public async nextBlock(): Promise<[Block, BlockMeta, number]> {
+  public async getNextBlock(): Promise<NextBlock> {
     let blockData = null
     let isRollback = false
     let isNewBlock = false
@@ -116,7 +116,11 @@ export abstract class AbstractActionReader {
       isNewBlock,
     }
 
-    return [this.currentBlockData, this.currentBlockMeta, this.lastIrreversibleBlockNumber]
+    return {
+      block: this.currentBlockData,
+      blockMeta: this.currentBlockMeta,
+      lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
+    }
   }
 
   /**
