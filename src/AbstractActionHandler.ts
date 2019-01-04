@@ -225,7 +225,9 @@ export abstract class AbstractActionHandler {
     context: any,
   ) {
     const { block, lastIrreversibleBlockNumber } = nextBlock
-    const shouldRunImmediately = !effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber
+    const shouldRunImmediately = (
+      !effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber
+    )
     if (shouldRunImmediately) {
       effect.run(payload, block, context)
     } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
