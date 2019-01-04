@@ -28,73 +28,73 @@ describe("Action Reader", () => {
   })
 
   it("gets the next block", async () => {
-    const [block] = await actionReader.nextBlock()
+    const { block } = await actionReader.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(1)
   })
 
   it("gets the next block when starting ahead", async () => {
-    const [block] = await actionReaderStartAt3.nextBlock()
+    const { block } = await actionReaderStartAt3.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(3)
   })
 
   it("gets the next block when negative indexing", async () => {
-    const [block] = await actionReaderNegative.nextBlock()
+    const { block } = await actionReaderNegative.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(3)
   })
 
   it("seeks to the first block", async () => {
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
     await actionReader.seekToBlock(1)
-    const [block, blockMeta] = await actionReader.nextBlock()
+    const { block, blockMeta} = await actionReader.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(1)
     expect(blockMeta.isFirstBlock).toBe(true)
   })
 
   it("seeks to non-first block", async () => {
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
     await actionReader.seekToBlock(2)
-    const [block] = await actionReader.nextBlock()
+    const { block } = await actionReader.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(2)
   })
 
   it("does not seek to block earlier than startAtBlock", async () => {
-    await actionReaderStartAt3.nextBlock()
+    await actionReaderStartAt3.getNextBlock()
     const expectedError = new Error("Cannot seek to block before configured startAtBlock.")
     await expect(actionReaderStartAt3.seekToBlock(2)).rejects.toEqual(expectedError)
   })
 
   it("handles rollback correctly", async () => {
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
 
     actionReader.blockchain = forked
-    const [block, blockMeta] = await actionReader.nextBlock()
+    const { block, blockMeta } = await actionReader.getNextBlock()
     expect(blockMeta.isRollback).toBe(true)
     expect(block.blockInfo.blockHash).toBe("foo")
 
-    const [block2, blockMeta2] = await actionReader.nextBlock()
+    const { block: block2, blockMeta: blockMeta2 } = await actionReader.getNextBlock()
     expect(blockMeta2.isRollback).toBe(false)
     expect(block2.blockInfo.blockHash).toBe("wrench")
 
-    const [block3, blockMeta3] = await actionReader.nextBlock()
+    const { block: block3, blockMeta: blockMeta3 } = await actionReader.getNextBlock()
     expect(blockMeta3.isRollback).toBe(false)
     expect(block3.blockInfo.blockHash).toBe("madeit")
   })
 
   it("indicates when the same block is returned", async () => {
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    await actionReader.nextBlock()
-    const blockMeta = (await actionReader.nextBlock())[1]
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    const { blockMeta } = (await actionReader.getNextBlock())
     expect(blockMeta.isNewBlock).toBe(false)
   })
 })

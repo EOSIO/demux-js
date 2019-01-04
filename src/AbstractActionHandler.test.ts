@@ -95,14 +95,24 @@ describe("Action Handler", () => {
   })
 
   it("runs the correct updater based on action type", async () => {
-    await actionHandler._applyUpdaters({}, blockchain[1], false, {})
+    await actionHandler._applyUpdaters({}, blockchain[1], {}, false)
     expect(runUpdater).toHaveBeenCalledTimes(1)
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
   it("runs the correct effect based on action type", async () => {
-    const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], false, {})
-    actionHandler._runEffects(versionedActions, blockchain[1], {})
+    const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], {},  false)
+    const blockMeta = {
+      isRollback: false,
+      isFirstBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[1],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    actionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).toHaveBeenCalledTimes(2)
     expect(notRunEffect).not.toHaveBeenCalled()
   })
@@ -117,7 +127,12 @@ describe("Action Handler", () => {
       isFirstBlock: true,
       isNewBlock: true,
     }
-    const seekBlockNum = await actionHandler.handleBlock(blockchain[0], blockMeta, false)
+    const nextBlock = {
+      block: blockchain[0],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    const seekBlockNum = await actionHandler.handleBlock(nextBlock, false)
     expect(seekBlockNum).toBe(4)
   })
 
@@ -128,7 +143,12 @@ describe("Action Handler", () => {
       isFirstBlock: false,
       isNewBlock: true,
     }
-    const seekBlockNum = await actionHandler.handleBlock(blockchain[3], blockMeta, false)
+    const nextBlock = {
+      block: blockchain[3],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    const seekBlockNum = await actionHandler.handleBlock(nextBlock, false)
     expect(seekBlockNum).toBe(3)
   })
 
@@ -141,12 +161,27 @@ describe("Action Handler", () => {
       isNewBlock: true,
     }
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
-    await expect(actionHandler.handleBlock(blockchain[3], blockMeta, false)).rejects.toEqual(expectedError)
+    const nextBlock = {
+      block: blockchain[3],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await expect(actionHandler.handleBlock(nextBlock, false)).rejects.toEqual(expectedError)
   })
 
   it("upgrades the action handler correctly", async () => {
-    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], false, {})
-    actionHandler._runEffects(versionedActions, upgradeHandler[0], {})
+    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
+    const blockMeta = {
+      isRollback: false,
+      isFirstBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: upgradeHandler[0],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    actionHandler._runEffects(versionedActions, {}, nextBlock)
 
     expect(actionHandler._handlerVersionName).toEqual("v2")
     expect(runUpdater).toHaveBeenCalledTimes(1)
