@@ -185,7 +185,7 @@ export default {
     {
       blockInfo: {
         blockHash: "0000000000000000000000000000000000000000000000000000000000000001",
-        blockNumber: 1,
+        blockNumber: 2,
         previousBlockHash: "",
         timestamp: new Date("2018-06-06T11:53:37.500"),
       },
@@ -249,6 +249,15 @@ export default {
           type: "eosio.token::issue",
         },
       ],
+    },
+    {
+      blockInfo: {
+        blockHash: "0000000000000000000000000000000000000000000000000000000000000002",
+        blockNumber: 3,
+        previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000001",
+        timestamp: new Date("2018-06-06T11:53:38.000"),
+      },
+      actions: [],
     },
   ],
 }

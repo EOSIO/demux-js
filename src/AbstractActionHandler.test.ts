@@ -57,14 +57,17 @@ describe("Action Handler", () => {
           {
             actionType: "eosio.token::transfer",
             run: runEffect,
+            deferUntilIrreversible: true,
           },
           {
             actionType: "eosio::bidname",
             run: runEffect,
+            deferUntilIrreversible: true,
           },
           {
             actionType: "eosio.token::issue",
             run: notRunEffect,
+            deferUntilIrreversible: true,
           },
         ],
       },
@@ -84,10 +87,12 @@ describe("Action Handler", () => {
           {
             actionType: "eosio.token::transfer",
             run: notRunEffectAfterUpgrade,
+            deferUntilIrreversible: true,
           },
           {
             actionType: "eosio.token::issue",
             run: runEffectAfterUpgrade,
+            deferUntilIrreversible: true,
           },
         ],
       },
@@ -110,7 +115,7 @@ describe("Action Handler", () => {
     const nextBlock = {
       block: blockchain[1],
       blockMeta,
-      lastIrreversibleBlockNumber: 1,
+      lastIrreversibleBlockNumber: 2,
     }
     actionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).toHaveBeenCalledTimes(2)
@@ -170,7 +175,6 @@ describe("Action Handler", () => {
   })
 
   it("upgrades the action handler correctly", async () => {
-    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
     const blockMeta = {
       isRollback: false,
       isFirstBlock: true,
@@ -179,8 +183,9 @@ describe("Action Handler", () => {
     const nextBlock = {
       block: upgradeHandler[0],
       blockMeta,
-      lastIrreversibleBlockNumber: 1,
+      lastIrreversibleBlockNumber: 2,
     }
+    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
     actionHandler._runEffects(versionedActions, {}, nextBlock)
 
     expect(actionHandler._handlerVersionName).toEqual("v2")
@@ -191,6 +196,40 @@ describe("Action Handler", () => {
     expect(notRunUpdaterAfterUpgrade).not.toHaveBeenCalled()
     expect(runUpdaterAfterUpgrade).toHaveBeenCalledTimes(1)
     expect(notRunEffectAfterUpgrade).not.toHaveBeenCalled()
+    expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
+  })
+
+  it("defers the effects until the block is irreversible", async () => {
+    const blockMeta = {
+      isRollback: false,
+      isFirstBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: upgradeHandler[0],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
+    actionHandler._runEffects(versionedActions, {}, nextBlock)
+
+    expect(runEffect).not.toHaveBeenCalled()
+    expect(runEffectAfterUpgrade).not.toHaveBeenCalled()
+
+    const blockMeta2 = {
+      isRollback: false,
+      isFirstBlock: false,
+      isNewBlock: true,
+    }
+    const nextBlock2 = {
+      block: upgradeHandler[1],
+      blockMeta: blockMeta2,
+      lastIrreversibleBlockNumber: 2,
+    }
+    const versionedActions2 = await actionHandler._applyUpdaters({}, upgradeHandler[1], {}, false)
+    actionHandler._runEffects(versionedActions2, {}, nextBlock2)
+
+    expect(runEffect).toHaveBeenCalledTimes(2)
     expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
   })
 })
