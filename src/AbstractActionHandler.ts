@@ -1,5 +1,13 @@
 import * as Logger from "bunyan"
-import { Block, BlockMeta, HandlerVersion, IndexState, VersionedAction } from "./interfaces"
+import {
+  Block,
+  DeferredEffects,
+  Effect,
+  HandlerVersion,
+  IndexState,
+  NextBlock,
+  VersionedAction,
+} from "./interfaces"
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -13,6 +21,7 @@ export abstract class AbstractActionHandler {
   protected lastProcessedBlockHash: string = ""
   protected handlerVersionName: string = "v1"
   protected log: Logger
+  private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   /**
@@ -30,12 +39,11 @@ export abstract class AbstractActionHandler {
    * Receive block, validate, and handle actions with updaters and effects
    */
   public async handleBlock(
-    block: Block,
-    blockMeta: BlockMeta,
+    nextBlock: NextBlock,
     isReplay: boolean,
   ): Promise<number | null> {
+    const { block, blockMeta } = nextBlock
     const { blockInfo } = block
-
     const { isRollback, isFirstBlock } = blockMeta
 
     if (isRollback || (isReplay && isFirstBlock)) {
@@ -72,7 +80,7 @@ export abstract class AbstractActionHandler {
     }
 
     const handleWithArgs: (state: any, context?: any) => Promise<void> = async (state: any, context: any = {}) => {
-      await this.handleActions(state, block, context, isReplay)
+      await this.handleActions(state, context, nextBlock, isReplay)
     }
     await this.handleWithState(handleWithArgs)
     return null
@@ -128,8 +136,8 @@ export abstract class AbstractActionHandler {
   protected async applyUpdaters(
     state: any,
     block: Block,
-    isReplay: boolean,
     context: any,
+    isReplay: boolean,
   ): Promise<VersionedAction[]> {
     const versionedActions = [] as VersionedAction[]
     const { actions, blockInfo } = block
@@ -164,14 +172,14 @@ export abstract class AbstractActionHandler {
    */
   protected runEffects(
     versionedActions: VersionedAction[],
-    block: Block,
     context: any,
+    nextBlock: NextBlock,
   ) {
+    this.runDeferredEffects(nextBlock.lastIrreversibleBlockNumber)
     for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (this.matchActionType(action.type, effect.actionType)) {
-          const { payload } = action
-          effect.run(payload, block, context)
+          this.runOrDeferEffect(effect, action.payload, nextBlock, context)
         }
       }
     }
@@ -189,20 +197,65 @@ export abstract class AbstractActionHandler {
    */
   protected async handleActions(
     state: any,
-    block: Block,
     context: any,
+    nextBlock: NextBlock,
     isReplay: boolean,
   ): Promise<void> {
+    const { block } = nextBlock
     const { blockInfo } = block
 
-    const versionedActions = await this.applyUpdaters(state, block, isReplay, context)
+    const versionedActions = await this.applyUpdaters(state, block, context, isReplay)
     if (!isReplay) {
-      this.runEffects(versionedActions, block, context)
+      this.runEffects(versionedActions, context, nextBlock)
     }
 
     await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
+  }
+
+  private range(start: number, end: number) {
+    return Array(end - start).fill(0).map((_, i: number) => i + start)
+  }
+
+  private runOrDeferEffect(
+    effect: Effect,
+    payload: any,
+    nextBlock: NextBlock,
+    context: any,
+  ) {
+    const { block, lastIrreversibleBlockNumber } = nextBlock
+    const shouldRunImmediately = (
+      !effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber
+    )
+    if (shouldRunImmediately) {
+      effect.run(payload, block, context)
+    } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
+      this.deferredEffects[block.blockInfo.blockNumber] = [() => effect.run(payload, block, context)]
+    } else {
+      this.deferredEffects[block.blockInfo.blockNumber].push(() => effect.run(payload, block, context))
+    }
+  }
+
+  private runDeferredEffects(lastIrreversibleBlockNumber: number) {
+    const nextDeferredBlockNumber = this.getNextDeferredBlockNumber()
+    if (!nextDeferredBlockNumber) { return }
+    for (const blockNumber of this.range(nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
+      if (this.deferredEffects[blockNumber]) {
+        for (const deferredEffect of this.deferredEffects[blockNumber]) {
+          deferredEffect()
+        }
+        delete this.deferredEffects[blockNumber]
+      }
+    }
+  }
+
+  private getNextDeferredBlockNumber() {
+    const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
+    if (blockNumbers.length === 0) {
+      return 0
+    }
+    return Math.min(...blockNumbers)
   }
 
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {

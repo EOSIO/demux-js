@@ -48,14 +48,13 @@ export class BaseActionWatcher {
   protected async checkForBlocks(isReplay: boolean = false) {
     let headBlockNumber = 0
     while (!headBlockNumber || this.actionReader.currentBlockNumber < headBlockNumber) {
-      const [blockData, blockMeta] = await this.actionReader.nextBlock()
-      if (!blockMeta.isNewBlock) { break }
+      const nextBlock = await this.actionReader.getNextBlock()
+      if (!nextBlock.blockMeta.isNewBlock) { break }
 
       let seekBlockNum = null
-      if (blockData) {
+      if (nextBlock.block) {
         seekBlockNum = await this.actionHandler.handleBlock(
-          blockData,
-          blockMeta,
+          nextBlock,
           isReplay,
         )
       }

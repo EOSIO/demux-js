@@ -1,5 +1,5 @@
 import { AbstractActionHandler } from "../AbstractActionHandler"
-import { Block, IndexState, VersionedAction } from "../interfaces"
+import { Block, IndexState, NextBlock, VersionedAction } from "../interfaces"
 
 export class TestActionHandler extends AbstractActionHandler {
   public state: any = {
@@ -29,18 +29,18 @@ export class TestActionHandler extends AbstractActionHandler {
   public async _applyUpdaters(
     state: any,
     block: Block,
-    isReplay: boolean,
     context: any,
+    isReplay: boolean,
   ): Promise<VersionedAction[]> {
-    return this.applyUpdaters(state, block, isReplay, context)
+    return this.applyUpdaters(state, block, context, isReplay)
   }
 
   public _runEffects(
     versionedActions: VersionedAction[],
-    block: Block,
     context: any,
+    nextBlock: NextBlock,
   ) {
-    this.runEffects(versionedActions, block, context)
+    this.runEffects(versionedActions, context, nextBlock)
   }
 
   protected async loadIndexState(): Promise<IndexState> {
