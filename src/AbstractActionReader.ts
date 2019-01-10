@@ -1,5 +1,6 @@
 import * as Logger from "bunyan"
 import { ActionReaderConfig, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
+import { ActionReaderOptions, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
