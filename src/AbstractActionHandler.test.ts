@@ -109,7 +109,7 @@ describe("Action Handler", () => {
     const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], {},  false)
     const blockMeta = {
       isRollback: false,
-      isFirstBlock: true,
+      isEarliestBlock: true,
       isNewBlock: true,
     }
     const nextBlock = {
@@ -129,7 +129,7 @@ describe("Action Handler", () => {
     }
     const blockMeta = {
       isRollback: false,
-      isFirstBlock: true,
+      isEarliestBlock: true,
       isNewBlock: true,
     }
     const nextBlock = {
@@ -145,7 +145,7 @@ describe("Action Handler", () => {
     actionHandler.setLastProcessedBlockNumber(2)
     const blockMeta = {
       isRollback: false,
-      isFirstBlock: false,
+      isEarliestBlock: false,
       isNewBlock: true,
     }
     const nextBlock = {
@@ -162,7 +162,7 @@ describe("Action Handler", () => {
     actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
     const blockMeta = {
       isRollback: false,
-      isFirstBlock: false,
+      isEarliestBlock: false,
       isNewBlock: true,
     }
     const expectedError = new Error("Block hashes do not match; block not part of current chain.")
@@ -177,7 +177,7 @@ describe("Action Handler", () => {
   it("upgrades the action handler correctly", async () => {
     const blockMeta = {
       isRollback: false,
-      isFirstBlock: true,
+      isEarliestBlock: true,
       isNewBlock: true,
     }
     const nextBlock = {
@@ -202,7 +202,7 @@ describe("Action Handler", () => {
   it("defers the effects until the block is irreversible", async () => {
     const blockMeta = {
       isRollback: false,
-      isFirstBlock: true,
+      isEarliestBlock: true,
       isNewBlock: true,
     }
     const nextBlock = {
@@ -218,7 +218,7 @@ describe("Action Handler", () => {
 
     const blockMeta2 = {
       isRollback: false,
-      isFirstBlock: false,
+      isEarliestBlock: false,
       isNewBlock: true,
     }
     const nextBlock2 = {

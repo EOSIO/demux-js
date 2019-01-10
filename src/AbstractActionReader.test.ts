@@ -50,7 +50,7 @@ describe("Action Reader", () => {
     await actionReader.seekToBlock(1)
     const { block, blockMeta} = await actionReader.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(1)
-    expect(blockMeta.isFirstBlock).toBe(true)
+    expect(blockMeta.isEarliestBlock).toBe(true)
   })
 
   it("seeks to non-first block", async () => {
@@ -65,11 +65,12 @@ describe("Action Reader", () => {
 
   it("does not seek to block earlier than startAtBlock", async () => {
     await actionReaderStartAt3.getNextBlock()
-    const expectedError = new Error("Cannot seek to block before configured startAtBlock.")
+    const expectedError = new Error("Cannot seek to block before configured `startAtBlock` number.")
     await expect(actionReaderStartAt3.seekToBlock(2)).rejects.toEqual(expectedError)
   })
 
   it("handles rollback correctly", async () => {
+    actionReader._testLastIrreversible = 1
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
@@ -96,5 +97,19 @@ describe("Action Reader", () => {
     await actionReader.getNextBlock()
     const { blockMeta } = (await actionReader.getNextBlock())
     expect(blockMeta.isNewBlock).toBe(false)
+  })
+
+  it("prunes history to last irreversible block", async () => {
+    actionReader._testLastIrreversible = 1
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    await actionReader.getNextBlock()
+    expect(actionReader._lastIrreversibleBlockNumber).toEqual(1)
+    expect(actionReader._blockHistory[0].blockInfo.blockNumber).toEqual(actionReader._lastIrreversibleBlockNumber)
+
+    actionReader._testLastIrreversible = 3
+    await actionReader.getNextBlock()
+    expect(actionReader._lastIrreversibleBlockNumber).toEqual(3)
+    expect(actionReader._blockHistory[0].blockInfo.blockNumber).toEqual(actionReader._lastIrreversibleBlockNumber)
   })
 })

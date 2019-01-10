@@ -1,4 +1,4 @@
-export interface ActionReaderConfig {
+export interface ActionReaderOptions {
   /**
    * For positive values, this sets the first block that this will start at. For negative
    * values, this will start at (most recent block + startAtBlock), effectively tailing the
@@ -26,7 +26,7 @@ export interface Block {
 
 export interface BlockMeta {
   isRollback: boolean
-  isFirstBlock: boolean
+  isEarliestBlock: boolean
   isNewBlock: boolean
 }
 
