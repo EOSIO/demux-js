@@ -44,9 +44,9 @@ export abstract class AbstractActionHandler {
   ): Promise<number | null> {
     const { block, blockMeta } = nextBlock
     const { blockInfo } = block
-    const { isRollback, isFirstBlock } = blockMeta
+    const { isRollback, isEarliestBlock } = blockMeta
 
-    if (isRollback || (isReplay && isFirstBlock)) {
+    if (isRollback || (isReplay && isEarliestBlock)) {
       const rollbackBlockNumber = blockInfo.blockNumber - 1
       const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
       this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
@@ -65,11 +65,11 @@ export abstract class AbstractActionHandler {
     }
 
     // If it's the first block but we've already processed blocks, seek to next block
-    if (isFirstBlock && this.lastProcessedBlockHash) {
+    if (isEarliestBlock && this.lastProcessedBlockHash) {
       return nextBlockNeeded
     }
     // Only check if this is the block we need if it's not the first block
-    if (!isFirstBlock) {
+    if (!isEarliestBlock) {
       if (blockInfo.blockNumber !== nextBlockNeeded) {
         return nextBlockNeeded
       }

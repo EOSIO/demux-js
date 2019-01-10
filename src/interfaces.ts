@@ -26,7 +26,7 @@ export interface Block {
 
 export interface BlockMeta {
   isRollback: boolean
-  isFirstBlock: boolean
+  isEarliestBlock: boolean
   isNewBlock: boolean
 }
 
