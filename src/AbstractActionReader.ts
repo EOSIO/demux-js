@@ -83,7 +83,6 @@ export abstract class AbstractActionReader {
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
 
-
       const expectedHash = this.currentBlockData.blockInfo.blockHash
       const actualHash = this.currentBlockNumber ?
         unvalidatedBlockData.blockInfo.previousBlockHash :
@@ -156,10 +155,8 @@ export abstract class AbstractActionReader {
       }
       this.logForkMismatch(currentBlockInfo, previousBlockInfo)
 
-      console.log(previousBlockData)
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
-      console.log(this.blockHistory)
     }
 
     if (this.blockHistory.length === 0) {
@@ -259,8 +256,6 @@ export abstract class AbstractActionReader {
   }
 
   private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
-    console.log(this.currentBlockData.blockInfo.blockNumber)
-    console.log(this.lastIrreversibleBlockNumber)
     if (this.currentBlockData.blockInfo.blockNumber < this.lastIrreversibleBlockNumber && checkIrreversiblility) {
       throw new Error("Last irreversible block has been passed without resolving fork")
     }
