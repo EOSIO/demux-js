@@ -1,7 +1,7 @@
 import * as Logger from "bunyan"
 import { ActionReaderOptions, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
 
-const defaultBlock = {
+const defaultBlock: Block = {
   blockInfo: {
     blockNumber: 0,
     blockHash: "",
@@ -9,7 +9,7 @@ const defaultBlock = {
     timestamp: new Date(0),
   },
   actions: [],
-} as Block
+}
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
@@ -63,11 +63,11 @@ export abstract class AbstractActionReader {
    * `nextBlock`.
    */
   public async getNextBlock(): Promise<NextBlock> {
-    const blockMeta = {
+    const blockMeta: BlockMeta = {
       isRollback: false,
       isNewBlock: false,
       isEarliestBlock: false,
-    } as BlockMeta
+    }
 
     // TODO: Should this only be called when updating headBlockNumber?
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
