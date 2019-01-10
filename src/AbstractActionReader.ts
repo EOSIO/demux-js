@@ -1,6 +1,15 @@
 import * as Logger from "bunyan"
-import { ActionReaderConfig, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
 import { ActionReaderOptions, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
+
+const defaultBlock = {
+  blockInfo: {
+    blockNumber: 0,
+    blockHash: "",
+    previousBlockHash: "",
+    timestamp: new Date(0),
+  },
+  actions: [],
+} as Block
 
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
@@ -9,26 +18,22 @@ export abstract class AbstractActionReader {
   public startAtBlock: number
   public headBlockNumber: number = 0
   public currentBlockNumber: number
-  public currentBlockMeta: BlockMeta | null = null
   protected onlyIrreversible: boolean
-  protected maxHistoryLength: number
-  protected currentBlockData: Block | null = null
+  protected currentBlockData: Block = defaultBlock
   protected lastIrreversibleBlockNumber: number = 0
   protected blockHistory: Block[] = []
   protected log: Logger
-  private isFirstRun: boolean = true
+  private initialized: boolean = false
 
-  constructor(options: ActionReaderConfig = {}) {
+  constructor(options: ActionReaderOptions = {}) {
     const optionsWithDefaults = {
       startAtBlock: 1,
       onlyIrreversible: false,
-      maxHistoryLength: 600,
       ...options,
     }
     this.startAtBlock = optionsWithDefaults.startAtBlock
     this.currentBlockNumber = optionsWithDefaults.startAtBlock - 1
     this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
-    this.maxHistoryLength = optionsWithDefaults.maxHistoryLength
 
     this.log = Logger.createLogger({ name: "demux" })
   }
@@ -58,68 +63,50 @@ export abstract class AbstractActionReader {
    * `nextBlock`.
    */
   public async getNextBlock(): Promise<NextBlock> {
-    let blockData = null
-    let isRollback = false
-    let isNewBlock = false
+    const blockMeta = {
+      isRollback: false,
+      isNewBlock: false,
+      isEarliestBlock: false,
+    } as BlockMeta
 
-    // If we're on the head block, refresh current head block
-    if (this.currentBlockNumber === this.headBlockNumber || !this.headBlockNumber) {
+    // TODO: Should this only be called when updating headBlockNumber?
+    this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
+
+    if (!this.initialized) {
+      await this.initBlockState()
+    }
+
+    if (this.currentBlockNumber === this.headBlockNumber) {
       this.headBlockNumber = await this.getLatestNeededBlockNumber()
     }
 
-    // If currentBlockNumber is negative, it means we wrap to the end of the chain (most recent blocks)
-    if (this.currentBlockNumber < 0 && this.isFirstRun) {
-      this.currentBlockNumber = this.headBlockNumber + this.currentBlockNumber
-      this.startAtBlock = this.currentBlockNumber + 1
-    } else if (this.isFirstRun) {
-      this.isFirstRun = false
-    }
-
-    // If we're now behind one or more new blocks, process them
     if (this.currentBlockNumber < this.headBlockNumber) {
       const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
 
-      const expectedHash = this.currentBlockData !== null ? this.currentBlockData.blockInfo.blockHash : "INVALID"
-      const actualHash = unvalidatedBlockData.blockInfo.previousBlockHash
 
-      // Continue if the new block is on the same chain as our history, or if we've just started
-      if (expectedHash === actualHash || this.blockHistory.length === 0) {
-        blockData = unvalidatedBlockData // Block is now validated
-        if (this.currentBlockData) {
-          this.blockHistory.push(this.currentBlockData) // No longer current, belongs on history
-        }
-        this.blockHistory.splice(0, this.blockHistory.length - this.maxHistoryLength) // Trim history
-        this.currentBlockData = blockData // Replaced with the real current block
-        isNewBlock = true
-        this.currentBlockNumber = this.currentBlockData.blockInfo.blockNumber
+      const expectedHash = this.currentBlockData.blockInfo.blockHash
+      const actualHash = this.currentBlockNumber ?
+        unvalidatedBlockData.blockInfo.previousBlockHash :
+        defaultBlock.blockInfo.blockHash
+
+      if (expectedHash === actualHash) {
+        this.acceptBlock(unvalidatedBlockData)
+        blockMeta.isNewBlock = true
       } else {
-        // Since the new block did not match our history, we can assume our history is wrong
-        // and need to roll back
         this.logForkDetected(unvalidatedBlockData, expectedHash, actualHash)
         await this.resolveFork()
-        isNewBlock = true
-        isRollback = true // Signal action handler that we must roll back
+        blockMeta.isNewBlock = true
+        blockMeta.isRollback = true
         // Reset for safety, as new fork could have less blocks than the previous fork
         this.headBlockNumber = await this.getLatestNeededBlockNumber()
       }
     }
 
-    // Let handler know if this is the earliest block we'll send
-    const isFirstBlock = this.currentBlockNumber === this.startAtBlock
-
-    if (this.currentBlockData === null) {
-      throw Error("currentBlockData must not be null.")
-    }
-
-    this.currentBlockMeta = {
-      isRollback,
-      isFirstBlock,
-      isNewBlock,
-    }
+    blockMeta.isEarliestBlock = this.currentBlockNumber === this.startAtBlock
 
     return {
       block: this.currentBlockData,
-      blockMeta: this.currentBlockMeta,
+      blockMeta,
       lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
     }
   }
@@ -132,45 +119,15 @@ export abstract class AbstractActionReader {
    * The next time `nextBlock()` is called, it will load the block after this input block number.
    */
   public async seekToBlock(blockNumber: number): Promise<void> {
-    // Clear current block data
-    this.currentBlockData = null
-    this.headBlockNumber = 0
-
+    this.headBlockNumber = await this.getLatestNeededBlockNumber()
     if (blockNumber < this.startAtBlock) {
-      throw Error("Cannot seek to block before configured startAtBlock.")
+      throw new Error("Cannot seek to block before configured `startAtBlock` number.")
     }
-
-    // If we're going back to the first block, we don't want to get the preceding block
-    if (blockNumber === 1) {
-      this.blockHistory = []
-      this.currentBlockNumber = 0
-      return
+    if (blockNumber > this.headBlockNumber) {
+      throw new Error(`Cannot seek to block number ${blockNumber} as it does not exist yet.`)
     }
-
-    // Check if block exists in history
-    let toDelete = -1
-    for (let i = this.blockHistory.length - 1; i >= 0; i--) {
-      if (this.blockHistory[i].blockInfo.blockNumber === blockNumber) {
-        break
-      } else {
-        toDelete += 1
-      }
-    }
-    if (toDelete >= 0) {
-      this.blockHistory.splice(toDelete)
-      this.currentBlockData = this.blockHistory.pop() || null
-    }
-
-    // Load current block
     this.currentBlockNumber = blockNumber - 1
-    if (!this.currentBlockData) {
-      this.currentBlockData = await this.getBlock(this.currentBlockNumber)
-    }
-
-    // Fetch block if there is no history
-    if (this.blockHistory.length === 0) {
-      await this.addPreviousBlockToHistory(false)
-    }
+    await this.reloadHistory()
   }
 
   /**
@@ -179,10 +136,6 @@ export abstract class AbstractActionReader {
    * matches the previous block's hash, or when history is exhausted.
    */
   protected async resolveFork() {
-    if (this.currentBlockData === null) {
-      throw Error("`currentBlockData` must not be null when initiating fork resolution.")
-    }
-
     if (this.blockHistory.length === 0) {
       await this.addPreviousBlockToHistory()
     }
@@ -195,25 +148,38 @@ export abstract class AbstractActionReader {
       const [previousBlockData] = this.blockHistory.slice(-1)
       this.log.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
       this.currentBlockData = await this.getBlock(this.currentBlockData.blockInfo.blockNumber)
-      if (this.currentBlockData !== null) {
-        const { blockInfo: currentBlockInfo } = this.currentBlockData
-        const { blockInfo: previousBlockInfo } = previousBlockData
-        if (currentBlockInfo.previousBlockHash === previousBlockInfo.blockHash) {
-          this.logForkResolved(currentBlockInfo, previousBlockInfo)
-          break
-        }
-        this.logForkMismatch(currentBlockInfo, previousBlockInfo)
+      const { blockInfo: currentBlockInfo } = this.currentBlockData
+      const { blockInfo: previousBlockInfo } = previousBlockData
+      if (currentBlockInfo.previousBlockHash === previousBlockInfo.blockHash) {
+        this.logForkResolved(currentBlockInfo, previousBlockInfo)
+        break
       }
+      this.logForkMismatch(currentBlockInfo, previousBlockInfo)
 
+      console.log(previousBlockData)
       this.currentBlockData = previousBlockData
       this.blockHistory.pop()
+      console.log(this.blockHistory)
+    }
+
+    if (this.blockHistory.length === 0) {
+      await this.addPreviousBlockToHistory()
     }
 
     this.currentBlockNumber = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockNumber + 1
   }
 
+  private async initBlockState() {
+    this.headBlockNumber = await this.getLatestNeededBlockNumber()
+    if (this.currentBlockNumber < 0) {
+      this.currentBlockNumber = this.headBlockNumber + this.currentBlockNumber
+      this.startAtBlock = this.currentBlockNumber + 1
+    }
+    await this.reloadHistory()
+    this.initialized = true
+  }
+
   private async getLatestNeededBlockNumber() {
-    this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
     if (this.onlyIrreversible) {
       return this.lastIrreversibleBlockNumber
     } else {
@@ -221,12 +187,81 @@ export abstract class AbstractActionReader {
     }
   }
 
-  private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
-    if (!this.currentBlockData) {
-      throw Error("`currentBlockData` must not be null when initiating fork resolution.")
-    }
+  private acceptBlock(blockData: Block) {
+    this.blockHistory.push(this.currentBlockData)
+    this.pruneHistory()
+    this.currentBlockData = blockData
+    this.currentBlockNumber = this.currentBlockData.blockInfo.blockNumber
+  }
 
-    if (this.currentBlockData.blockInfo.blockNumber <= this.lastIrreversibleBlockNumber && checkIrreversiblility) {
+  private range(start: number, end: number): number[] {
+    if (start > end) {
+      return []
+    }
+    return Array(end - start).fill(0).map((_, i: number) => i + start)
+  }
+
+  private pruneHistory() {
+    let toDelete = 0
+    for (const block of this.blockHistory) {
+      if (block.blockInfo.blockNumber < this.lastIrreversibleBlockNumber) {
+        toDelete += 1
+      } else {
+        break
+      }
+    }
+    if (toDelete === this.blockHistory.length) {
+      this.blockHistory = [this.blockHistory[this.blockHistory.length - 1]]
+      return
+    }
+    this.blockHistory.splice(0, toDelete)
+  }
+
+  private async reloadHistory(maxTries = 10) {
+    if (this.currentBlockNumber === 0) {
+      this.blockHistory = []
+      this.currentBlockData = defaultBlock
+      return
+    }
+    if (this.currentBlockNumber === 1) {
+      this.blockHistory = [defaultBlock]
+      this.currentBlockData = await this.getBlock(1)
+      return
+    }
+    let historyRange = this.range(this.lastIrreversibleBlockNumber, this.currentBlockNumber + 1)
+    if (historyRange.length <= 1) {
+      historyRange = [this.currentBlockNumber - 1, this.currentBlockNumber]
+    }
+    let microForked = true
+    let tryCount = 0
+    while (microForked) {
+      microForked = false
+      this.blockHistory = []
+      for (const blockNumber of historyRange) {
+        const historyBlock = await this.getBlock(blockNumber)
+        if (this.blockHistory.length === 0) {
+          this.blockHistory.push(historyBlock)
+          continue
+        }
+        const latestHistoryBlockHash = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockHash
+        if (latestHistoryBlockHash !== historyBlock.blockInfo.previousBlockHash) {
+          microForked = true
+          break
+        }
+        this.blockHistory.push(historyBlock)
+      }
+      tryCount += 1
+      if (tryCount === maxTries) {
+        throw new Error("Could not reload history.")
+      }
+    }
+    this.currentBlockData = this.blockHistory.pop()!
+  }
+
+  private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
+    console.log(this.currentBlockData.blockInfo.blockNumber)
+    console.log(this.lastIrreversibleBlockNumber)
+    if (this.currentBlockData.blockInfo.blockNumber < this.lastIrreversibleBlockNumber && checkIrreversiblility) {
       throw new Error("Last irreversible block has been passed without resolving fork")
     }
     this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))

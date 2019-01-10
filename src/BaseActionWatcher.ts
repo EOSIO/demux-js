@@ -51,16 +51,13 @@ export class BaseActionWatcher {
       const nextBlock = await this.actionReader.getNextBlock()
       if (!nextBlock.blockMeta.isNewBlock) { break }
 
-      let seekBlockNum = null
-      if (nextBlock.block) {
-        seekBlockNum = await this.actionHandler.handleBlock(
-          nextBlock,
-          isReplay,
-        )
-      }
+      const nextBlockNumberNeeded = await this.actionHandler.handleBlock(
+        nextBlock,
+        isReplay,
+      )
 
-      if (seekBlockNum) {
-        await this.actionReader.seekToBlock(seekBlockNum - 1)
+      if (nextBlockNumberNeeded) {
+        await this.actionReader.seekToBlock(nextBlockNumberNeeded - 1)
       }
 
       headBlockNumber = this.actionReader.headBlockNumber
