@@ -928,11 +928,14 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="abstractactionreader.html#headblocknumber" class="tsd-kind-icon">head<wbr>Block<wbr>Number</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class">
-					<a href="abstractactionreader.html#isfirstblock" class="tsd-kind-icon">is<wbr>First<wbr>Block</a>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#initialized" class="tsd-kind-icon">initialized</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a href="abstractactionreader.html#maxhistorylength" class="tsd-kind-icon">max<wbr>History<wbr>Length</a>
+					<a href="abstractactionreader.html#lastirreversibleblocknumber" class="tsd-kind-icon">last<wbr>Irreversible<wbr>Block<wbr>Number</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a href="abstractactionreader.html#log" class="tsd-kind-icon">log</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionreader.html#onlyirreversible" class="tsd-kind-icon">only<wbr>Irreversible</a>
@@ -940,17 +943,50 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="abstractactionreader.html#startatblock" class="tsd-kind-icon">start<wbr>AtBlock</a>
 				</li>
+				<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+					<a href="abstractactionreader.html#info" class="tsd-kind-icon">info</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#acceptblock" class="tsd-kind-icon">accept<wbr>Block</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#addpreviousblocktohistory" class="tsd-kind-icon">add<wbr>Previous<wbr>Block<wbr>ToHistory</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="abstractactionreader.html#getblock" class="tsd-kind-icon">get<wbr>Block</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="abstractactionreader.html#getheadblocknumber" class="tsd-kind-icon">get<wbr>Head<wbr>Block<wbr>Number</a>
 				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a href="abstractactionreader.html#historyexhausted" class="tsd-kind-icon">history<wbr>Exhausted</a>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="abstractactionreader.html#getlastirreversibleblocknumber" class="tsd-kind-icon">get<wbr>Last<wbr>Irreversible<wbr>Block<wbr>Number</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#getlatestneededblocknumber" class="tsd-kind-icon">get<wbr>Latest<wbr>Needed<wbr>Block<wbr>Number</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="abstractactionreader.html#nextblock" class="tsd-kind-icon">next<wbr>Block</a>
+					<a href="abstractactionreader.html#getnextblock" class="tsd-kind-icon">get<wbr>Next<wbr>Block</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#initblockstate" class="tsd-kind-icon">init<wbr>Block<wbr>State</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#logforkdetected" class="tsd-kind-icon">log<wbr>Fork<wbr>Detected</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#logforkmismatch" class="tsd-kind-icon">log<wbr>Fork<wbr>Mismatch</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#logforkresolved" class="tsd-kind-icon">log<wbr>Fork<wbr>Resolved</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#prunehistory" class="tsd-kind-icon">prune<wbr>History</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#range" class="tsd-kind-icon">range</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a href="abstractactionreader.html#reloadhistory" class="tsd-kind-icon">reload<wbr>History</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionreader.html#resolvefork" class="tsd-kind-icon">resolve<wbr>Fork</a>
@@ -963,11 +999,17 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-class">
 			<a href="baseactionwatcher.html" class="tsd-kind-icon">Base<wbr>Action<wbr>Watcher</a>
 		</li>
+		<li class=" tsd-kind-class">
+			<a href="expressactionwatcher.html" class="tsd-kind-icon">Express<wbr>Action<wbr>Watcher</a>
+		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/action.html" class="tsd-kind-icon">Action</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/actionlistener.html" class="tsd-kind-icon">Action<wbr>Listener</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/actionreaderoptions.html" class="tsd-kind-icon">Action<wbr>Reader<wbr>Options</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/block.html" class="tsd-kind-icon">Block</a>
@@ -976,7 +1018,19 @@ img { max-width: 100%; }
 			<a href="../interfaces/blockinfo.html" class="tsd-kind-icon">Block<wbr>Info</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/blockmeta.html" class="tsd-kind-icon">Block<wbr>Meta</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/deferredeffects.html" class="tsd-kind-icon">Deferred<wbr>Effects</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/demuxinfo.html" class="tsd-kind-icon">Demux<wbr>Info</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/effect.html" class="tsd-kind-icon">Effect</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/handlerinfo.html" class="tsd-kind-icon">Handler<wbr>Info</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/handlerversion.html" class="tsd-kind-icon">Handler<wbr>Version</a>
@@ -985,10 +1039,22 @@ img { max-width: 100%; }
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
 		</li>
 		<li class=" tsd-kind-interface">
+			<a href="../interfaces/nextblock.html" class="tsd-kind-icon">Next<wbr>Block</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/readerinfo.html" class="tsd-kind-icon">Reader<wbr>Info</a>
+		</li>
+		<li class=" tsd-kind-interface">
 			<a href="../interfaces/updater.html" class="tsd-kind-icon">Updater</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/versionedaction.html" class="tsd-kind-icon">Versioned<wbr>Action</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="../index.html#actioncallback" class="tsd-kind-icon">Action<wbr>Callback</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="../index.html#curriedeffectrun" class="tsd-kind-icon">Curried<wbr>Effect<wbr>Run</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="../index.html#statelessactioncallback" class="tsd-kind-icon">Stateless<wbr>Action<wbr>Callback</a>
@@ -1029,19 +1095,36 @@ img { max-width: 100%; }
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#currentblockdata" class="tsd-kind-icon">current<wbr>Block<wbr>Data</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="abstractactionreader.html#currentblocknumber" class="tsd-kind-icon">current<wbr>Block<wbr>Number</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="abstractactionreader.html#headblocknumber" class="tsd-kind-icon">head<wbr>Block<wbr>Number</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class"><a href="abstractactionreader.html#isfirstblock" class="tsd-kind-icon">is<wbr>First<wbr>Block</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#maxhistorylength" class="tsd-kind-icon">max<wbr>History<wbr>Length</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#initialized" class="tsd-kind-icon">initialized</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#lastirreversibleblocknumber" class="tsd-kind-icon">last<wbr>Irreversible<wbr>Block<wbr>Number</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#log" class="tsd-kind-icon">log</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#onlyirreversible" class="tsd-kind-icon">only<wbr>Irreversible</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="abstractactionreader.html#startatblock" class="tsd-kind-icon">start<wbr>AtBlock</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
+						<h3>Accessors</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="abstractactionreader.html#info" class="tsd-kind-icon">info</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#acceptblock" class="tsd-kind-icon">accept<wbr>Block</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#addpreviousblocktohistory" class="tsd-kind-icon">add<wbr>Previous<wbr>Block<wbr>ToHistory</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#getblock" class="tsd-kind-icon">get<wbr>Block</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#getheadblocknumber" class="tsd-kind-icon">get<wbr>Head<wbr>Block<wbr>Number</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#historyexhausted" class="tsd-kind-icon">history<wbr>Exhausted</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#nextblock" class="tsd-kind-icon">next<wbr>Block</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#getlastirreversibleblocknumber" class="tsd-kind-icon">get<wbr>Last<wbr>Irreversible<wbr>Block<wbr>Number</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#getlatestneededblocknumber" class="tsd-kind-icon">get<wbr>Latest<wbr>Needed<wbr>Block<wbr>Number</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#getnextblock" class="tsd-kind-icon">get<wbr>Next<wbr>Block</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#initblockstate" class="tsd-kind-icon">init<wbr>Block<wbr>State</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#logforkdetected" class="tsd-kind-icon">log<wbr>Fork<wbr>Detected</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#logforkmismatch" class="tsd-kind-icon">log<wbr>Fork<wbr>Mismatch</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#logforkresolved" class="tsd-kind-icon">log<wbr>Fork<wbr>Resolved</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#prunehistory" class="tsd-kind-icon">prune<wbr>History</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#range" class="tsd-kind-icon">range</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionreader.html#reloadhistory" class="tsd-kind-icon">reload<wbr>History</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionreader.html#resolvefork" class="tsd-kind-icon">resolve<wbr>Fork</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="abstractactionreader.html#seektoblock" class="tsd-kind-icon">seek<wbr>ToBlock</a></li>
 						</ul>
@@ -1055,48 +1138,19 @@ img { max-width: 100%; }
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">new <wbr>Abstract<wbr>Action<wbr>Reader<span class="tsd-signature-symbol">(</span>startAtBlock<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, onlyIrreversible<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, maxHistoryLength<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="abstractactionreader.html" class="tsd-signature-type">AbstractActionReader</a></li>
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Abstract<wbr>Action<wbr>Reader<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/actionreaderoptions.html" class="tsd-signature-type">ActionReaderOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="abstractactionreader.html" class="tsd-signature-type">AbstractActionReader</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L11">src/AbstractActionReader.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L33">src/AbstractActionReader.ts:33</a></li>
 							</ul>
 						</aside>
-						<div class="tsd-comment tsd-typography">
-						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> startAtBlock: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>For positive values, this sets the first block that this will start at. For negative
-											values, this will start at (most recent block + startAtBlock), effectively tailing the
-										chain. Be careful when using this feature, as this will make your starting block dynamic.</p>
-									</div>
-								</div>
-							</li>
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> onlyIrreversible: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>When false (default), <code>getHeadBlockNumber</code> will load the most recent block number. When
-											true, <code>getHeadBlockNumber</code> will return the block number of the most recent irreversible
-											block. Keep in mind that <code>getHeadBlockNumber</code> is an abstract method and this functionality
-										is the responsibility of the implementing class.</p>
-									</div>
-								</div>
-							</li>
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> maxHistoryLength: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;600</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<div class="lead">
-										<p>This determines how many blocks in the past are cached. This is used for determining
-										block validity during both normal operation and when rolling back.</p>
-									</div>
-								</div>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/actionreaderoptions.html" class="tsd-signature-type">ActionReaderOptions</a><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <a href="abstractactionreader.html" class="tsd-signature-type">AbstractActionReader</a></h4>
@@ -1112,17 +1166,17 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">block<wbr>History<span class="tsd-signature-symbol">:</span> <a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L11">src/AbstractActionReader.ts:11</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L31">src/AbstractActionReader.ts:31</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 				<a name="currentblockdata" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> current<wbr>Block<wbr>Data</h3>
-				<div class="tsd-signature tsd-kind-icon">current<wbr>Block<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+				<div class="tsd-signature tsd-kind-icon">current<wbr>Block<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol"> =&nbsp;defaultBlock</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L10">src/AbstractActionReader.ts:10</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L29">src/AbstractActionReader.ts:29</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1132,7 +1186,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">current<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L8">src/AbstractActionReader.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L27">src/AbstractActionReader.ts:27</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1142,35 +1196,39 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">head<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L7">src/AbstractActionReader.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L26">src/AbstractActionReader.ts:26</a></li>
 					</ul>
 				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-				<a name="isfirstblock" class="tsd-anchor"></a>
-				<h3>is<wbr>First<wbr>Block</h3>
-				<div class="tsd-signature tsd-kind-icon">is<wbr>First<wbr>Block<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></div>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<a name="initialized" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> initialized</h3>
+				<div class="tsd-signature tsd-kind-icon">initialized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L9">src/AbstractActionReader.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L33">src/AbstractActionReader.ts:33</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-				<a name="maxhistorylength" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> max<wbr>History<wbr>Length</h3>
-				<div class="tsd-signature tsd-kind-icon">max<wbr>History<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<a name="lastirreversibleblocknumber" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> last<wbr>Irreversible<wbr>Block<wbr>Number</h3>
+				<div class="tsd-signature tsd-kind-icon">last<wbr>Irreversible<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L29">src/AbstractActionReader.ts:29</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L30">src/AbstractActionReader.ts:30</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>This determines how many blocks in the past are cached. This is used for determining
-						block validity during both normal operation and when rolling back.</p>
-					</div>
-				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+				<a name="log" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> log</h3>
+				<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Logger</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L32">src/AbstractActionReader.ts:32</a></li>
+					</ul>
+				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 				<a name="onlyirreversible" class="tsd-anchor"></a>
@@ -1178,17 +1236,9 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">only<wbr>Irreversible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L28">src/AbstractActionReader.ts:28</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L28">src/AbstractActionReader.ts:28</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>When false (default), <code>getHeadBlockNumber</code> will load the most recent block number. When
-							true, <code>getHeadBlockNumber</code> will return the block number of the most recent irreversible
-							block. Keep in mind that <code>getHeadBlockNumber</code> is an abstract method and this functionality
-						is the responsibility of the implementing class.</p>
-					</div>
-				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 				<a name="startatblock" class="tsd-anchor"></a>
@@ -1196,20 +1246,77 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">start<wbr>AtBlock<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L27">src/AbstractActionReader.ts:27</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L25">src/AbstractActionReader.ts:25</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Accessors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+				<a name="info" class="tsd-anchor"></a>
+				<h3>info</h3>
+				<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> </div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L142">src/AbstractActionReader.ts:142</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>For positive values, this sets the first block that this will start at. For negative
-							values, this will start at (most recent block + startAtBlock), effectively tailing the
-						chain. Be careful when using this feature, as this will make your starting block dynamic.</p>
+						<p>Information about the current state of the Action Reader</p>
 					</div>
 				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="acceptblock" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> accept<wbr>Block</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">accept<wbr>Block<span class="tsd-signature-symbol">(</span>blockData<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L207">src/AbstractActionReader.ts:207</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>blockData: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="addpreviousblocktohistory" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> add<wbr>Previous<wbr>Block<wbr>ToHistory</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">add<wbr>Previous<wbr>Block<wbr>ToHistory<span class="tsd-signature-symbol">(</span>checkIrreversiblility<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L278">src/AbstractActionReader.ts:278</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> checkIrreversiblility: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;true</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 				<a name="getblock" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> get<wbr>Block</h3>
@@ -1220,7 +1327,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L43">src/AbstractActionReader.ts:43</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L63">src/AbstractActionReader.ts:63</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1232,6 +1339,9 @@ img { max-width: 100%; }
 						<ul class="tsd-parameters">
 							<li>
 								<h5>blockNumber: <span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<p>The number of the block to load</p>
+								</div>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1248,53 +1358,68 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L38">src/AbstractActionReader.ts:38</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L51">src/AbstractActionReader.ts:51</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>Loads the head block number, returning a promise for an int.
-								If onlyIrreversible is true, return the most recent irreversible block number</p>
+								<p>Loads the number of the latest block.</p>
 							</div>
 						</div>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-				<a name="historyexhausted" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> history<wbr>Exhausted</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">history<wbr>Exhausted<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getlastirreversibleblocknumber" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> get<wbr>Last<wbr>Irreversible<wbr>Block<wbr>Number</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Last<wbr>Irreversible<wbr>Block<wbr>Number<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L198">src/AbstractActionReader.ts:198</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L56">src/AbstractActionReader.ts:56</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>When history is exhausted in resolveFork(), this is run to handle the situation. If left unimplemented,
-								then only instantiate with <code>onlyIrreversible</code> set to true.</p>
+								<p>Loads the number of the most recent irreversible block.</p>
 							</div>
 						</div>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="nextblock" class="tsd-anchor"></a>
-				<h3>next<wbr>Block</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">next<wbr>Block<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="getlatestneededblocknumber" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Latest<wbr>Needed<wbr>Block<wbr>Number</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Latest<wbr>Needed<wbr>Block<wbr>Number<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L52">src/AbstractActionReader.ts:52</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L199">src/AbstractActionReader.ts:199</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getnextblock" class="tsd-anchor"></a>
+				<h3>get<wbr>Next<wbr>Block</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Next<wbr>Block<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L72">src/AbstractActionReader.ts:72</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1306,7 +1431,171 @@ img { max-width: 100%; }
 								<code>nextBlock</code>.</p>
 							</div>
 						</div>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="initblockstate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Block<wbr>State</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">init<wbr>Block<wbr>State<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L189">src/AbstractActionReader.ts:189</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="logforkdetected" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> log<wbr>Fork<wbr>Detected</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">log<wbr>Fork<wbr>Detected<span class="tsd-signature-symbol">(</span>unvalidatedBlockData<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, expectedHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, actualHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L285">src/AbstractActionReader.ts:285</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>unvalidatedBlockData: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
+							</li>
+							<li>
+								<h5>expectedHash: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5>actualHash: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="logforkmismatch" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> log<wbr>Fork<wbr>Mismatch</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">log<wbr>Fork<wbr>Mismatch<span class="tsd-signature-symbol">(</span>currentBlockInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a>, previousBlockInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L299">src/AbstractActionReader.ts:299</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>currentBlockInfo: <a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a></h5>
+							</li>
+							<li>
+								<h5>previousBlockInfo: <a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="logforkresolved" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> log<wbr>Fork<wbr>Resolved</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">log<wbr>Fork<wbr>Resolved<span class="tsd-signature-symbol">(</span>currentBlockInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a>, previousBlockInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L292">src/AbstractActionReader.ts:292</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>currentBlockInfo: <a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a></h5>
+							</li>
+							<li>
+								<h5>previousBlockInfo: <a href="../interfaces/blockinfo.html" class="tsd-signature-type">BlockInfo</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="prunehistory" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> prune<wbr>History</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">prune<wbr>History<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L221">src/AbstractActionReader.ts:221</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="range" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> range</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">range<span class="tsd-signature-symbol">(</span>start<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, end<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L214">src/AbstractActionReader.ts:214</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>start: <span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li>
+								<h5>end: <span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<a name="reloadhistory" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> reload<wbr>History</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">reload<wbr>History<span class="tsd-signature-symbol">(</span>maxTries<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L237">src/AbstractActionReader.ts:237</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> maxTries: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;10</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -1320,7 +1609,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L160">src/AbstractActionReader.ts:160</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L157">src/AbstractActionReader.ts:157</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1344,7 +1633,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/c63be46/src/AbstractActionReader.ts#L118">src/AbstractActionReader.ts:118</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/AbstractActionReader.ts#L127">src/AbstractActionReader.ts:127</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
