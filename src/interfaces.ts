@@ -101,3 +101,24 @@ export type CurriedEffectRun = (
 export interface DeferredEffects {
   [key: number]: CurriedEffectRun[]
 }
+
+export interface HandlerInfo {
+  lastProcessedBlockNumber: number
+  lastProcessedBlockHash: string
+  handlerVersionName: string
+}
+
+export interface ReaderInfo {
+  currentBlockNumber: number
+  startAtBlock: number
+  headBlockNumber: number
+  onlyIrreversible: boolean
+  lastIrreversibleBlockNumber: number
+}
+
+export interface DemuxInfo {
+  status: string
+  error?: Error
+  handler: HandlerInfo
+  reader: ReaderInfo
+}

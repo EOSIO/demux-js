@@ -3,6 +3,7 @@ import {
   Block,
   DeferredEffects,
   Effect,
+  HandlerInfo,
   HandlerVersion,
   IndexState,
   NextBlock,
@@ -17,9 +18,9 @@ import {
  *
  */
 export abstract class AbstractActionHandler {
-  protected lastProcessedBlockNumber: number = 0
-  protected lastProcessedBlockHash: string = ""
-  protected handlerVersionName: string = "v1"
+  public lastProcessedBlockNumber: number = 0
+  public lastProcessedBlockHash: string = ""
+  public handlerVersionName: string = "v1"
   protected log: Logger
   private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
@@ -84,6 +85,17 @@ export abstract class AbstractActionHandler {
     }
     await this.handleWithState(handleWithArgs)
     return null
+  }
+
+  /**
+   * Information about the current state of the Action Handler
+   */
+  public get info(): HandlerInfo {
+    return {
+      lastProcessedBlockNumber: this.lastProcessedBlockNumber,
+      lastProcessedBlockHash: this.lastProcessedBlockHash,
+      handlerVersionName: this.handlerVersionName,
+    }
   }
 
   /**
