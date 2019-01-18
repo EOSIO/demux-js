@@ -33,7 +33,7 @@
     "watch": "tsc -w",
     "example": "./run-example.sh",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "jest --detectOpenHandles",
+    "test": "jest --detectOpenHandles --maxWorkers=2",
     "build-docs": "./build-docs.sh",
     "current-version": "echo $npm_package_version"
   },
