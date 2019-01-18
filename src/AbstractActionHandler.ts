@@ -3,6 +3,7 @@ import {
   Block,
   DeferredEffects,
   Effect,
+  HandlerInfo,
   HandlerVersion,
   IndexState,
   NextBlock,
@@ -84,6 +85,17 @@ export abstract class AbstractActionHandler {
     }
     await this.handleWithState(handleWithArgs)
     return null
+  }
+
+  /**
+   * Information about the current state of the Action Handler
+   */
+  public get info(): HandlerInfo {
+    return {
+      lastProcessedBlockNumber: this.lastProcessedBlockNumber,
+      lastProcessedBlockHash: this.lastProcessedBlockHash,
+      handlerVersionName: this.handlerVersionName,
+    }
   }
 
   /**

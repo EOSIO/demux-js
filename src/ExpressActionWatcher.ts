@@ -4,7 +4,13 @@ import { AbstractActionHandler } from "./AbstractActionHandler"
 import { AbstractActionReader } from "./AbstractActionReader"
 import { BaseActionWatcher } from "./BaseActionWatcher"
 
+/**
+ * Exposes the BaseActionWatcher's API methods through a simple REST interface using Express
+ */
 export class ExpressActionWatcher extends BaseActionWatcher {
+  /**
+   * @param port  The port to use for the Express server
+   */
   public express = express()
   private server: http.Server | null = null
   constructor(
@@ -28,6 +34,9 @@ export class ExpressActionWatcher extends BaseActionWatcher {
     })
   }
 
+  /**
+   * Start the Express server
+   */
   public async listen(): Promise<boolean> {
     if (this.server) {
       this.log.warn(`API server already listening on port ${this.port}.`)
@@ -38,6 +47,9 @@ export class ExpressActionWatcher extends BaseActionWatcher {
     return true
   }
 
+  /**
+   * Close the Express server
+   */
   public async close(): Promise<boolean> {
     if (!this.server) {
       this.log.warn(`API server cannot close because it is not listening.`)

@@ -68,6 +68,9 @@ export class BaseActionWatcher {
     setTimeout(async () => await this.watch(false), waitTime)
   }
 
+  /**
+   * Start or resume indexing.
+   */
   public start(): boolean {
     if (this.running) {
       this.log.info("Cannot start; already indexing.")
@@ -78,6 +81,9 @@ export class BaseActionWatcher {
     return true
   }
 
+  /**
+   * Suspend indexing. Will go into effect after the currently-processing block.
+   */
   public pause(): boolean {
     if (!this.running) {
       this.log.info("Cannot pause; not currently indexing.")
@@ -88,6 +94,9 @@ export class BaseActionWatcher {
     return true
   }
 
+  /**
+   * Object describing the
+   */
   public get info(): DemuxInfo {
     let status
     if (this.running && !this.shouldPause) {
@@ -99,10 +108,9 @@ export class BaseActionWatcher {
     }
 
     const info: DemuxInfo = {
+      handler: this.actionHandler.info,
+      reader: this.actionReader.info,
       status,
-      lastProcessedBlockNumber: this.actionHandler.lastProcessedBlockNumber,
-      lastProcessedBlockHash: this.actionHandler.lastProcessedBlockHash,
-      handlerVersionName: this.actionHandler.handlerVersionName,
     }
     if (this.error) {
       info.error = this.error

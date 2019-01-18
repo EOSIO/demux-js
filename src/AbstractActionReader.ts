@@ -1,5 +1,12 @@
 import * as Logger from "bunyan"
-import { ActionReaderOptions, Block, BlockInfo, BlockMeta, NextBlock } from "./interfaces"
+import {
+  ActionReaderOptions,
+  Block,
+  BlockInfo,
+  BlockMeta,
+  NextBlock,
+  ReaderInfo,
+} from "./interfaces"
 
 const defaultBlock: Block = {
   blockInfo: {
@@ -127,6 +134,19 @@ export abstract class AbstractActionReader {
     }
     this.currentBlockNumber = blockNumber - 1
     await this.reloadHistory()
+  }
+
+  /**
+   * Information about the current state of the Action Reader
+   */
+  public get info(): ReaderInfo {
+    return {
+      currentBlockNumber: this.currentBlockNumber,
+      startAtBlock: this.startAtBlock,
+      headBlockNumber: this.headBlockNumber,
+      onlyIrreversible: this.onlyIrreversible,
+      lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
+    }
   }
 
   /**
