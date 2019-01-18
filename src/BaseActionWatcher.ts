@@ -1,7 +1,7 @@
 import * as Logger from "bunyan"
 import { AbstractActionHandler } from "./AbstractActionHandler"
 import { AbstractActionReader } from "./AbstractActionReader"
-import { DemuxStatus } from "./interfaces"
+import { DemuxInfo } from "./interfaces"
 
 /**
  * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
@@ -17,6 +17,7 @@ export class BaseActionWatcher {
   protected log: Logger
   private running: boolean = false
   private shouldPause: boolean = false
+  private error: Error | null = null
 
   constructor(
     protected actionReader: AbstractActionReader,
@@ -37,59 +38,76 @@ export class BaseActionWatcher {
    * Start a polling loop
    */
   public async watch(isReplay: boolean = false) {
+    if (this.shouldPause) {
+      this.running = false
+      this.shouldPause = false
+      this.log.info("Indexing paused.")
+      return
+    }
+    this.running = true
+    this.error = null
+    const startTime = Date.now()
+
     try {
-      this.running = true
-      const startTime = new Date().getTime()
-
       await this.checkForBlocks(isReplay)
-      if (this.shouldPause) {
-        this.running = false
-        this.shouldPause = false
-        this.log.info("Demux paused.")
-        return
-      }
-
-      const endTime = new Date().getTime()
-      const duration = endTime - startTime
-      let waitTime = this.pollInterval - duration
-      if (waitTime < 0) {
-        waitTime = 0
-      }
-
-      setTimeout(async () => await this.watch(false), waitTime)
     } catch (err) {
       this.running = false
       this.shouldPause = false
       this.log.error(err)
-      this.log.info("Demux stopped due to error.")
+      this.error = err
+      this.log.info("Indexing unexpectedly paused due to an error.")
+      return
     }
+
+    const endTime = Date.now()
+    const duration = endTime - startTime
+    let waitTime = this.pollInterval - duration
+    if (waitTime < 0) {
+      waitTime = 0
+    }
+    setTimeout(async () => await this.watch(false), waitTime)
   }
 
-  public start() {
+  public start(): boolean {
     if (this.running) {
+      this.log.info("Cannot start; already indexing.")
       return false
     }
-    this.log.info("Demux starting...")
+    this.log.info("Starting indexing.")
     this.watch()
     return true
   }
 
-  public pause() {
+  public pause(): boolean {
     if (!this.running) {
+      this.log.info("Cannot pause; not currently indexing.")
       return false
     }
-    this.log.info("Demux stopping...")
+    this.log.info("Pausing indexing.")
     this.shouldPause = true
     return true
   }
 
-  public get status(): DemuxStatus {
-    return {
-      running: this.running,
+  public get info(): DemuxInfo {
+    let status
+    if (this.running && !this.shouldPause) {
+      status = "indexing"
+    } else if (this.running && this.shouldPause) {
+      status = "pausing"
+    } else {
+      status = "paused"
+    }
+
+    const info: DemuxInfo = {
+      status,
       lastProcessedBlockNumber: this.actionHandler.lastProcessedBlockNumber,
       lastProcessedBlockHash: this.actionHandler.lastProcessedBlockHash,
       handlerVersionName: this.actionHandler.handlerVersionName,
     }
+    if (this.error) {
+      info.error = this.error
+    }
+    return info
   }
 
   /**
@@ -97,9 +115,6 @@ export class BaseActionWatcher {
    */
   protected async checkForBlocks(isReplay: boolean = false) {
     let headBlockNumber = 0
-    if (this.shouldPause) {
-      return
-    }
     while (!headBlockNumber || this.actionReader.currentBlockNumber < headBlockNumber) {
       if (this.shouldPause) {
         return

@@ -36,18 +36,16 @@ describe("ExpressActionWatcher", () => {
   })
 
   afterEach(async () => {
-    if (expressActionWatcher.server) {
-      await expressActionWatcher.server.close()
-    }
+    await expressActionWatcher.close()
   })
 
-  it("defualts to paused state", async () => {
+  it("defaults to paused state", async () => {
     await expressActionWatcher.listen()
     const server = request(expressActionWatcher.express)
 
-    const status = await server.get("/status")
+    const status = await server.get("/info")
     expect(JSON.parse(status.text)).toEqual({
-      running: false,
+      status: "paused",
       lastProcessedBlockHash: "",
       lastProcessedBlockNumber: 0,
       handlerVersionName: "v1",
@@ -62,9 +60,9 @@ describe("ExpressActionWatcher", () => {
     expect(JSON.parse(started.text)).toEqual({
       success: true,
     })
-    const status = await server.get("/status")
+    const status = await server.get("/info")
     expect(JSON.parse(status.text)).toEqual({
-      running: true,
+      status: "indexing",
       lastProcessedBlockHash: "0000000000000000000000000000000000000000000000000000000000000003",
       lastProcessedBlockNumber: 4,
       handlerVersionName: "v1",
@@ -80,10 +78,17 @@ describe("ExpressActionWatcher", () => {
     expect(JSON.parse(paused.text)).toEqual({
       success: true,
     })
-    const status = await server.get("/status")
-    await wait(1000)
-    expect(JSON.parse(status.text)).toEqual({
-      running: false,
+    const status1 = await server.get("/info")
+    expect(JSON.parse(status1.text)).toEqual({
+      status: "pausing",
+      lastProcessedBlockHash: "0000000000000000000000000000000000000000000000000000000000000003",
+      lastProcessedBlockNumber: 4,
+      handlerVersionName: "v1",
+    })
+    await wait(500)
+    const status2 = await server.get("/info")
+    expect(JSON.parse(status2.text)).toEqual({
+      status: "paused",
       lastProcessedBlockHash: "0000000000000000000000000000000000000000000000000000000000000003",
       lastProcessedBlockNumber: 4,
       handlerVersionName: "v1",

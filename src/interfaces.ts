@@ -102,9 +102,10 @@ export interface DeferredEffects {
   [key: number]: CurriedEffectRun[]
 }
 
-export interface DemuxStatus {
-  running: boolean
+export interface DemuxInfo {
+  status: string
   lastProcessedBlockNumber: number
   lastProcessedBlockHash: string
   handlerVersionName: string
+  error?: Error
 }
