@@ -122,6 +122,8 @@ export class BaseActionWatcher {
 
   /**
    * Use the actionReader and actionHandler to process new blocks.
+   *
+   * @param isReplay  Set to true to disable Effects from running until caught up with head block.
    */
   protected async checkForBlocks(isReplay: boolean = false) {
     let headBlockNumber = 0
