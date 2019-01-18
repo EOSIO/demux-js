@@ -35,8 +35,8 @@ describe("ExpressActionWatcher", () => {
     expressActionWatcher = new ExpressActionWatcher(actionReader, actionHandler, 500, 56544)
   })
 
-  afterEach(async () => {
-    await expressActionWatcher.close()
+  afterEach(() => {
+    expressActionWatcher.close()
   })
 
   it("defaults to paused state", async () => {
