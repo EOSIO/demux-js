@@ -36,6 +36,8 @@ export class BaseActionWatcher {
 
   /**
    * Start a polling loop
+   *
+   * @param isReplay  Set to true to disable Effects from running until caught up with head block.
    */
   public async watch(isReplay: boolean = false) {
     if (this.shouldPause) {
@@ -95,7 +97,7 @@ export class BaseActionWatcher {
   }
 
   /**
-   * Object describing the
+   * Information about the current state of Demux
    */
   public get info(): DemuxInfo {
     let status
