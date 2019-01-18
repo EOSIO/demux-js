@@ -17,9 +17,9 @@ import {
  *
  */
 export abstract class AbstractActionHandler {
-  protected lastProcessedBlockNumber: number = 0
-  protected lastProcessedBlockHash: string = ""
-  protected handlerVersionName: string = "v1"
+  public lastProcessedBlockNumber: number = 0
+  public lastProcessedBlockHash: string = ""
+  public handlerVersionName: string = "v1"
   protected log: Logger
   private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
