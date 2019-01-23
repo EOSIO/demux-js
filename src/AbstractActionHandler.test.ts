@@ -1,6 +1,7 @@
+import { MismatchedBlockHashError } from "./errors"
+import { ActionCallback, StatelessActionCallback } from "./interfaces"
 import blockchains from "./testHelpers/blockchains"
 import { TestActionHandler } from "./testHelpers/TestActionHandler"
-import { ActionCallback, StatelessActionCallback } from "./interfaces"
 
 const { blockchain, upgradeHandler } = blockchains
 
@@ -165,13 +166,13 @@ describe("Action Handler", () => {
       isEarliestBlock: false,
       isNewBlock: true,
     }
-    const expectedError = new Error("Block hashes do not match; block not part of current chain.")
     const nextBlock = {
       block: blockchain[3],
       blockMeta,
       lastIrreversibleBlockNumber: 1,
     }
-    await expect(actionHandler.handleBlock(nextBlock, false)).rejects.toEqual(expectedError)
+    const result = actionHandler.handleBlock(nextBlock, false)
+    expect(result).rejects.toThrow(MismatchedBlockHashError)
   })
 
   it("upgrades the action handler correctly", async () => {

@@ -1,3 +1,4 @@
+import { ImproperStartAtBlockError } from "./errors"
 import { Block } from "./interfaces"
 import blockchains from "./testHelpers/blockchains"
 import { TestActionReader } from "./testHelpers/TestActionReader"
@@ -65,8 +66,8 @@ describe("Action Reader", () => {
 
   it("does not seek to block earlier than startAtBlock", async () => {
     await actionReaderStartAt3.getNextBlock()
-    const expectedError = new Error("Cannot seek to block before configured `startAtBlock` number.")
-    await expect(actionReaderStartAt3.seekToBlock(2)).rejects.toEqual(expectedError)
+    const result = actionReaderStartAt3.seekToBlock(2)
+    expect(result).rejects.toThrow(ImproperStartAtBlockError)
   })
 
   it("handles rollback correctly", async () => {
