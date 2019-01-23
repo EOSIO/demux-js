@@ -1,8 +1,8 @@
-import express from "express"
-import * as http from "http"
-import { AbstractActionHandler } from "./AbstractActionHandler"
-import { AbstractActionReader } from "./AbstractActionReader"
-import { BaseActionWatcher } from "./BaseActionWatcher"
+import express from 'express'
+import * as http from 'http'
+import { AbstractActionHandler } from './AbstractActionHandler'
+import { AbstractActionReader } from './AbstractActionReader'
+import { BaseActionWatcher } from './BaseActionWatcher'
 
 /**
  * Exposes the BaseActionWatcher's API methods through a simple REST interface using Express
@@ -21,15 +21,15 @@ export class ExpressActionWatcher extends BaseActionWatcher {
   ) {
     super(actionReader, actionHandler, pollInterval)
 
-    this.express.get("/info", (_, res: express.Response) => {
+    this.express.get('/info', (_, res: express.Response) => {
       res.json(this.info)
     })
 
-    this.express.post("/start", (_, res: express.Response) => {
+    this.express.post('/start', (_, res: express.Response) => {
       res.json({ success: this.start() })
     })
 
-    this.express.post("/pause", (_, res: express.Response) => {
+    this.express.post('/pause', (_, res: express.Response) => {
       res.json({ success: this.pause() })
     })
   }
