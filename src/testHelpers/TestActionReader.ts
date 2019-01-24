@@ -1,8 +1,9 @@
-import { AbstractActionReader } from "../AbstractActionReader"
-import { Block } from "../interfaces"
+import { AbstractActionReader } from '../AbstractActionReader'
+import { Block } from '../interfaces'
 
 export class TestActionReader extends AbstractActionReader {
   public blockchain: Block[] = []
+  // tslint:disable-next-line:variable-name
   public _testLastIrreversible: number = 0
 
   public get _blockHistory() {
