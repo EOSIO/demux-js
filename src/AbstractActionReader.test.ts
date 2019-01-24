@@ -1,9 +1,9 @@
-import { ImproperStartAtBlockError } from "./errors"
-import { Block } from "./interfaces"
-import blockchains from "./testHelpers/blockchains"
-import { TestActionReader } from "./testHelpers/TestActionReader"
+import { ImproperStartAtBlockError } from './errors'
+import { Block } from './interfaces'
+import blockchains from './testHelpers/blockchains'
+import { TestActionReader } from './testHelpers/TestActionReader'
 
-describe("Action Reader", () => {
+describe('Action Reader', () => {
   let actionReader: TestActionReader
   let actionReaderStartAt3: TestActionReader
   let actionReaderNegative: TestActionReader
@@ -23,27 +23,27 @@ describe("Action Reader", () => {
     actionReaderNegative.blockchain = blockchain
   })
 
-  it("gets the head block number", async () => {
+  it('gets the head block number', async () => {
     const headBlockNumber = await actionReader.getHeadBlockNumber()
     expect(headBlockNumber).toBe(4)
   })
 
-  it("gets the next block", async () => {
+  it('gets the next block', async () => {
     const { block } = await actionReader.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(1)
   })
 
-  it("gets the next block when starting ahead", async () => {
+  it('gets the next block when starting ahead', async () => {
     const { block } = await actionReaderStartAt3.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(3)
   })
 
-  it("gets the next block when negative indexing", async () => {
+  it('gets the next block when negative indexing', async () => {
     const { block } = await actionReaderNegative.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(3)
   })
 
-  it("seeks to the first block", async () => {
+  it('seeks to the first block', async () => {
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
@@ -54,7 +54,7 @@ describe("Action Reader", () => {
     expect(blockMeta.isEarliestBlock).toBe(true)
   })
 
-  it("seeks to non-first block", async () => {
+  it('seeks to non-first block', async () => {
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
@@ -64,13 +64,13 @@ describe("Action Reader", () => {
     expect(block.blockInfo.blockNumber).toBe(2)
   })
 
-  it("does not seek to block earlier than startAtBlock", async () => {
+  it('does not seek to block earlier than startAtBlock', async () => {
     await actionReaderStartAt3.getNextBlock()
     const result = actionReaderStartAt3.seekToBlock(2)
     expect(result).rejects.toThrow(ImproperStartAtBlockError)
   })
 
-  it("handles rollback correctly", async () => {
+  it('handles rollback correctly', async () => {
     actionReader._testLastIrreversible = 1
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
@@ -80,18 +80,18 @@ describe("Action Reader", () => {
     actionReader.blockchain = forked
     const { block, blockMeta } = await actionReader.getNextBlock()
     expect(blockMeta.isRollback).toBe(true)
-    expect(block.blockInfo.blockHash).toBe("foo")
+    expect(block.blockInfo.blockHash).toBe('foo')
 
     const { block: block2, blockMeta: blockMeta2 } = await actionReader.getNextBlock()
     expect(blockMeta2.isRollback).toBe(false)
-    expect(block2.blockInfo.blockHash).toBe("wrench")
+    expect(block2.blockInfo.blockHash).toBe('wrench')
 
     const { block: block3, blockMeta: blockMeta3 } = await actionReader.getNextBlock()
     expect(blockMeta3.isRollback).toBe(false)
-    expect(block3.blockInfo.blockHash).toBe("madeit")
+    expect(block3.blockInfo.blockHash).toBe('madeit')
   })
 
-  it("indicates when the same block is returned", async () => {
+  it('indicates when the same block is returned', async () => {
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()
@@ -100,7 +100,7 @@ describe("Action Reader", () => {
     expect(blockMeta.isNewBlock).toBe(false)
   })
 
-  it("prunes history to last irreversible block", async () => {
+  it('prunes history to last irreversible block', async () => {
     actionReader._testLastIrreversible = 1
     await actionReader.getNextBlock()
     await actionReader.getNextBlock()

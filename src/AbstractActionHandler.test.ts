@@ -1,11 +1,11 @@
-import { MismatchedBlockHashError } from "./errors"
-import { ActionCallback, StatelessActionCallback } from "./interfaces"
-import blockchains from "./testHelpers/blockchains"
-import { TestActionHandler } from "./testHelpers/TestActionHandler"
+import { MismatchedBlockHashError } from './errors'
+import { ActionCallback, StatelessActionCallback } from './interfaces'
+import blockchains from './testHelpers/blockchains'
+import { TestActionHandler } from './testHelpers/TestActionHandler'
 
 const { blockchain, upgradeHandler } = blockchains
 
-describe("Action Handler", () => {
+describe('Action Handler', () => {
   let actionHandler: TestActionHandler
 
   let runUpdater: ActionCallback
@@ -29,7 +29,7 @@ describe("Action Handler", () => {
     notRunUpdater = jest.fn()
     notRunEffect = jest.fn()
 
-    runUpgradeUpdater = jest.fn().mockReturnValue("v2")
+    runUpgradeUpdater = jest.fn().mockReturnValue('v2')
 
     runUpdaterAfterUpgrade = jest.fn()
     runEffectAfterUpgrade = jest.fn()
@@ -39,59 +39,59 @@ describe("Action Handler", () => {
 
     actionHandler = new TestActionHandler([
       {
-        versionName: "v1",
+        versionName: 'v1',
         updaters: [
           {
-            actionType: "eosio.token::transfer",
+            actionType: 'eosio.token::transfer',
             apply: runUpdater,
           },
           {
-            actionType: "mycontract::upgrade",
+            actionType: 'mycontract::upgrade',
             apply: runUpgradeUpdater,
           },
           {
-            actionType: "eosio.token::issue",
+            actionType: 'eosio.token::issue',
             apply: notRunUpdater,
           },
         ],
         effects: [
           {
-            actionType: "eosio.token::transfer",
+            actionType: 'eosio.token::transfer',
             run: runEffect,
             deferUntilIrreversible: true,
           },
           {
-            actionType: "eosio::bidname",
+            actionType: 'eosio::bidname',
             run: runEffect,
             deferUntilIrreversible: true,
           },
           {
-            actionType: "eosio.token::issue",
+            actionType: 'eosio.token::issue',
             run: notRunEffect,
             deferUntilIrreversible: true,
           },
         ],
       },
       {
-        versionName: "v2",
+        versionName: 'v2',
         updaters: [
           {
-            actionType: "eosio.token::transfer",
+            actionType: 'eosio.token::transfer',
             apply: notRunUpdaterAfterUpgrade,
           },
           {
-            actionType: "eosio.token::issue",
+            actionType: 'eosio.token::issue',
             apply: runUpdaterAfterUpgrade,
           },
         ],
         effects: [
           {
-            actionType: "eosio.token::transfer",
+            actionType: 'eosio.token::transfer',
             run: notRunEffectAfterUpgrade,
             deferUntilIrreversible: true,
           },
           {
-            actionType: "eosio.token::issue",
+            actionType: 'eosio.token::issue',
             run: runEffectAfterUpgrade,
             deferUntilIrreversible: true,
           },
@@ -100,13 +100,13 @@ describe("Action Handler", () => {
     ])
   })
 
-  it("runs the correct updater based on action type", async () => {
+  it('runs the correct updater based on action type', async () => {
     await actionHandler._applyUpdaters({}, blockchain[1], {}, false)
     expect(runUpdater).toHaveBeenCalledTimes(1)
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
-  it("runs the correct effect based on action type", async () => {
+  it('runs the correct effect based on action type', async () => {
     const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], {},  false)
     const blockMeta = {
       isRollback: false,
@@ -123,10 +123,10 @@ describe("Action Handler", () => {
     expect(notRunEffect).not.toHaveBeenCalled()
   })
 
-  it("retrieves indexState when processing first block", async () => {
+  it('retrieves indexState when processing first block', async () => {
     actionHandler.state.indexState = {
       blockNumber: 3,
-      blockHash: "000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8",
+      blockHash: '000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8',
     }
     const blockMeta = {
       isRollback: false,
@@ -142,7 +142,7 @@ describe("Action Handler", () => {
     expect(seekBlockNum).toBe(4)
   })
 
-  it("seeks to the next block needed when block number doesn't match last processed block", async () => {
+  it('seeks to the next block needed when block number doesn\'t match last processed block', async () => {
     actionHandler.setLastProcessedBlockNumber(2)
     const blockMeta = {
       isRollback: false,
@@ -158,9 +158,9 @@ describe("Action Handler", () => {
     expect(seekBlockNum).toBe(3)
   })
 
-  it("throws error if previous block hash and last processed don't match up", async () => {
+  it('throws error if previous block hash and last processed don\'t match up', async () => {
     actionHandler.setLastProcessedBlockNumber(3)
-    actionHandler.setLastProcessedBlockHash("asdfasdfasdf")
+    actionHandler.setLastProcessedBlockHash('asdfasdfasdf')
     const blockMeta = {
       isRollback: false,
       isEarliestBlock: false,
@@ -175,7 +175,7 @@ describe("Action Handler", () => {
     expect(result).rejects.toThrow(MismatchedBlockHashError)
   })
 
-  it("upgrades the action handler correctly", async () => {
+  it('upgrades the action handler correctly', async () => {
     const blockMeta = {
       isRollback: false,
       isEarliestBlock: true,
@@ -189,7 +189,7 @@ describe("Action Handler", () => {
     const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
     actionHandler._runEffects(versionedActions, {}, nextBlock)
 
-    expect(actionHandler._handlerVersionName).toEqual("v2")
+    expect(actionHandler._handlerVersionName).toEqual('v2')
     expect(runUpdater).toHaveBeenCalledTimes(1)
     expect(runEffect).toHaveBeenCalledTimes(2)
     expect(runUpgradeUpdater).toHaveBeenCalledTimes(1)
@@ -200,7 +200,7 @@ describe("Action Handler", () => {
     expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
   })
 
-  it("defers the effects until the block is irreversible", async () => {
+  it('defers the effects until the block is irreversible', async () => {
     const blockMeta = {
       isRollback: false,
       isEarliestBlock: true,
