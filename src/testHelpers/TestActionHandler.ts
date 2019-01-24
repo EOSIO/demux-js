@@ -1,9 +1,9 @@
-import { AbstractActionHandler } from "../AbstractActionHandler"
-import { Block, IndexState, NextBlock, VersionedAction } from "../interfaces"
+import { AbstractActionHandler } from '../AbstractActionHandler'
+import { Block, IndexState, NextBlock, VersionedAction } from '../interfaces'
 
 export class TestActionHandler extends AbstractActionHandler {
   public state: any = {
-    indexState: { blockNumber: 0, blockHash: "", isReplay: false, handlerVersionName: "v1" },
+    indexState: { blockNumber: 0, blockHash: '', isReplay: false, handlerVersionName: 'v1' },
   }
 
   get _handlerVersionName() { return this.handlerVersionName }
@@ -15,7 +15,7 @@ export class TestActionHandler extends AbstractActionHandler {
 
   public async rollbackTo(blockNumber: number) {
     this.setLastProcessedBlockNumber(blockNumber)
-    this.setLastProcessedBlockHash("")
+    this.setLastProcessedBlockHash('')
   }
 
   public setLastProcessedBlockHash(hash: string) {

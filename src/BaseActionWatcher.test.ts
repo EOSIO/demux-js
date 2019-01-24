@@ -1,8 +1,8 @@
-import { BaseActionWatcher } from "./BaseActionWatcher"
-import { Block } from "./interfaces"
-import blockchains from "./testHelpers/blockchains"
-import { TestActionHandler } from "./testHelpers/TestActionHandler"
-import { TestActionReader } from "./testHelpers/TestActionReader"
+import { BaseActionWatcher } from './BaseActionWatcher'
+import { Block } from './interfaces'
+import blockchains from './testHelpers/blockchains'
+import { TestActionHandler } from './testHelpers/TestActionHandler'
+import { TestActionReader } from './testHelpers/TestActionReader'
 
 class TestActionWatcher extends BaseActionWatcher {
   public async _checkForBlocks(isReplay: boolean = false) {
@@ -10,7 +10,7 @@ class TestActionWatcher extends BaseActionWatcher {
   }
 }
 
-describe("BaseActionWatcher", () => {
+describe('BaseActionWatcher', () => {
   let actionReader: TestActionReader
   let actionReaderStartAt3: TestActionReader
   let actionReaderNegative: TestActionReader
@@ -35,7 +35,7 @@ describe("BaseActionWatcher", () => {
     actionReaderNegative.blockchain = blockchain
 
     const updaters = [{
-      actionType: "eosio.token::transfer",
+      actionType: 'eosio.token::transfer',
       apply: async (state: any, payload: any) => {
         if (!state.totalTransferred) {
           state.totalTransferred = parseFloat(payload.data.quantity.amount)
@@ -45,26 +45,26 @@ describe("BaseActionWatcher", () => {
       },
     }]
     const effects = [{
-      actionType: "eosio.token::transfer",
+      actionType: 'eosio.token::transfer',
       run: runEffect,
     }]
 
-    actionHandler = new TestActionHandler([{ versionName: "v1", updaters, effects }])
-    actionHandlerStartAt3 = new TestActionHandler([{ versionName: "v1", updaters, effects }])
-    actionHandlerNegative = new TestActionHandler([{ versionName: "v1", updaters, effects }])
+    actionHandler = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
+    actionHandlerStartAt3 = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
+    actionHandlerNegative = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
 
     actionWatcher = new TestActionWatcher(actionReader, actionHandler, 500)
     actionWatcherStartAt3 = new TestActionWatcher(actionReaderStartAt3, actionHandlerStartAt3, 500)
     actionWatcherNegative = new TestActionWatcher(actionReaderNegative, actionHandlerNegative, 500)
   })
 
-  it("processes blocks", async () => {
+  it('processes blocks', async () => {
     await actionWatcher._checkForBlocks()
     expect(actionHandler.state).toEqual({
       indexState: {
-        blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
+        blockHash: '0000000000000000000000000000000000000000000000000000000000000003',
         blockNumber: 4,
-        handlerVersionName: "v1",
+        handlerVersionName: 'v1',
         isReplay: false,
       },
       totalTransferred: 66,
@@ -72,13 +72,13 @@ describe("BaseActionWatcher", () => {
     expect(actionReader.currentBlockNumber).toBe(4)
   })
 
-  it("processes blocks starting at block 3", async () => {
+  it('processes blocks starting at block 3', async () => {
     await actionWatcherStartAt3._checkForBlocks()
     expect(actionHandlerStartAt3.state).toEqual({
       indexState: {
-        blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
+        blockHash: '0000000000000000000000000000000000000000000000000000000000000003',
         blockNumber: 4,
-        handlerVersionName: "v1",
+        handlerVersionName: 'v1',
         isReplay: false,
       },
       totalTransferred: 24,
@@ -86,13 +86,13 @@ describe("BaseActionWatcher", () => {
     expect(actionReaderStartAt3.currentBlockNumber).toBe(4)
   })
 
-  it("processes blocks starting at block 3 (negative indexed)", async () => {
+  it('processes blocks starting at block 3 (negative indexed)', async () => {
     await actionWatcherNegative._checkForBlocks()
     expect(actionHandlerNegative.state).toEqual({
       indexState: {
-        blockHash: "0000000000000000000000000000000000000000000000000000000000000003",
+        blockHash: '0000000000000000000000000000000000000000000000000000000000000003',
         blockNumber: 4,
-        handlerVersionName: "v1",
+        handlerVersionName: 'v1',
         isReplay: false,
       },
       totalTransferred: 24,
@@ -100,38 +100,38 @@ describe("BaseActionWatcher", () => {
     expect(actionReaderNegative.currentBlockNumber).toBe(4)
   })
 
-  it("processes blocks after seeing more blocks", async () => {
+  it('processes blocks after seeing more blocks', async () => {
     await actionWatcher._checkForBlocks()
     actionReader.blockchain.push({
       blockInfo: {
-        blockHash: "newblock",
+        blockHash: 'newblock',
         blockNumber: 5,
-        previousBlockHash: "0000000000000000000000000000000000000000000000000000000000000003",
-        timestamp: new Date("2018-06-06T11:53:39.500"),
+        previousBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
+        timestamp: new Date('2018-06-06T11:53:39.500'),
       },
       actions: [{
         payload: {
-          account: "eosio.token",
+          account: 'eosio.token',
           actionIndex: 0,
           authorization: [],
           data: {
             quantity: {
-              amount: "123.00000",
-              symbol: "EOS",
+              amount: '123.00000',
+              symbol: 'EOS',
             },
           },
-          name: "transfer",
-          transactionId: "1",
+          name: 'transfer',
+          transactionId: '1',
         },
-        type: "eosio.token::transfer",
+        type: 'eosio.token::transfer',
       }],
     })
     await actionWatcher._checkForBlocks()
     expect(actionHandler.state).toEqual({
       indexState: {
-        blockHash: "newblock",
+        blockHash: 'newblock',
         blockNumber: 5,
-        handlerVersionName: "v1",
+        handlerVersionName: 'v1',
         isReplay: false,
       },
       totalTransferred: 189,
