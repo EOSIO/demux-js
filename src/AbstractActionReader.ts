@@ -1,4 +1,5 @@
 import * as Logger from 'bunyan'
+import { ImproperSeekToBlockError, ImproperStartAtBlockError, ReloadHistoryError, UnresolvedForkError } from './errors'
 import {
   ActionReaderOptions,
   Block,
@@ -127,10 +128,10 @@ export abstract class AbstractActionReader {
   public async seekToBlock(blockNumber: number): Promise<void> {
     this.headBlockNumber = await this.getLatestNeededBlockNumber()
     if (blockNumber < this.startAtBlock) {
-      throw new Error('Cannot seek to block before configured `startAtBlock` number.')
+      throw new ImproperStartAtBlockError()
     }
     if (blockNumber > this.headBlockNumber) {
-      throw new Error(`Cannot seek to block number ${blockNumber} as it does not exist yet.`)
+      throw new ImproperSeekToBlockError(blockNumber)
     }
     this.currentBlockNumber = blockNumber - 1
     await this.reloadHistory()
@@ -269,7 +270,7 @@ export abstract class AbstractActionReader {
       }
       tryCount += 1
       if (tryCount === maxTries) {
-        throw new Error('Could not reload history.')
+        throw new ReloadHistoryError()
       }
     }
     this.currentBlockData = this.blockHistory.pop()!
@@ -277,7 +278,7 @@ export abstract class AbstractActionReader {
 
   private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
     if (this.currentBlockData.blockInfo.blockNumber < this.lastIrreversibleBlockNumber && checkIrreversiblility) {
-      throw new Error('Last irreversible block has been passed without resolving fork')
+      throw new UnresolvedForkError()
     }
     this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
   }

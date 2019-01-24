@@ -1,4 +1,5 @@
 import * as Logger from 'bunyan'
+import { DuplicateHandlerVersionError, MismatchedBlockHashError, MissingHandlerVersionError } from './errors'
 import {
   Block,
   DeferredEffects,
@@ -76,7 +77,8 @@ export abstract class AbstractActionHandler {
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-        throw Error('Block hashes do not match; block not part of current chain.')
+        const err = new MismatchedBlockHashError()
+        throw err
       }
     }
 
@@ -272,12 +274,11 @@ export abstract class AbstractActionHandler {
 
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {
     if (handlerVersions.length === 0) {
-      throw new Error('Must have at least one handler version.')
+      throw new MissingHandlerVersionError()
     }
     for (const handlerVersion of handlerVersions) {
       if (this.handlerVersionMap.hasOwnProperty(handlerVersion.versionName)) {
-        throw new Error(`Handler version name '${handlerVersion.versionName}' already exists. ` +
-                        'Handler versions must have unique names.')
+        throw new DuplicateHandlerVersionError(handlerVersion.versionName)
       }
       this.handlerVersionMap[handlerVersion.versionName] = handlerVersion
     }
