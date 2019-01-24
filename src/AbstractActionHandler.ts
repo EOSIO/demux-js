@@ -1,4 +1,4 @@
-import * as Logger from "bunyan"
+import * as Logger from 'bunyan'
 import {
   Block,
   DeferredEffects,
@@ -8,7 +8,7 @@ import {
   IndexState,
   NextBlock,
   VersionedAction,
-} from "./interfaces"
+} from './interfaces'
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -19,8 +19,8 @@ import {
  */
 export abstract class AbstractActionHandler {
   public lastProcessedBlockNumber: number = 0
-  public lastProcessedBlockHash: string = ""
-  public handlerVersionName: string = "v1"
+  public lastProcessedBlockHash: string = ''
+  public handlerVersionName: string = 'v1'
   protected log: Logger
   private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
@@ -33,7 +33,7 @@ export abstract class AbstractActionHandler {
     handlerVersions: HandlerVersion[],
   ) {
     this.initHandlerVersions(handlerVersions)
-    this.log = Logger.createLogger({ name: "demux" })
+    this.log = Logger.createLogger({ name: 'demux' })
   }
 
   /**
@@ -53,7 +53,7 @@ export abstract class AbstractActionHandler {
       this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
       await this.rollbackTo(rollbackBlockNumber)
       await this.refreshIndexState()
-    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === "") {
+    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === '') {
       await this.refreshIndexState()
     }
 
@@ -76,7 +76,7 @@ export abstract class AbstractActionHandler {
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-        throw Error("Block hashes do not match; block not part of current chain.")
+        throw Error('Block hashes do not match; block not part of current chain.')
       }
     }
 
@@ -272,19 +272,19 @@ export abstract class AbstractActionHandler {
 
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {
     if (handlerVersions.length === 0) {
-      throw new Error("Must have at least one handler version.")
+      throw new Error('Must have at least one handler version.')
     }
     for (const handlerVersion of handlerVersions) {
       if (this.handlerVersionMap.hasOwnProperty(handlerVersion.versionName)) {
         throw new Error(`Handler version name '${handlerVersion.versionName}' already exists. ` +
-                        "Handler versions must have unique names.")
+                        'Handler versions must have unique names.')
       }
       this.handlerVersionMap[handlerVersion.versionName] = handlerVersion
     }
     if (!this.handlerVersionMap.hasOwnProperty(this.handlerVersionName)) {
       this.handlerVersionName = handlerVersions[0].versionName
       this.warnMissingHandlerVersion(handlerVersions[0].versionName)
-    } else if (handlerVersions[0].versionName !== "v1") {
+    } else if (handlerVersions[0].versionName !== 'v1') {
       this.warnIncorrectFirstHandler(handlerVersions[0].versionName)
     }
   }

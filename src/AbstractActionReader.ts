@@ -1,4 +1,4 @@
-import * as Logger from "bunyan"
+import * as Logger from 'bunyan'
 import {
   ActionReaderOptions,
   Block,
@@ -6,13 +6,13 @@ import {
   BlockMeta,
   NextBlock,
   ReaderInfo,
-} from "./interfaces"
+} from './interfaces'
 
 const defaultBlock: Block = {
   blockInfo: {
     blockNumber: 0,
-    blockHash: "",
-    previousBlockHash: "",
+    blockHash: '',
+    previousBlockHash: '',
     timestamp: new Date(0),
   },
   actions: [],
@@ -42,7 +42,7 @@ export abstract class AbstractActionReader {
     this.currentBlockNumber = optionsWithDefaults.startAtBlock - 1
     this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
 
-    this.log = Logger.createLogger({ name: "demux" })
+    this.log = Logger.createLogger({ name: 'demux' })
   }
 
   /**
@@ -127,7 +127,7 @@ export abstract class AbstractActionReader {
   public async seekToBlock(blockNumber: number): Promise<void> {
     this.headBlockNumber = await this.getLatestNeededBlockNumber()
     if (blockNumber < this.startAtBlock) {
-      throw new Error("Cannot seek to block before configured `startAtBlock` number.")
+      throw new Error('Cannot seek to block before configured `startAtBlock` number.')
     }
     if (blockNumber > this.headBlockNumber) {
       throw new Error(`Cannot seek to block number ${blockNumber} as it does not exist yet.`)
@@ -269,7 +269,7 @@ export abstract class AbstractActionReader {
       }
       tryCount += 1
       if (tryCount === maxTries) {
-        throw new Error("Could not reload history.")
+        throw new Error('Could not reload history.')
       }
     }
     this.currentBlockData = this.blockHistory.pop()!
@@ -277,27 +277,27 @@ export abstract class AbstractActionReader {
 
   private async addPreviousBlockToHistory(checkIrreversiblility: boolean = true) {
     if (this.currentBlockData.blockInfo.blockNumber < this.lastIrreversibleBlockNumber && checkIrreversiblility) {
-      throw new Error("Last irreversible block has been passed without resolving fork")
+      throw new Error('Last irreversible block has been passed without resolving fork')
     }
     this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
   }
 
   private logForkDetected(unvalidatedBlockData: Block, expectedHash: string, actualHash: string) {
-    this.log.info("!! FORK DETECTED !!")
+    this.log.info('!! FORK DETECTED !!')
     this.log.info(`  MISMATCH:`)
     this.log.info(`    ✓ NEW Block ${unvalidatedBlockData.blockInfo.blockNumber} previous: ${actualHash}`)
     this.log.info(`    ✕ OLD Block ${this.currentBlockNumber} id:       ${expectedHash}`)
   }
 
   private logForkResolved(currentBlockInfo: BlockInfo, previousBlockInfo: BlockInfo) {
-    this.log.info("  MATCH:")
+    this.log.info('  MATCH:')
     this.log.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`) // tslint:disable-line
     this.log.info(`    ✓ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
-    this.log.info("!! FORK RESOLVED !!")
+    this.log.info('!! FORK RESOLVED !!')
   }
 
   private logForkMismatch(currentBlockInfo: BlockInfo, previousBlockInfo: BlockInfo) {
-    this.log.info("  MISMATCH:")
+    this.log.info('  MISMATCH:')
     this.log.info(`    ✓ NEW Block ${currentBlockInfo.blockNumber} previous: ${currentBlockInfo.previousBlockHash}`)
     this.log.info(`    ✕ OLD Block ${previousBlockInfo.blockNumber} id:       ${previousBlockInfo.blockHash}`)
   }

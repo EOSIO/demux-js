@@ -1,7 +1,7 @@
-import * as Logger from "bunyan"
-import { AbstractActionHandler } from "./AbstractActionHandler"
-import { AbstractActionReader } from "./AbstractActionReader"
-import { DemuxInfo } from "./interfaces"
+import * as Logger from 'bunyan'
+import { AbstractActionHandler } from './AbstractActionHandler'
+import { AbstractActionReader } from './AbstractActionReader'
+import { DemuxInfo } from './interfaces'
 
 /**
  * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
@@ -24,7 +24,7 @@ export class BaseActionWatcher {
     protected actionHandler: AbstractActionHandler,
     protected pollInterval: number,
   ) {
-    this.log = Logger.createLogger({ name: "demux" })
+    this.log = Logger.createLogger({ name: 'demux' })
   }
 
   /**
@@ -43,7 +43,7 @@ export class BaseActionWatcher {
     if (this.shouldPause) {
       this.running = false
       this.shouldPause = false
-      this.log.info("Indexing paused.")
+      this.log.info('Indexing paused.')
       return
     }
     this.running = true
@@ -57,7 +57,7 @@ export class BaseActionWatcher {
       this.shouldPause = false
       this.log.error(err)
       this.error = err
-      this.log.info("Indexing unexpectedly paused due to an error.")
+      this.log.info('Indexing unexpectedly paused due to an error.')
       return
     }
 
@@ -75,10 +75,10 @@ export class BaseActionWatcher {
    */
   public start(): boolean {
     if (this.running) {
-      this.log.info("Cannot start; already indexing.")
+      this.log.info('Cannot start; already indexing.')
       return false
     }
-    this.log.info("Starting indexing.")
+    this.log.info('Starting indexing.')
     this.watch()
     return true
   }
@@ -88,10 +88,10 @@ export class BaseActionWatcher {
    */
   public pause(): boolean {
     if (!this.running) {
-      this.log.info("Cannot pause; not currently indexing.")
+      this.log.info('Cannot pause; not currently indexing.')
       return false
     }
-    this.log.info("Pausing indexing.")
+    this.log.info('Pausing indexing.')
     this.shouldPause = true
     return true
   }
@@ -102,11 +102,11 @@ export class BaseActionWatcher {
   public get info(): DemuxInfo {
     let status
     if (this.running && !this.shouldPause) {
-      status = "indexing"
+      status = 'indexing'
     } else if (this.running && this.shouldPause) {
-      status = "pausing"
+      status = 'pausing'
     } else {
-      status = "paused"
+      status = 'paused'
     }
 
     const info: DemuxInfo = {
