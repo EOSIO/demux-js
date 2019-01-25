@@ -54,7 +54,7 @@ export class TestActionHandler extends AbstractActionHandler {
     state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
   }
 
-  protected async isSetup(): Promise<boolean> {
+  protected async isSetUp(): Promise<boolean> {
     return this.setup
   }
 }

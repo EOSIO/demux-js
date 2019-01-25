@@ -55,7 +55,7 @@ export abstract class AbstractActionHandler {
     const { isRollback, isEarliestBlock } = blockMeta
 
     if (!this.initialized) {
-      if (!await this.isSetup()) {
+      if (!await this.isSetUp()) {
         throw new NotSetUpError()
       }
       this.initialized = true
@@ -143,7 +143,7 @@ export abstract class AbstractActionHandler {
   /**
    * Checks that the required setup has occurred.
    */
-  protected abstract async isSetup(): Promise<boolean>
+  protected abstract async isSetUp(): Promise<boolean>
 
   /**
    * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are

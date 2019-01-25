@@ -31,7 +31,7 @@ export class TestActionReader extends AbstractActionReader {
     return this.blockchain[blockNumber - 1]
   }
 
-  protected async isSetup(): Promise<boolean> {
+  protected async isSetUp(): Promise<boolean> {
     return this.setup
   }
 }

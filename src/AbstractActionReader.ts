@@ -87,7 +87,8 @@ export abstract class AbstractActionReader {
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
 
     if (!this.initialized) {
-      if (!await this.isSetup()) {
+      const isSetUp = await this.isSetUp()
+      if (!isSetUp) {
         throw new NotSetUpError()
       }
       await this.initBlockState()
@@ -163,7 +164,7 @@ export abstract class AbstractActionReader {
   /**
    * Checks that the required setup has occurred.
    */
-  protected abstract async isSetup(): Promise<boolean>
+  protected abstract async isSetUp(): Promise<boolean>
 
   /**
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with
