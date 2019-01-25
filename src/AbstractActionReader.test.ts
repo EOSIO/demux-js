@@ -1,4 +1,4 @@
-import { ImproperStartAtBlockError } from './errors'
+import { ImproperStartAtBlockError, NotSetUpError } from './errors'
 import { Block } from './interfaces'
 import blockchains from './testHelpers/blockchains'
 import { TestActionReader } from './testHelpers/TestActionReader'
@@ -12,8 +12,13 @@ describe('Action Reader', () => {
 
   beforeEach(() => {
     actionReader = new TestActionReader()
+    actionReader.setup = true
+
     actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
+    actionReaderStartAt3.setup = true
+
     actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
+    actionReaderNegative.setup = true
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
     forked = JSON.parse(JSON.stringify(blockchains.forked))
@@ -112,5 +117,17 @@ describe('Action Reader', () => {
     await actionReader.getNextBlock()
     expect(actionReader._lastIrreversibleBlockNumber).toEqual(3)
     expect(actionReader._blockHistory[0].blockInfo.blockNumber).toEqual(actionReader._lastIrreversibleBlockNumber)
+  })
+
+  it('continues ifSetup true', async () => {
+    actionReader.setup = true
+    const { block } = await actionReader.getNextBlock()
+    expect(block.blockInfo.blockNumber).toBe(1)
+  })
+
+  it('continues ifSetup true', async () => {
+    actionReader.setup = false
+    const result = actionReader.getNextBlock()
+    expect(result).rejects.toThrow(NotSetUpError)
   })
 })

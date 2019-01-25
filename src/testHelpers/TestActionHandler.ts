@@ -2,6 +2,8 @@ import { AbstractActionHandler } from '../AbstractActionHandler'
 import { Block, IndexState, NextBlock, VersionedAction } from '../interfaces'
 
 export class TestActionHandler extends AbstractActionHandler {
+  public setup: boolean = false
+
   public state: any = {
     indexState: { blockNumber: 0, blockHash: '', isReplay: false, handlerVersionName: 'v1' },
   }
@@ -50,5 +52,9 @@ export class TestActionHandler extends AbstractActionHandler {
   protected async updateIndexState(state: any, block: Block, isReplay: boolean, handlerVersionName: string) {
     const { blockNumber, blockHash } = block.blockInfo
     state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
+  }
+
+  protected async isSetup(): Promise<boolean> {
+    return this.setup
   }
 }

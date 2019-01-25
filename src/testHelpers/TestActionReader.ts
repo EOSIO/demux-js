@@ -2,6 +2,8 @@ import { AbstractActionReader } from '../AbstractActionReader'
 import { Block } from '../interfaces'
 
 export class TestActionReader extends AbstractActionReader {
+  public setup: boolean = false
+
   public blockchain: Block[] = []
   // tslint:disable-next-line:variable-name
   public _testLastIrreversible: number = 0
@@ -27,5 +29,9 @@ export class TestActionReader extends AbstractActionReader {
 
   public async getBlock(blockNumber: number): Promise<Block> {
     return this.blockchain[blockNumber - 1]
+  }
+
+  protected async isSetup(): Promise<boolean> {
+    return this.setup
   }
 }
