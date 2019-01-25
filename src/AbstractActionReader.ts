@@ -1,5 +1,11 @@
 import * as Logger from 'bunyan'
-import { ImproperSeekToBlockError, ImproperStartAtBlockError, ReloadHistoryError, UnresolvedForkError } from './errors'
+import {
+  ImproperSeekToBlockError,
+  ImproperStartAtBlockError,
+  NotSetUpError,
+  ReloadHistoryError,
+  UnresolvedForkError,
+} from './errors'
 import {
   ActionReaderOptions,
   Block,
@@ -81,7 +87,12 @@ export abstract class AbstractActionReader {
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
 
     if (!this.initialized) {
+      const isSetUp = await this.isSetUp()
+      if (!isSetUp) {
+        throw new NotSetUpError()
+      }
       await this.initBlockState()
+      this.initialized = true
     }
 
     if (this.currentBlockNumber === this.headBlockNumber) {
@@ -149,6 +160,11 @@ export abstract class AbstractActionReader {
       lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
     }
   }
+
+  /**
+   * Checks that the required setup has occurred.
+   */
+  protected abstract async isSetUp(): Promise<boolean>
 
   /**
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with

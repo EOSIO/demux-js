@@ -50,3 +50,10 @@ export class UnresolvedForkError extends Error {
     Object.setPrototypeOf(this, UnresolvedForkError.prototype)
   }
 }
+
+export class NotSetUpError extends Error {
+  constructor() {
+    super('The proper setup has not occurred.')
+    Object.setPrototypeOf(this, NotSetUpError.prototype)
+  }
+}

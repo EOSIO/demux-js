@@ -1,5 +1,10 @@
 import * as Logger from 'bunyan'
-import { DuplicateHandlerVersionError, MismatchedBlockHashError, MissingHandlerVersionError } from './errors'
+import {
+  DuplicateHandlerVersionError,
+  MismatchedBlockHashError,
+  MissingHandlerVersionError,
+  NotSetUpError,
+} from './errors'
 import {
   Block,
   DeferredEffects,
@@ -25,6 +30,7 @@ export abstract class AbstractActionHandler {
   protected log: Logger
   private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
+  private initialized: boolean = false
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
@@ -47,6 +53,13 @@ export abstract class AbstractActionHandler {
     const { block, blockMeta } = nextBlock
     const { blockInfo } = block
     const { isRollback, isEarliestBlock } = blockMeta
+
+    if (!this.initialized) {
+      if (!await this.isSetUp()) {
+        throw new NotSetUpError()
+      }
+      this.initialized = true
+    }
 
     if (isRollback || (isReplay && isEarliestBlock)) {
       const rollbackBlockNumber = blockInfo.blockNumber - 1
@@ -126,6 +139,11 @@ export abstract class AbstractActionHandler {
    * parameter, which can be utilized to share state across `Updater.apply` and `Effect.run` calls on a per-block basis.
    */
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
+
+  /**
+   * Checks that the required setup has occurred.
+   */
+  protected abstract async isSetUp(): Promise<boolean>
 
   /**
    * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are
