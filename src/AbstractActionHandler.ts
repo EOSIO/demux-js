@@ -300,7 +300,7 @@ export abstract class AbstractActionHandler {
 
   private rollbackDeferredEffects(rollbackTo: number) {
     const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
-    const toRollBack = blockNumbers.filter((bn) => bn > rollbackTo)
+    const toRollBack = blockNumbers.filter((bn) => bn >= rollbackTo)
     for (const blockNumber of toRollBack) {
       delete this.deferredEffects[blockNumber]
     }
