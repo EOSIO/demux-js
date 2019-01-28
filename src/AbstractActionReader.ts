@@ -83,7 +83,6 @@ export abstract class AbstractActionReader {
       isEarliestBlock: false,
     }
 
-    // TODO: Should this only be called when updating headBlockNumber?
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
 
     if (!this.initialized) {

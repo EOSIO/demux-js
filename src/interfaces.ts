@@ -99,6 +99,7 @@ export type CurriedEffectRun = (
 )
 
 export interface DeferredEffects {
+  // Block number
   [key: number]: CurriedEffectRun[]
 }
 

@@ -61,15 +61,7 @@ export abstract class AbstractActionHandler {
       this.initialized = true
     }
 
-    if (isRollback || (isReplay && isEarliestBlock)) {
-      const rollbackBlockNumber = blockInfo.blockNumber - 1
-      const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
-      this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
-      await this.rollbackTo(rollbackBlockNumber)
-      await this.refreshIndexState()
-    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === '') {
-      await this.refreshIndexState()
-    }
+    await this.handleRollback(isRollback, blockInfo.blockNumber, isReplay, isEarliestBlock)
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
 
@@ -246,6 +238,19 @@ export abstract class AbstractActionHandler {
     this.lastProcessedBlockHash = blockInfo.blockHash
   }
 
+  private async handleRollback(isRollback: boolean, blockNumber: number, isReplay: boolean, isEarliestBlock: boolean) {
+    if (isRollback || (isReplay && isEarliestBlock)) {
+      const rollbackBlockNumber = blockNumber - 1
+      const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
+      this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
+      await this.rollbackTo(rollbackBlockNumber)
+      this.rollbackDeferredEffects(blockNumber)
+      await this.refreshIndexState()
+    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === '') {
+      await this.refreshIndexState()
+    }
+  }
+
   private range(start: number, end: number) {
     return Array(end - start).fill(0).map((_, i: number) => i + start)
   }
@@ -257,15 +262,17 @@ export abstract class AbstractActionHandler {
     context: any,
   ) {
     const { block, lastIrreversibleBlockNumber } = nextBlock
+    const { blockNumber } = block.blockInfo
     const shouldRunImmediately = (
       !effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber
     )
     if (shouldRunImmediately) {
       effect.run(payload, block, context)
-    } else if (!this.deferredEffects[block.blockInfo.blockNumber]) {
-      this.deferredEffects[block.blockInfo.blockNumber] = [() => effect.run(payload, block, context)]
     } else {
-      this.deferredEffects[block.blockInfo.blockNumber].push(() => effect.run(payload, block, context))
+      if (!this.deferredEffects[blockNumber]) {
+        this.deferredEffects[blockNumber] = []
+      }
+      this.deferredEffects[blockNumber].push(() => effect.run(payload, block, context))
     }
   }
 
@@ -274,7 +281,8 @@ export abstract class AbstractActionHandler {
     if (!nextDeferredBlockNumber) { return }
     for (const blockNumber of this.range(nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
       if (this.deferredEffects[blockNumber]) {
-        for (const deferredEffect of this.deferredEffects[blockNumber]) {
+        const effects = this.deferredEffects[blockNumber]
+        for (const deferredEffect of effects) {
           deferredEffect()
         }
         delete this.deferredEffects[blockNumber]
@@ -288,6 +296,14 @@ export abstract class AbstractActionHandler {
       return 0
     }
     return Math.min(...blockNumbers)
+  }
+
+  private rollbackDeferredEffects(rollbackTo: number) {
+    const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
+    const toRollBack = blockNumbers.filter((bn) => bn > rollbackTo)
+    for (const blockNumber of toRollBack) {
+      delete this.deferredEffects[blockNumber]
+    }
   }
 
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {
