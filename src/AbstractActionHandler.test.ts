@@ -349,7 +349,7 @@ describe('Action Handler', () => {
     expect(notRunEffect).not.toHaveBeenCalled()
   })
 
-  it('continues if setup is true', async () => {
+  it('continues if initialization succeeds', async () => {
     actionHandler.state.indexState = {
       blockNumber: 3,
       blockHash: '000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8',

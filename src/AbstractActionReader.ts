@@ -2,7 +2,6 @@ import * as Logger from 'bunyan'
 import {
   ImproperSeekToBlockError,
   ImproperStartAtBlockError,
-  NotSetUpError,
   ReloadHistoryError,
   UnresolvedForkError,
 } from './errors'
@@ -37,7 +36,7 @@ export abstract class AbstractActionReader {
   protected lastIrreversibleBlockNumber: number = 0
   protected blockHistory: Block[] = []
   protected log: Logger
-  private initialized: boolean = false
+  protected initialized: boolean = false
 
   constructor(options: ActionReaderOptions = {}) {
     const optionsWithDefaults = {
@@ -86,12 +85,7 @@ export abstract class AbstractActionReader {
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
 
     if (!this.initialized) {
-      const isSetUp = await this.isSetUp()
-      if (!isSetUp) {
-        throw new NotSetUpError()
-      }
-      await this.initBlockState()
-      this.initialized = true
+      await this.initialize()
     }
 
     if (this.currentBlockNumber === this.headBlockNumber) {
@@ -129,6 +123,15 @@ export abstract class AbstractActionReader {
   }
 
   /**
+   * Performs all required initialization for the reader.
+   */
+  public async initialize(): Promise<void> {
+    await this.setup()
+    await this.initBlockState()
+    this.initialized = true
+  }
+
+  /**
    * Changes the state of the `AbstractActionReader` instance to have just processed the block at the given block
    * number. If the block exists in its temporary block history, it will use this, otherwise it will fetch the block
    * using `getBlock`.
@@ -161,9 +164,9 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * Checks that the required setup has occurred.
+   * Idempotently performs any required setup.
    */
-  protected abstract async isSetUp(): Promise<boolean>
+  protected abstract async setup(): Promise<void>
 
   /**
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with
@@ -209,7 +212,6 @@ export abstract class AbstractActionReader {
       this.startAtBlock = this.currentBlockNumber + 1
     }
     await this.reloadHistory()
-    this.initialized = true
   }
 
   private async getLatestNeededBlockNumber() {

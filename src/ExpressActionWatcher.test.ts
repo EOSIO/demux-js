@@ -17,7 +17,7 @@ describe('ExpressActionWatcher', () => {
 
   beforeEach(() => {
     actionReader = new TestActionReader()
-    actionReader.setup = true
+    actionReader.isInitialized = true
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
     actionReader.blockchain = blockchain
 
@@ -32,7 +32,7 @@ describe('ExpressActionWatcher', () => {
       },
     }]
     actionHandler = new TestActionHandler([{ versionName: 'v1', updaters, effects: [] }])
-    actionHandler.setup = true
+    actionHandler.isInitialized = true
 
     expressActionWatcher = new ExpressActionWatcher(actionReader, actionHandler, 500, 56544)
   })
