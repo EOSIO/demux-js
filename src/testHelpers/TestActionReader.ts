@@ -1,8 +1,9 @@
 import { AbstractActionReader } from '../AbstractActionReader'
+import { NotInitializedError } from '../errors'
 import { Block } from '../interfaces'
 
 export class TestActionReader extends AbstractActionReader {
-  public setup: boolean = false
+  public isInitialized: boolean = false
 
   public blockchain: Block[] = []
   // tslint:disable-next-line:variable-name
@@ -31,7 +32,9 @@ export class TestActionReader extends AbstractActionReader {
     return this.blockchain[blockNumber - 1]
   }
 
-  protected async isSetUp(): Promise<boolean> {
-    return this.setup
+  protected async setup(): Promise<void> {
+    if (!this.isInitialized) {
+      throw new NotInitializedError()
+    }
   }
 }

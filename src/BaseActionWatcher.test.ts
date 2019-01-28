@@ -26,13 +26,13 @@ describe('BaseActionWatcher', () => {
 
   beforeEach(() => {
     actionReader = new TestActionReader()
-    actionReader.setup = true
+    actionReader.isInitialized = true
 
     actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
-    actionReaderStartAt3.setup = true
+    actionReaderStartAt3.isInitialized = true
 
     actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
-    actionReaderNegative.setup = true
+    actionReaderNegative.isInitialized = true
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
     actionReader.blockchain = blockchain
@@ -55,13 +55,13 @@ describe('BaseActionWatcher', () => {
     }]
 
     actionHandler = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
-    actionHandler.setup = true
+    actionHandler.isInitialized = true
 
     actionHandlerStartAt3 = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
-    actionHandlerStartAt3.setup = true
+    actionHandlerStartAt3.isInitialized = true
 
     actionHandlerNegative = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
-    actionHandlerNegative.setup = true
+    actionHandlerNegative.isInitialized = true
 
     actionWatcher = new TestActionWatcher(actionReader, actionHandler, 500)
     actionWatcherStartAt3 = new TestActionWatcher(actionReaderStartAt3, actionHandlerStartAt3, 500)

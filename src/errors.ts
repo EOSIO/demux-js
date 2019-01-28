@@ -51,9 +51,9 @@ export class UnresolvedForkError extends Error {
   }
 }
 
-export class NotSetUpError extends Error {
-  constructor() {
-    super('The proper setup has not occurred.')
-    Object.setPrototypeOf(this, NotSetUpError.prototype)
+export class NotInitializedError extends Error {
+  constructor(message?: string) {
+    super(`The proper initialization has not occurred. ${message}`)
+    Object.setPrototypeOf(this, NotInitializedError.prototype)
   }
 }

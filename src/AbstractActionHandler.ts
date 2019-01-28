@@ -3,7 +3,6 @@ import {
   DuplicateHandlerVersionError,
   MismatchedBlockHashError,
   MissingHandlerVersionError,
-  NotSetUpError,
 } from './errors'
 import {
   Block,
@@ -28,9 +27,9 @@ export abstract class AbstractActionHandler {
   public lastProcessedBlockHash: string = ''
   public handlerVersionName: string = 'v1'
   protected log: Logger
+  protected initialized: boolean = false
   private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
-  private initialized: boolean = false
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
@@ -55,9 +54,7 @@ export abstract class AbstractActionHandler {
     const { isRollback, isEarliestBlock } = blockMeta
 
     if (!this.initialized) {
-      if (!await this.isSetUp()) {
-        throw new NotSetUpError()
-      }
+      await this.initialize()
       this.initialized = true
     }
 
@@ -114,6 +111,13 @@ export abstract class AbstractActionHandler {
   }
 
   /**
+   * Performs all required initialization for the handler.
+   */
+  public async initialize(): Promise<void> {
+    await this.setup()
+  }
+
+  /**
    * Updates the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state, coinciding with the block
    * that has just been processed. These are the same values read by `updateIndexState()`.
    */
@@ -141,9 +145,9 @@ export abstract class AbstractActionHandler {
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
-   * Checks that the required setup has occurred.
+   * Idempotently performs any required setup.
    */
-  protected abstract async isSetUp(): Promise<boolean>
+  protected abstract async setup(): Promise<void>
 
   /**
    * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are
