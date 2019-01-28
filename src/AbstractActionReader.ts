@@ -87,8 +87,6 @@ export abstract class AbstractActionReader {
 
     if (!this.initialized) {
       await this.initialize()
-      await this.initBlockState()
-      this.initialized = true
     }
 
     if (this.currentBlockNumber === this.headBlockNumber) {
@@ -126,6 +124,15 @@ export abstract class AbstractActionReader {
   }
 
   /**
+   * Performs all required initialization for the reader.
+   */
+  public async initialize(): Promise<void> {
+    await this.setup()
+    await this.initBlockState()
+    this.initialized = true
+  }
+
+  /**
    * Changes the state of the `AbstractActionReader` instance to have just processed the block at the given block
    * number. If the block exists in its temporary block history, it will use this, otherwise it will fetch the block
    * using `getBlock`.
@@ -158,9 +165,9 @@ export abstract class AbstractActionReader {
   }
 
   /**
-   * Idempotently performs any required intialization.
+   * Idempotently performs any required setup.
    */
-  protected abstract async initialize(): Promise<void>
+  protected abstract async setup(): Promise<void>
 
   /**
    * Incrementally rolls back reader state one block at a time, comparing the blockHistory with

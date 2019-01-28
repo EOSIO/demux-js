@@ -32,7 +32,7 @@ export class TestActionReader extends AbstractActionReader {
     return this.blockchain[blockNumber - 1]
   }
 
-  protected async initialize(): Promise<void> {
+  protected async setup(): Promise<void> {
     if (!this.isInitialized) {
       throw new NotInitializedError()
     }

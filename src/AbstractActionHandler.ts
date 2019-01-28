@@ -111,6 +111,13 @@ export abstract class AbstractActionHandler {
   }
 
   /**
+   * Performs all required initialization for the handler.
+   */
+  public async initialize(): Promise<void> {
+    await this.setup()
+  }
+
+  /**
    * Updates the `lastProcessedBlockNumber` and `lastProcessedBlockHash` meta state, coinciding with the block
    * that has just been processed. These are the same values read by `updateIndexState()`.
    */
@@ -138,9 +145,9 @@ export abstract class AbstractActionHandler {
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
-   * Idempotently performs any required intialization.
+   * Idempotently performs any required setup.
    */
-  protected abstract async initialize(): Promise<void>
+  protected abstract async setup(): Promise<void>
 
   /**
    * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are

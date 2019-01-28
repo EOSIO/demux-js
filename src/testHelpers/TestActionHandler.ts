@@ -55,7 +55,7 @@ export class TestActionHandler extends AbstractActionHandler {
     state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
   }
 
-  protected async initialize(): Promise<void> {
+  protected async setup(): Promise<void> {
     if (!this.isInitialized) {
       throw new NotInitializedError()
     }
