@@ -24,8 +24,8 @@ describe('Action Handler', () => {
 
   beforeEach(() => {
     runUpdater = jest.fn()
-
     runEffect = jest.fn()
+
     notRunUpdater = jest.fn()
     notRunEffect = jest.fn()
 
@@ -202,7 +202,7 @@ describe('Action Handler', () => {
     expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
   })
 
-  it('defers the effects until the block is irreversible', async () => {
+  it(`doesn't run deferred effects from orphaned blocks`, async () => {
     const blockMeta = {
       isRollback: false,
       isEarliestBlock: true,
