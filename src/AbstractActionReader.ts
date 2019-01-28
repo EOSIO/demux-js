@@ -2,7 +2,6 @@ import * as Logger from 'bunyan'
 import {
   ImproperSeekToBlockError,
   ImproperStartAtBlockError,
-  NotInitializedError,
   ReloadHistoryError,
   UnresolvedForkError,
 } from './errors'
@@ -87,13 +86,9 @@ export abstract class AbstractActionReader {
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
 
     if (!this.initialized) {
-      try {
-        await this.initialize()
-        await this.initBlockState()
-        this.initialized = true
-      } catch (err) {
-        throw new NotInitializedError(err.message)
-      }
+      await this.initialize()
+      await this.initBlockState()
+      this.initialized = true
     }
 
     if (this.currentBlockNumber === this.headBlockNumber) {
