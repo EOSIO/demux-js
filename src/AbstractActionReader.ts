@@ -206,7 +206,6 @@ export abstract class AbstractActionReader {
       this.startAtBlock = this.currentBlockNumber + 1
     }
     await this.reloadHistory()
-    this.initialized = true
   }
 
   private async getLatestNeededBlockNumber() {
