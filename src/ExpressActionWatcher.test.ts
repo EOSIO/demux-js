@@ -41,13 +41,13 @@ describe('ExpressActionWatcher', () => {
     expressActionWatcher.close()
   })
 
-  it('defaults to paused state', async () => {
+  it('defaults to initial indexing status', async () => {
     await expressActionWatcher.listen()
     const server = request(expressActionWatcher.express)
 
     const status = await server.get('/info')
     expect(JSON.parse(status.text)).toEqual({
-      status: 'paused',
+      indexingStatus: 'initial',
       handler: {
         lastProcessedBlockHash: '',
         lastProcessedBlockNumber: 0,
@@ -73,7 +73,7 @@ describe('ExpressActionWatcher', () => {
     })
     const status = await server.get('/info')
     expect(JSON.parse(status.text)).toEqual({
-      status: 'indexing',
+      indexingStatus: 'indexing',
       handler: {
         lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
         lastProcessedBlockNumber: 4,
@@ -100,7 +100,7 @@ describe('ExpressActionWatcher', () => {
     })
     const status1 = await server.get('/info')
     expect(JSON.parse(status1.text)).toEqual({
-      status: 'pausing',
+      indexingStatus: 'pausing',
       handler: {
         lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
         lastProcessedBlockNumber: 4,
@@ -117,7 +117,7 @@ describe('ExpressActionWatcher', () => {
     await wait(500)
     const status2 = await server.get('/info')
     expect(JSON.parse(status2.text)).toEqual({
-      status: 'paused',
+      indexingStatus: 'paused',
       handler: {
         lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
         lastProcessedBlockNumber: 4,
