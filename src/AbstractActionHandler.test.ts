@@ -1,4 +1,4 @@
-import { MismatchedBlockHashError, NotSetUpError } from './errors'
+import { MismatchedBlockHashError, NotInitializedError } from './errors'
 import { ActionCallback, StatelessActionCallback } from './interfaces'
 import blockchains from './testHelpers/blockchains'
 import { TestActionHandler } from './testHelpers/TestActionHandler'
@@ -99,7 +99,7 @@ describe('Action Handler', () => {
       },
     ])
 
-    actionHandler.setup = true
+    actionHandler.isInitialized = true
   })
 
   it('runs the correct updater based on action type', async () => {
@@ -236,7 +236,7 @@ describe('Action Handler', () => {
     expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
   })
 
-  it('continues ifSetup is true', async () => {
+  it('continues if initialization succeeds', async () => {
     actionHandler.state.indexState = {
       blockNumber: 3,
       blockHash: '000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8',
@@ -251,12 +251,12 @@ describe('Action Handler', () => {
       blockMeta,
       lastIrreversibleBlockNumber: 1,
     }
-    actionHandler.setup = true
+    actionHandler.isInitialized = true
     const seekBlockNum = await actionHandler.handleBlock(nextBlock, false)
     expect(seekBlockNum).toBe(4)
   })
 
-  it('throws ifSetup is false', async () => {
+  it('throws if iniatilization fails', async () => {
     actionHandler.state.indexState = {
       blockNumber: 3,
       blockHash: '000f42401b5636c3c1d88f31fe0e503654091fb822b0ffe21c7d35837fc9f3d8',
@@ -271,8 +271,8 @@ describe('Action Handler', () => {
       blockMeta,
       lastIrreversibleBlockNumber: 1,
     }
-    actionHandler.setup = false
+    actionHandler.isInitialized = false
     const result = actionHandler.handleBlock(nextBlock, false)
-    expect(result).rejects.toThrow(NotSetUpError)
+    expect(result).rejects.toThrow(NotInitializedError)
   })
 })

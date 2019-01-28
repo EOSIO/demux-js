@@ -1,4 +1,4 @@
-import { ImproperStartAtBlockError, NotSetUpError } from './errors'
+import { ImproperStartAtBlockError, NotInitializedError } from './errors'
 import { Block } from './interfaces'
 import blockchains from './testHelpers/blockchains'
 import { TestActionReader } from './testHelpers/TestActionReader'
@@ -12,13 +12,13 @@ describe('Action Reader', () => {
 
   beforeEach(() => {
     actionReader = new TestActionReader()
-    actionReader.setup = true
+    actionReader.isInitialized = true
 
     actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
-    actionReaderStartAt3.setup = true
+    actionReaderStartAt3.isInitialized = true
 
     actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
-    actionReaderNegative.setup = true
+    actionReaderNegative.isInitialized = true
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
     forked = JSON.parse(JSON.stringify(blockchains.forked))
@@ -120,14 +120,14 @@ describe('Action Reader', () => {
   })
 
   it('continues ifSetup true', async () => {
-    actionReader.setup = true
+    actionReader.isInitialized = true
     const { block } = await actionReader.getNextBlock()
     expect(block.blockInfo.blockNumber).toBe(1)
   })
 
   it('continues ifSetup true', async () => {
-    actionReader.setup = false
+    actionReader.isInitialized = false
     const result = actionReader.getNextBlock()
-    expect(result).rejects.toThrow(NotSetUpError)
+    expect(result).rejects.toThrow(NotInitializedError)
   })
 })

@@ -1,8 +1,9 @@
 import { AbstractActionHandler } from '../AbstractActionHandler'
+import { NotInitializedError } from '../errors'
 import { Block, IndexState, NextBlock, VersionedAction } from '../interfaces'
 
 export class TestActionHandler extends AbstractActionHandler {
-  public setup: boolean = false
+  public isInitialized: boolean = false
 
   public state: any = {
     indexState: { blockNumber: 0, blockHash: '', isReplay: false, handlerVersionName: 'v1' },
@@ -54,7 +55,9 @@ export class TestActionHandler extends AbstractActionHandler {
     state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
   }
 
-  protected async isSetUp(): Promise<boolean> {
-    return this.setup
+  protected async initialize(): Promise<void> {
+    if (!this.isInitialized) {
+      throw new NotInitializedError()
+    }
   }
 }
