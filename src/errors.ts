@@ -51,9 +51,36 @@ export class UnresolvedForkError extends Error {
   }
 }
 
-export class NotInitializedError extends Error {
-  constructor(message?: string) {
-    super(`The proper initialization has not occurred. ${message}`)
+// Adapted from https://stackoverflow.com/a/42755876
+class RethrownError extends Error {
+  constructor(message: string, error?: Error) {
+    super(message)
+    this.name = this.constructor.name
+    this.message = message
+    if (typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, this.constructor)
+    } else {
+      this.stack = (new Error(message)).stack
+    }
+
+    if (error) {
+      this.extendStack(error)
+    }
+
+    Object.setPrototypeOf(this, RethrownError.prototype)
+  }
+
+  private extendStack(error: Error) {
+    const messageLines =  (this.message.match(/\n/g) || []).length + 1
+    if (this.stack) {
+      this.stack = this.stack.split('\n').slice(0, messageLines + 1).join('\n') + '\n' + error.stack
+    }
+  }
+}
+
+export class NotInitializedError extends RethrownError {
+  constructor(message?: string, error?: Error) {
+    super(`The proper initialization has not occurred. ${message}`, error)
     Object.setPrototypeOf(this, NotInitializedError.prototype)
   }
 }
