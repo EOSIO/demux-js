@@ -236,6 +236,119 @@ describe('Action Handler', () => {
     expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
   })
 
+  it('rolls back', async () => {
+    const blockMeta1 = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock1 = {
+      block: blockchain[0],
+      blockMeta: blockMeta1,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(nextBlock1, false)
+
+    const blockMeta2 = {
+      isRollback: false,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const nextBlock2 = {
+      block: blockchain[1],
+      blockMeta: blockMeta2,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(nextBlock2, false)
+
+    const blockMeta3 = {
+      isRollback: false,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const nextBlock3 = {
+      block: blockchain[2],
+      blockMeta: blockMeta3,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(nextBlock3, false)
+
+    // Roll back
+    const rollbackMeta = {
+      isRollback: true,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const rollback2 = {
+      block: blockchain[1],
+      blockMeta: rollbackMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(rollback2, false)
+
+    expect(actionHandler.lastProcessedBlockNumber).toEqual(2)
+  })
+
+  it(`doesn't run effects from orphaned blocks`, async () => {
+    const blockMeta1 = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock1 = {
+      block: blockchain[0],
+      blockMeta: blockMeta1,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(nextBlock1, false)
+
+    const blockMeta2 = {
+      isRollback: false,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const nextBlock2 = {
+      block: blockchain[1],
+      blockMeta: blockMeta2,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(nextBlock2, false)
+
+    const blockMeta3 = {
+      isRollback: false,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const nextBlock3 = {
+      block: blockchain[2],
+      blockMeta: blockMeta3,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(nextBlock3, false)
+
+    const rollbackMeta = {
+      isRollback: true,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const rollback2 = {
+      block: blockchain[1],
+      blockMeta: rollbackMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+    await actionHandler.handleBlock(rollback2, false)
+
+    const incrementIrreversible3 = {
+      block: upgradeHandler[1], // block number 3, no actions this time
+      blockMeta: blockMeta3,
+      lastIrreversibleBlockNumber: 2,
+    }
+    await actionHandler.handleBlock(incrementIrreversible3, false)
+
+    expect(runEffect).toHaveBeenCalledTimes(2)
+    expect(notRunEffect).not.toHaveBeenCalled()
+  })
+
   it('continues if initialization succeeds', async () => {
     actionHandler.state.indexState = {
       blockNumber: 3,

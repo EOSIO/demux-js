@@ -1,7 +1,7 @@
 import * as Logger from 'bunyan'
 import { AbstractActionHandler } from './AbstractActionHandler'
 import { AbstractActionReader } from './AbstractActionReader'
-import { DemuxInfo } from './interfaces'
+import { DemuxInfo, IndexingStatus } from './interfaces'
 
 /**
  * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
@@ -18,6 +18,7 @@ export class BaseActionWatcher {
   private running: boolean = false
   private shouldPause: boolean = false
   private error: Error | null = null
+  private clean: boolean = true
 
   constructor(
     protected actionReader: AbstractActionReader,
@@ -46,6 +47,7 @@ export class BaseActionWatcher {
       this.log.info('Indexing paused.')
       return
     }
+    this.clean = false
     this.running = true
     this.error = null
     const startTime = Date.now()
@@ -100,19 +102,10 @@ export class BaseActionWatcher {
    * Information about the current state of Demux
    */
   public get info(): DemuxInfo {
-    let status
-    if (this.running && !this.shouldPause) {
-      status = 'indexing'
-    } else if (this.running && this.shouldPause) {
-      status = 'pausing'
-    } else {
-      status = 'paused'
-    }
-
     const info: DemuxInfo = {
       handler: this.actionHandler.info,
       reader: this.actionReader.info,
-      status,
+      indexingStatus: this.status,
     }
     if (this.error) {
       info.error = this.error
@@ -146,5 +139,13 @@ export class BaseActionWatcher {
 
       headBlockNumber = this.actionReader.headBlockNumber
     }
+  }
+
+  private get status() {
+    if (this.clean) { return IndexingStatus.Initial }
+    if (this.running && !this.shouldPause) { return IndexingStatus.Indexing }
+    if (this.running && this.shouldPause) { return IndexingStatus.Pausing }
+    if (this.error) { return IndexingStatus.Stopped }
+    return IndexingStatus.Paused
   }
 }

@@ -99,6 +99,7 @@ export type CurriedEffectRun = (
 )
 
 export interface DeferredEffects {
+  // Block number
   [key: number]: CurriedEffectRun[]
 }
 
@@ -116,8 +117,16 @@ export interface ReaderInfo {
   lastIrreversibleBlockNumber: number
 }
 
+export enum IndexingStatus {
+  Initial = 'initial',
+  Indexing = 'indexing',
+  Pausing = 'pausing',
+  Paused = 'paused',
+  Stopped = 'stopped',
+}
+
 export interface DemuxInfo {
-  status: string
+  indexingStatus: IndexingStatus
   error?: Error
   handler: HandlerInfo
   reader: ReaderInfo
