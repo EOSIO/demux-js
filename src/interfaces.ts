@@ -12,11 +12,6 @@ export interface ActionReaderOptions {
    * is the responsibility of the implementing class.
    */
   onlyIrreversible?: boolean
-  /**
-   * This determines how many blocks in the past are cached. This is used for determining
-   * block validity during both normal operation and when rolling back.
-   */
-  maxHistoryLength?: number
 }
 
 export interface Block {
