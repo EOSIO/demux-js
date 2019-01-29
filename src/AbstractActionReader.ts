@@ -206,6 +206,7 @@ export abstract class AbstractActionReader {
   }
 
   private async initBlockState() {
+    this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
     this.headBlockNumber = await this.getLatestNeededBlockNumber()
     if (this.currentBlockNumber < 0) {
       this.currentBlockNumber = this.headBlockNumber + this.currentBlockNumber
