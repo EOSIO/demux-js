@@ -174,6 +174,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 1,
     }
     const result = actionHandler.handleBlock(nextBlock, false)
+    // tslint:disable-next-line:no-floating-promises
     expect(result).rejects.toThrow(MismatchedBlockHashError)
   })
 
@@ -386,6 +387,7 @@ describe('Action Handler', () => {
     }
     actionHandler.isInitialized = false
     const result = actionHandler.handleBlock(nextBlock, false)
+    // tslint:disable-next-line:no-floating-promises
     expect(result).rejects.toThrow(NotInitializedError)
   })
 })

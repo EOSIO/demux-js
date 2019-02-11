@@ -11,7 +11,7 @@
   "types": "dist/index.d.ts",
   "repository": "https://github.com/EOSIO/demux-js",
   "devDependencies": {
-    "@blockone/tslint-config-blockone": "^1.0.0",
+    "@blockone/tslint-config-blockone": "^2.0.0",
     "@types/bunyan": "^1.8.5",
     "@types/express": "^4.16.0",
     "@types/jest": "^23.1.4",

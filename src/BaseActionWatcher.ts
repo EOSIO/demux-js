@@ -81,6 +81,8 @@ export class BaseActionWatcher {
       return false
     }
     this.log.info('Starting indexing.')
+
+    // tslint:disable-next-line:no-floating-promises
     this.watch()
     return true
   }
