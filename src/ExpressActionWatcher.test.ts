@@ -38,6 +38,7 @@ describe('ExpressActionWatcher', () => {
   })
 
   afterEach(() => {
+    // tslint:disable-next-line:no-floating-promises
     expressActionWatcher.close()
   })
 
