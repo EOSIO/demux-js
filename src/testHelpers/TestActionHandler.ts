@@ -20,12 +20,12 @@ export class TestActionHandler extends AbstractActionHandler {
 
   public async rollbackTo(blockNumber: number) {
     this.setLastProcessedBlockNumber(blockNumber)
+    this.setLastProcessedBlockHash(this.hashHistory[blockNumber])
     this.state.indexState = {
       ...this.state.indexState,
       blockNumber,
       blockHash: this.hashHistory[blockNumber],
     }
-    this.setLastProcessedBlockHash(this.hashHistory[blockNumber])
   }
 
   public setLastProcessedBlockHash(hash: string) {
