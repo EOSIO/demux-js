@@ -136,7 +136,7 @@ export class BaseActionWatcher {
       )
 
       if (nextBlockNumberNeeded) {
-        await this.actionReader.seekToBlock(nextBlockNumberNeeded - 1)
+        await this.actionReader.seekToBlock(nextBlockNumberNeeded)
       }
 
       headBlockNumber = this.actionReader.headBlockNumber

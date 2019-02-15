@@ -147,4 +147,27 @@ describe('BaseActionWatcher', () => {
       totalTransferred: 189,
     })
   })
+
+  it('continues indexing where action handler left off', async () => {
+    actionHandler.state.indexState = {
+      blockNumber: blockchain[2].blockInfo.blockNumber,
+      blockHash: blockchain[2].blockInfo.blockHash,
+      handlerVersionName: 'v1',
+    }
+    await actionWatcher._checkForBlocks()
+    expect(actionHandler.state.indexState.blockNumber).toEqual(4)
+    expect(actionReader.currentBlockNumber).toBe(4)
+    expect(actionReader.headBlockNumber).toBe(4)
+  })
+
+  it('resolves fork', async () => {
+    actionReader._testLastIrreversible = 1
+    actionReader.blockchain = blockchain.slice(0, 4)
+    await actionWatcher._checkForBlocks()
+    actionReader.blockchain = blockchains.forked
+    await actionWatcher._checkForBlocks()
+    expect(actionHandler.state.indexState.blockNumber).toEqual(5)
+    expect(actionReader.currentBlockNumber).toBe(5)
+    expect(actionReader.headBlockNumber).toBe(5)
+  })
 })

@@ -145,7 +145,13 @@ describe('Action Handler', () => {
   })
 
   it('seeks to the next block needed when block number doesn\'t match last processed block', async () => {
-    actionHandler.setLastProcessedBlockNumber(2)
+    actionHandler.setLastProcessedBlockNumber(blockchain[1].blockInfo.blockNumber)
+    actionHandler.setLastProcessedBlockHash(blockchain[1].blockInfo.blockHash)
+    actionHandler.state.indexState = {
+      ...actionHandler.state.indexState,
+      blockNumber: blockchain[1].blockInfo.blockNumber,
+      blockHash: blockchain[1].blockInfo.blockHash,
+    }
     const blockMeta = {
       isRollback: false,
       isEarliestBlock: false,

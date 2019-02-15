@@ -107,6 +107,7 @@ export abstract class AbstractActionHandler {
    */
   public async initialize(): Promise<void> {
     await this.setup()
+    await this.refreshIndexState()
   }
 
   /**
