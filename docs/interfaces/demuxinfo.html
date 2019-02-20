@@ -907,6 +907,9 @@ img { max-width: 100%; }
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
+		<li class=" tsd-kind-enum">
+			<a href="../enums/indexingstatus.html" class="tsd-kind-icon">Indexing<wbr>Status</a>
+		</li>
 		<li class=" tsd-kind-class">
 			<a href="../classes/abstractactionhandler.html" class="tsd-kind-icon">Abstract<wbr>Action<wbr>Handler</a>
 		</li>
@@ -917,7 +920,31 @@ img { max-width: 100%; }
 			<a href="../classes/baseactionwatcher.html" class="tsd-kind-icon">Base<wbr>Action<wbr>Watcher</a>
 		</li>
 		<li class=" tsd-kind-class">
+			<a href="../classes/duplicatehandlerversionerror.html" class="tsd-kind-icon">Duplicate<wbr>Handler<wbr>Version<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
 			<a href="../classes/expressactionwatcher.html" class="tsd-kind-icon">Express<wbr>Action<wbr>Watcher</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/improperseektoblockerror.html" class="tsd-kind-icon">Improper<wbr>Seek<wbr>ToBlock<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/improperstartatblockerror.html" class="tsd-kind-icon">Improper<wbr>Start<wbr>AtBlock<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/mismatchedblockhasherror.html" class="tsd-kind-icon">Mismatched<wbr>Block<wbr>Hash<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/missinghandlerversionerror.html" class="tsd-kind-icon">Missing<wbr>Handler<wbr>Version<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/notinitializederror.html" class="tsd-kind-icon">Not<wbr>Initialized<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/reloadhistoryerror.html" class="tsd-kind-icon">Reload<wbr>History<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="../classes/unresolvedforkerror.html" class="tsd-kind-icon">Unresolved<wbr>Fork<wbr>Error</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="action.html" class="tsd-kind-icon">Action</a>
@@ -950,10 +977,10 @@ img { max-width: 100%; }
 					<a href="demuxinfo.html#handler" class="tsd-kind-icon">handler</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="demuxinfo.html#reader" class="tsd-kind-icon">reader</a>
+					<a href="demuxinfo.html#indexingstatus" class="tsd-kind-icon">indexing<wbr>Status</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="demuxinfo.html#status" class="tsd-kind-icon">status</a>
+					<a href="demuxinfo.html#reader" class="tsd-kind-icon">reader</a>
 				</li>
 			</ul>
 		</li>
@@ -1011,8 +1038,8 @@ img { max-width: 100%; }
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="demuxinfo.html#error" class="tsd-kind-icon">error</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="demuxinfo.html#handler" class="tsd-kind-icon">handler</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="demuxinfo.html#indexingstatus" class="tsd-kind-icon">indexing<wbr>Status</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="demuxinfo.html#reader" class="tsd-kind-icon">reader</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="demuxinfo.html#status" class="tsd-kind-icon">status</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1023,10 +1050,10 @@ img { max-width: 100%; }
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 				<a name="error" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagOptional">Optional</span> error</h3>
-				<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Error</span></div>
+				<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <a href="../classes/mismatchedblockhasherror.html#error" class="tsd-signature-type">Error</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/interfaces.ts#L121">src/interfaces.ts:121</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L125">src/interfaces.ts:125</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1036,7 +1063,17 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <a href="handlerinfo.html" class="tsd-signature-type">HandlerInfo</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/interfaces.ts#L122">src/interfaces.ts:122</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L126">src/interfaces.ts:126</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="indexingstatus" class="tsd-anchor"></a>
+				<h3>indexing<wbr>Status</h3>
+				<div class="tsd-signature tsd-kind-icon">indexing<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/indexingstatus.html" class="tsd-signature-type">IndexingStatus</a></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L124">src/interfaces.ts:124</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1046,17 +1083,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">reader<span class="tsd-signature-symbol">:</span> <a href="readerinfo.html" class="tsd-signature-type">ReaderInfo</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/interfaces.ts#L123">src/interfaces.ts:123</a></li>
-					</ul>
-				</aside>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="status" class="tsd-anchor"></a>
-				<h3>status</h3>
-				<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/431ae7e/src/interfaces.ts#L120">src/interfaces.ts:120</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L127">src/interfaces.ts:127</a></li>
 					</ul>
 				</aside>
 			</section>
