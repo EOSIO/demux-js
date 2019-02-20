@@ -35,9 +35,9 @@
     "express": "4.16.4"
   },
   "scripts": {
-    "build": "rm -r dist/* && tsc",
+    "build": "rm -r dist && tsc",
     "build-docs": "./scripts/build-docs.sh",
-    "build-all": "rm -r dist/* && tsc && ./scripts/build-docs.sh",
+    "build-all": "rm -r dist && tsc && ./scripts/build-docs.sh",
     "example": "./scripts/run-example.sh",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "jest --detectOpenHandles --maxWorkers=2",
