@@ -1,6 +1,6 @@
 {
   "name": "demux",
-  "version": "3.1.3",
+  "version": "4.0.0",
   "author": {
     "name": "Julien Heller",
     "url": "https://block.one/"
@@ -30,14 +30,17 @@
     "typedoc": "^0.11.1",
     "typescript": "^2.9.2"
   },
+  "dependencies": {
+    "bunyan": "1.8.12",
+    "express": "4.16.4"
+  },
   "scripts": {
-    "build": "tsc",
-    "compile": "tsc",
-    "watch": "tsc -w",
+    "build": "rm -r dist/* && tsc",
+    "build-docs": "./scripts/build-docs.sh",
+    "build-all": "rm -r dist/* && tsc && ./scripts/build-docs.sh",
     "example": "./scripts/run-example.sh",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "jest --detectOpenHandles --maxWorkers=2",
-    "build-docs": "./scripts/build-docs.sh",
     "current-version": "echo $npm_package_version"
   },
   "jest": {
@@ -56,9 +59,5 @@
     },
     "testRegex": "(/src/.*(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "testEnvironment": "node"
-  },
-  "dependencies": {
-    "bunyan": "1.8.12",
-    "express": "4.16.4"
   }
 }
