@@ -11,7 +11,7 @@ export class ExpressActionWatcher extends BaseActionWatcher {
   /**
    * @param port  The port to use for the Express server
    */
-  public express = express()
+  public express: express.Express = express() // How expressive
   private server: http.Server | null = null
   constructor(
     protected actionReader: AbstractActionReader,
