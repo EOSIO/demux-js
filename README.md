@@ -83,6 +83,8 @@ This library provides the following classes:
 
 * [**`BaseActionWatcher`**](https://eosio.github.io/demux-js/classes/baseactionwatcher.html): Base class that implements a ready-to-use Action Watcher
 
+* [**`ExpressActionWatcher`**](https://eosio.github.io/demux-js/classes/expressactionwatcher.html): Exposes the API methods from the BaseActionWatcher through an Express server
+
 In order to process actions, we need the following things:
 
 - An implementation of an `AbstractActionReader`
@@ -91,10 +93,47 @@ In order to process actions, we need the following things:
 
 After we have these things, we need to:
 
-- Instantiate the implemented `AbstractActionHandler`, passing in the `HandlerVersion` and any other needed configuration
 - Instantiate the implemented `AbstractActionReader` with any needed configuration
-- Instantiate a `BaseActionWatcher`, passing in the above Handler and Reader instances
-- Call `watch()` on the Watcher
+- Instantiate the implemented `AbstractActionHandler`, passing in the `HandlerVersion` and any other needed configuration
+- Instantiate the `BaseActionWatcher` (or a subclass), passing in the Action Handler and Action Watcher instances
+- Start indexing via the Action Watcher's `watch()` method (by either calling it directly or otherwise)
+
+
+#### Example
+
+```javascript
+const { BaseActionWatcher, ExpressActionWatcher } = require("demux")
+const { MyActionReader } = require("./MyActionReader")
+const { MyActionHandler } = require("./MyActionHandler")
+const { handlerVersions } = require("./handlerVersions")
+const { readerConfig, handlerConfig, pollInterval, portNumber } = require("./config")
+
+const actionReader = new MyActionReader(readerConfig)
+const actioHandler = new MyActionHandler(handlerVersions, handlerConfig)
+```
+Then, either
+```javascript
+const watcher = new BaseActionWatcher(
+  actionReader,
+  actionHandler,
+  pollInterval,
+)
+
+watcher.watch()
+```
+Or,
+```javascript
+const expressWatcher = new ExpressActionWatcher(
+  actionReader,
+  actionHandler,
+  pollInterval,
+  portNumber,
+)
+
+expressWatcher.listen()
+
+// You can then make a POST request to `/start` on your configured endpoint
+```
 
 ### [**API documentation**](https://eosio.github.io/demux-js/)
 

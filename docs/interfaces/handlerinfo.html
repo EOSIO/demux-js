@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>HandlerVersion | demux</title>
+	<title>HandlerInfo | demux</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -973,22 +973,22 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-interface">
 			<a href="effect.html" class="tsd-kind-icon">Effect</a>
 		</li>
-		<li class=" tsd-kind-interface">
-			<a href="handlerinfo.html" class="tsd-kind-icon">Handler<wbr>Info</a>
-		</li>
 		<li class="current tsd-kind-interface">
-			<a href="handlerversion.html" class="tsd-kind-icon">Handler<wbr>Version</a>
+			<a href="handlerinfo.html" class="tsd-kind-icon">Handler<wbr>Info</a>
 			<ul>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="handlerversion.html#effects" class="tsd-kind-icon">effects</a>
+					<a href="handlerinfo.html#handlerversionname" class="tsd-kind-icon">handler<wbr>Version<wbr>Name</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="handlerversion.html#updaters" class="tsd-kind-icon">updaters</a>
+					<a href="handlerinfo.html#lastprocessedblockhash" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="handlerversion.html#versionname" class="tsd-kind-icon">version<wbr>Name</a>
+					<a href="handlerinfo.html#lastprocessedblocknumber" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number</a>
 				</li>
 			</ul>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="handlerversion.html" class="tsd-kind-icon">Handler<wbr>Version</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
@@ -1022,7 +1022,7 @@ img { max-width: 100%; }
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">HandlerVersion</span>
+					<span class="target">HandlerInfo</span>
 				</li>
 			</ul>
 		</section>
@@ -1033,9 +1033,9 @@ img { max-width: 100%; }
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="handlerversion.html#effects" class="tsd-kind-icon">effects</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="handlerversion.html#updaters" class="tsd-kind-icon">updaters</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="handlerversion.html#versionname" class="tsd-kind-icon">version<wbr>Name</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="handlerinfo.html#handlerversionname" class="tsd-kind-icon">handler<wbr>Version<wbr>Name</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="handlerinfo.html#lastprocessedblockhash" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="handlerinfo.html#lastprocessedblocknumber" class="tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1044,32 +1044,32 @@ img { max-width: 100%; }
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="effects" class="tsd-anchor"></a>
-				<h3>effects</h3>
-				<div class="tsd-signature tsd-kind-icon">effects<span class="tsd-signature-symbol">:</span> <a href="effect.html" class="tsd-signature-type">Effect</a><span class="tsd-signature-symbol">[]</span></div>
+				<a name="handlerversionname" class="tsd-anchor"></a>
+				<h3>handler<wbr>Version<wbr>Name</h3>
+				<div class="tsd-signature tsd-kind-icon">handler<wbr>Version<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L84">src/interfaces.ts:84</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L104">src/interfaces.ts:104</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="updaters" class="tsd-anchor"></a>
-				<h3>updaters</h3>
-				<div class="tsd-signature tsd-kind-icon">updaters<span class="tsd-signature-symbol">:</span> <a href="updater.html" class="tsd-signature-type">Updater</a><span class="tsd-signature-symbol">[]</span></div>
+				<a name="lastprocessedblockhash" class="tsd-anchor"></a>
+				<h3>last<wbr>Processed<wbr>Block<wbr>Hash</h3>
+				<div class="tsd-signature tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L83">src/interfaces.ts:83</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L103">src/interfaces.ts:103</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="versionname" class="tsd-anchor"></a>
-				<h3>version<wbr>Name</h3>
-				<div class="tsd-signature tsd-kind-icon">version<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<a name="lastprocessedblocknumber" class="tsd-anchor"></a>
+				<h3>last<wbr>Processed<wbr>Block<wbr>Number</h3>
+				<div class="tsd-signature tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L82">src/interfaces.ts:82</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/interfaces.ts#L102">src/interfaces.ts:102</a></li>
 					</ul>
 				</aside>
 			</section>

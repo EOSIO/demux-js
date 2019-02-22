@@ -1,16 +1,9 @@
 {
   "defaultSeverity": "error",
   "extends": [
-    "tslint:recommended",
-    "tslint-eslint-rules"
+      "@blockone/tslint-config-blockone/tslint-config"
   ],
   "jsRules": {},
-  "rules": {
-    "object-literal-sort-keys": false,
-    "interface-name": [true, "never-prefix"],
-    "no-console": [true, "log"],
-    "semicolon": [true, "never"],
-    "ter-indent": [true, 2]
-  },
+  "rules": {},
   "rulesDirectory": []
 }

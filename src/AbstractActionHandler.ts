@@ -1,5 +1,19 @@
-import * as Logger from "bunyan"
-import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
+import * as Logger from 'bunyan'
+import {
+  DuplicateHandlerVersionError,
+  MismatchedBlockHashError,
+  MissingHandlerVersionError,
+} from './errors'
+import {
+  Block,
+  DeferredEffects,
+  Effect,
+  HandlerInfo,
+  HandlerVersion,
+  IndexState,
+  NextBlock,
+  VersionedAction,
+} from './interfaces'
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -9,10 +23,12 @@ import { Action, Block, HandlerVersion, IndexState } from "./interfaces"
  *
  */
 export abstract class AbstractActionHandler {
-  protected lastProcessedBlockNumber: number = 0
-  protected lastProcessedBlockHash: string = ""
-  protected handlerVersionName: string = "v1"
+  public lastProcessedBlockNumber: number = 0
+  public lastProcessedBlockHash: string = ''
+  public handlerVersionName: string = 'v1'
   protected log: Logger
+  protected initialized: boolean = false
+  private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [key: string]: HandlerVersion } = {}
 
   /**
@@ -23,58 +39,75 @@ export abstract class AbstractActionHandler {
     handlerVersions: HandlerVersion[],
   ) {
     this.initHandlerVersions(handlerVersions)
-    this.log = Logger.createLogger({ name: "demux" })
+    this.log = Logger.createLogger({ name: 'demux' })
   }
 
   /**
    * Receive block, validate, and handle actions with updaters and effects
    */
   public async handleBlock(
-    block: Block,
-    isRollback: boolean,
-    isFirstBlock: boolean,
-    isReplay: boolean = false,
-  ): Promise<[boolean, number]> {
+    nextBlock: NextBlock,
+    isReplay: boolean,
+  ): Promise<number | null> {
+    const { block, blockMeta } = nextBlock
     const { blockInfo } = block
+    const { isRollback, isEarliestBlock } = blockMeta
 
-    if (isRollback || (isReplay && isFirstBlock)) {
-      const rollbackBlockNumber = blockInfo.blockNumber - 1
-      const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
-      this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
-      await this.rollbackTo(rollbackBlockNumber)
-      await this.refreshIndexState()
-    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === "") {
-      await this.refreshIndexState()
+    if (!this.initialized) {
+      await this.initialize()
+      this.initialized = true
     }
+
+    await this.handleRollback(isRollback, blockInfo.blockNumber, isReplay, isEarliestBlock)
 
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
 
     // Just processed this block; skip
     if (blockInfo.blockNumber === this.lastProcessedBlockNumber
         && blockInfo.blockHash === this.lastProcessedBlockHash) {
-      return [false, 0]
+      return null
     }
 
     // If it's the first block but we've already processed blocks, seek to next block
-    if (isFirstBlock && this.lastProcessedBlockHash) {
-      return [true, nextBlockNeeded]
+    if (isEarliestBlock && this.lastProcessedBlockHash) {
+      return nextBlockNeeded
     }
     // Only check if this is the block we need if it's not the first block
-    if (!isFirstBlock) {
+    if (!isEarliestBlock) {
       if (blockInfo.blockNumber !== nextBlockNeeded) {
-        return [true, nextBlockNeeded]
+        return nextBlockNeeded
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-        throw Error("Block hashes do not match; block not part of current chain.")
+        const err = new MismatchedBlockHashError()
+        throw err
       }
     }
 
     const handleWithArgs: (state: any, context?: any) => Promise<void> = async (state: any, context: any = {}) => {
-      await this.handleActions(state, block, context, isReplay)
+      await this.handleActions(state, context, nextBlock, isReplay)
     }
     await this.handleWithState(handleWithArgs)
-    return [false, 0]
+    return null
+  }
+
+  /**
+   * Information about the current state of the Action Handler
+   */
+  public get info(): HandlerInfo {
+    return {
+      lastProcessedBlockNumber: this.lastProcessedBlockNumber,
+      lastProcessedBlockHash: this.lastProcessedBlockHash,
+      handlerVersionName: this.handlerVersionName,
+    }
+  }
+
+  /**
+   * Performs all required initialization for the handler.
+   */
+  public async initialize(): Promise<void> {
+    await this.setup()
+    await this.refreshIndexState()
   }
 
   /**
@@ -105,6 +138,25 @@ export abstract class AbstractActionHandler {
   protected abstract async handleWithState(handle: (state: any, context?: any) => void): Promise<void>
 
   /**
+   * Idempotently performs any required setup.
+   */
+  protected abstract async setup(): Promise<void>
+
+  /**
+   * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are
+   * subscribed to. When this returns true, their corresponding functions will run.
+   *
+   * By default, this method tests for direct equivalence between the incoming candidate type and the type that is
+   * subscribed. Override this method to extend this functionality (e.g. wildcards).
+   *
+   * @param candidateType   The incoming action's type
+   * @param subscribedType  The type the Updater of Effect is subscribed to
+   */
+  protected matchActionType(candidateType: string, subscribedType: string): boolean {
+    return candidateType === subscribedType
+  }
+
+  /**
    * Process actions against deterministically accumulating `Updater` functions. Returns a promise of versioned actions
    * for consumption by `runEffects`, to make sure the correct effects are run on blocks that include a `HandlerVersion`
    * change. To change a `HandlerVersion`, have an `Updater` function return the `versionName` of the corresponding
@@ -113,16 +165,16 @@ export abstract class AbstractActionHandler {
   protected async applyUpdaters(
     state: any,
     block: Block,
-    isReplay: boolean,
     context: any,
-  ): Promise<Array<[Action, string]>> {
-    const versionedActions = [] as Array<[Action, string]>
+    isReplay: boolean,
+  ): Promise<VersionedAction[]> {
+    const versionedActions = [] as VersionedAction[]
     const { actions, blockInfo } = block
     for (const action of actions) {
       let updaterIndex = -1
       for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
         updaterIndex += 1
-        if (action.type === updater.actionType) {
+        if (this.matchActionType(action.type, updater.actionType)) {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
           if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
@@ -136,7 +188,10 @@ export abstract class AbstractActionHandler {
           }
         }
       }
-      versionedActions.push([action, this.handlerVersionName])
+      versionedActions.push({
+        action,
+        handlerVersionName: this.handlerVersionName,
+      })
     }
     return versionedActions
   }
@@ -145,15 +200,15 @@ export abstract class AbstractActionHandler {
    * Process versioned actions against asynchronous side effects.
    */
   protected runEffects(
-    versionedActions: Array<[Action, string]>,
-    block: Block,
+    versionedActions: VersionedAction[],
     context: any,
+    nextBlock: NextBlock,
   ) {
-    for (const [action, handlerVersionName] of versionedActions) {
+    this.runDeferredEffects(nextBlock.lastIrreversibleBlockNumber)
+    for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
-        if (action.type === effect.actionType) {
-          const { payload } = action
-          effect.run(payload, block, context)
+        if (this.matchActionType(action.type, effect.actionType)) {
+          this.runOrDeferEffect(effect, action.payload, nextBlock, context)
         }
       }
     }
@@ -171,15 +226,16 @@ export abstract class AbstractActionHandler {
    */
   protected async handleActions(
     state: any,
-    block: Block,
     context: any,
+    nextBlock: NextBlock,
     isReplay: boolean,
   ): Promise<void> {
+    const { block } = nextBlock
     const { blockInfo } = block
 
-    const versionedActions = await this.applyUpdaters(state, block, isReplay, context)
+    const versionedActions = await this.applyUpdaters(state, block, context, isReplay)
     if (!isReplay) {
-      this.runEffects(versionedActions, block, context)
+      this.runEffects(versionedActions, context, nextBlock)
     }
 
     await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)
@@ -187,21 +243,88 @@ export abstract class AbstractActionHandler {
     this.lastProcessedBlockHash = blockInfo.blockHash
   }
 
+  private async handleRollback(isRollback: boolean, blockNumber: number, isReplay: boolean, isEarliestBlock: boolean) {
+    if (isRollback || (isReplay && isEarliestBlock)) {
+      const rollbackBlockNumber = blockNumber - 1
+      const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
+      this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
+      await this.rollbackTo(rollbackBlockNumber)
+      this.rollbackDeferredEffects(blockNumber)
+      await this.refreshIndexState()
+    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === '') {
+      await this.refreshIndexState()
+    }
+  }
+
+  private range(start: number, end: number) {
+    return Array(end - start).fill(0).map((_, i: number) => i + start)
+  }
+
+  private runOrDeferEffect(
+    effect: Effect,
+    payload: any,
+    nextBlock: NextBlock,
+    context: any,
+  ) {
+    const { block, lastIrreversibleBlockNumber } = nextBlock
+    const { blockNumber } = block.blockInfo
+    const shouldRunImmediately = (
+      !effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber
+    )
+    if (shouldRunImmediately) {
+      effect.run(payload, block, context)
+    } else {
+      if (!this.deferredEffects[blockNumber]) {
+        this.deferredEffects[blockNumber] = []
+      }
+      this.deferredEffects[blockNumber].push(() => effect.run(payload, block, context))
+    }
+  }
+
+  private runDeferredEffects(lastIrreversibleBlockNumber: number) {
+    const nextDeferredBlockNumber = this.getNextDeferredBlockNumber()
+    if (!nextDeferredBlockNumber) { return }
+    for (const blockNumber of this.range(nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
+      if (this.deferredEffects[blockNumber]) {
+        const effects = this.deferredEffects[blockNumber]
+        for (const deferredEffect of effects) {
+          deferredEffect()
+        }
+        delete this.deferredEffects[blockNumber]
+      }
+    }
+  }
+
+  private getNextDeferredBlockNumber() {
+    const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
+    if (blockNumbers.length === 0) {
+      return 0
+    }
+    return Math.min(...blockNumbers)
+  }
+
+  private rollbackDeferredEffects(rollbackTo: number) {
+    const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
+    const toRollBack = blockNumbers.filter((bn) => bn >= rollbackTo)
+    for (const blockNumber of toRollBack) {
+      delete this.deferredEffects[blockNumber]
+    }
+  }
+
   private initHandlerVersions(handlerVersions: HandlerVersion[]) {
     if (handlerVersions.length === 0) {
-      throw new Error("Must have at least one handler version.")
+      throw new MissingHandlerVersionError()
     }
     for (const handlerVersion of handlerVersions) {
       if (this.handlerVersionMap.hasOwnProperty(handlerVersion.versionName)) {
-        throw new Error(`Handler version name '${handlerVersion.versionName}' already exists. ` +
-                        "Handler versions must have unique names.")
+        throw new DuplicateHandlerVersionError(handlerVersion.versionName)
       }
       this.handlerVersionMap[handlerVersion.versionName] = handlerVersion
     }
     if (!this.handlerVersionMap.hasOwnProperty(this.handlerVersionName)) {
       this.handlerVersionName = handlerVersions[0].versionName
       this.warnMissingHandlerVersion(handlerVersions[0].versionName)
-    } else if (handlerVersions[0].versionName !== "v1") {
+    } else if (handlerVersions[0].versionName !== 'v1') {
       this.warnIncorrectFirstHandler(handlerVersions[0].versionName)
     }
   }
