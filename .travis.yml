@@ -1,46 +1,44 @@
 sudo: false
 language: node_js
 node_js:
-- '11.6.0'
+- 11.6.0
 before_install:
 - npm i -g npm@6.4.1
 - npm install -g typescript
 stages:
 - test
 - name: publish-edge
-  if: (NOT type IN (pull_request)) AND (branch = develop)
+  if: "(NOT type IN (pull_request)) AND (branch = develop)"
 - name: publish-latest
-  # Travis assigns the tag to branch for some reason. This matches any valid semver version.
   if: branch =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
 jobs:
   include:
   - stage: test
-    name: "Lint and Test"
+    name: Lint and Test
     script:
     - npm run lint
     - npm run test
   - stage: publish-edge
-    name: "Publish @edge to NPM"
+    name: Publish @edge to NPM
     script:
     - npm run build
     deploy:
       provider: script
       skip_cleanup: true
-      script: ./scripts/publish-edge.sh
+      script: "./scripts/publish-edge.sh"
       on:
         branch: develop
   - stage: publish-latest
-    name: "Publish @latest to NPM"
+    name: Publish @latest to NPM
     script:
     - npm run build
     deploy:
       provider: script
       skip_cleanup: true
-      script: ./scripts/publish-latest.sh
+      script: "./scripts/publish-latest.sh"
       on:
         all_branches: true
-        condition: $TRAVIS_TAG =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
+        condition: "$TRAVIS_TAG =~ ^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
 notifications:
-  webhooks: 
-    secure: "Y5/QLqEthobAVHPhVvuYmMoLmMzDtX3e0DSLvvLxf9ncYSn3gp2qC/nntkm8D85bHeCtGMjCoFudatCxG4oIWOB45IpXG/+3GWelVIG9GH2iiDMwY3wBSNVzDjnN/FsPA0+P01X9Hr9V3Om5vH6WXoK4yc1HoSD2yPBcRYHnhUrVat+Pokw0CQa26DH9WxvWDm8IGxJiLEI+4E7LzdWe2CK+rAgDwPKMs8wFwpOjq/FJX4amtjWqGHla3XU0AwR5E/2y6bzQseTSjBHY+Dh0KYfPOVvvyXpOwcUImBVANr7XB89wZ0Jy56ohTu1It0jMTr+r7sWKu4s7GUjpTNSam7sJhphmTguVyA634HwhjT4Uj5oSuUNIHhtobvH6y0ZnLix1Bi4lKsSjfCZ/A3vycOJ/dfBqgt7CpOCBE4i0vtLi0WoxyJG/9yr4xdo4V4JlTxGZGaK4xDNhISyk/eedODY96kqz5QnyvwuE3oN7AWNeKCXCB9prqdZWuoBoPhx1fPk0+kiPxPcyzZRSiqUvRZGX0LX5dt9iaSIQfWtFYMUCc0aLyJFxYYIoaDvsewGjluSJ1aUQIkzDZ13BXbrpg1gxhJLzHs6bPrTQRKbeMQTYIdE9tc5lPnFEhJ4zJ+MPjVXa5CwYggUe3j4p+8pVP86Fs/F5ETcPLzwjpd+T898="
-
+  webhooks:
+    secure: FrWUleN0/IoOE2lPK7/YBZEvq79D8dOIN0+T3M/yR4NaVIuwG9T5e1zswEbPw0xTu03FT3hH8almw7/UEj2vAgP2KdvjeHPR1/EQOC0h0hqS5DMEYlnaXbUxoB93iQAU9wwVpa3DuiEqXQKac0nMdW+FWs/2xGpwJF0SlhzF6H/kb+/VUF+0ZngjJZFB/yXn7MI7uGuTfpbAGRSUL9MAXiXUSIxtcd4GzPS3roS0zGILDoBUljfnyuJltZdjjghdhBuNSVtGa2mI5nUpp6ulPhVDrqB9DeBo0OIiSPTJjKzPlNjB7cYLwrd4PFVj6wR2FvJe5HExKIwdSLi/ExAo1ncJ9kvsbf63SmNs9GLMSMkWhD68JFoe4tEA9cggq3WO8AB/cWmJEC5NVMdqeNh86KH1PVn8eZgwtdKsKunloe1I7NPPia/fWlraY7FYLHqb3qOYuniLDzfiJ0JkQivgXWvHaF0xDsf7BH8czBMKFkQmNXBd2FwfAzneIOyYipFpfTWWjFnTq4KsbLuLYgrZ/nRaiLu02hHY6DZT0Ec3SkMHjuwhHvCTTyC+nFQl1OVZnm08br0fItVDGFp7hOIXeqicXUO3GtEITlO8s7qUPiw6SnSUW+B7u8e1MAtjXjVriHseHO9g+PJ4IbNY8rVwDvvSTQM1R4T29Or8OocJpzA=
