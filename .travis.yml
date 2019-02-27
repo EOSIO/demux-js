@@ -40,3 +40,7 @@ jobs:
       on:
         all_branches: true
         condition: $TRAVIS_TAG =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
+notifications:
+  webhooks: 
+    secure: "Y5/QLqEthobAVHPhVvuYmMoLmMzDtX3e0DSLvvLxf9ncYSn3gp2qC/nntkm8D85bHeCtGMjCoFudatCxG4oIWOB45IpXG/+3GWelVIG9GH2iiDMwY3wBSNVzDjnN/FsPA0+P01X9Hr9V3Om5vH6WXoK4yc1HoSD2yPBcRYHnhUrVat+Pokw0CQa26DH9WxvWDm8IGxJiLEI+4E7LzdWe2CK+rAgDwPKMs8wFwpOjq/FJX4amtjWqGHla3XU0AwR5E/2y6bzQseTSjBHY+Dh0KYfPOVvvyXpOwcUImBVANr7XB89wZ0Jy56ohTu1It0jMTr+r7sWKu4s7GUjpTNSam7sJhphmTguVyA634HwhjT4Uj5oSuUNIHhtobvH6y0ZnLix1Bi4lKsSjfCZ/A3vycOJ/dfBqgt7CpOCBE4i0vtLi0WoxyJG/9yr4xdo4V4JlTxGZGaK4xDNhISyk/eedODY96kqz5QnyvwuE3oN7AWNeKCXCB9prqdZWuoBoPhx1fPk0+kiPxPcyzZRSiqUvRZGX0LX5dt9iaSIQfWtFYMUCc0aLyJFxYYIoaDvsewGjluSJ1aUQIkzDZ13BXbrpg1gxhJLzHs6bPrTQRKbeMQTYIdE9tc5lPnFEhJ4zJ+MPjVXa5CwYggUe3j4p+8pVP86Fs/F5ETcPLzwjpd+T898="
+
