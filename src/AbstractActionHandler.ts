@@ -155,8 +155,9 @@ export abstract class AbstractActionHandler {
   protected matchActionType(candidateType: string, subscribedType: string): boolean {
     const [ candidateContract, candidateAction ] = candidateType.split('::')
     const [ subscribedContract, subscribedAction ] = subscribedType.split('::')
-    return ((candidateContract === subscribedContract || subscribedContract === '*')
-      && (candidateAction === subscribedAction || subscribedAction === '*'))
+    const contractsMatch = candidateContract === subscribedContract || subscribedContract === '*'
+    const actionsMatch = candidateAction === subscribedAction || subscribedAction === '*'
+    return contractsMatch && actionsMatch
   }
 
   /**
