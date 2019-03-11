@@ -153,7 +153,10 @@ export abstract class AbstractActionHandler {
    * @param subscribedType  The type the Updater of Effect is subscribed to
    */
   protected matchActionType(candidateType: string, subscribedType: string): boolean {
-    return candidateType === subscribedType
+    const [ candidateContract, candidateAction ] = candidateType.split('::')
+    const [ subscribedContract, subscribedAction ] = subscribedType.split('::')
+    return ((candidateContract === subscribedContract || subscribedContract === '*')
+      && (candidateAction === subscribedAction || subscribedAction === '*'))
   }
 
   /**
