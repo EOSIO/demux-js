@@ -27,6 +27,7 @@ export interface BlockMeta {
 
 export interface IndexState {
   blockNumber: number
+  lastIrreversibleBlockNumber: number
   blockHash: string
   handlerVersionName: string
   isReplay: boolean
