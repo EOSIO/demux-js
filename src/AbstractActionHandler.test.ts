@@ -103,13 +103,22 @@ describe('Action Handler', () => {
   })
 
   it('runs the correct updater based on action type', async () => {
-    await actionHandler._applyUpdaters({}, blockchain[1], {}, false)
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true
+    }
+    const nextBlock = {
+      block:  blockchain[1],
+      blockMeta,
+      lastIrreversibleBlockNumber: 2,
+    }
+    await actionHandler._applyUpdaters({}, nextBlock, {}, false)
     expect(runUpdater).toHaveBeenCalledTimes(1)
     expect(notRunUpdater).not.toHaveBeenCalled()
   })
 
   it('runs the correct effect based on action type', async () => {
-    const versionedActions = await actionHandler._applyUpdaters({}, blockchain[1], {},  false)
     const blockMeta = {
       isRollback: false,
       isEarliestBlock: true,
@@ -120,6 +129,7 @@ describe('Action Handler', () => {
       blockMeta,
       lastIrreversibleBlockNumber: 2,
     }
+    const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {},  false)
     actionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).toHaveBeenCalledTimes(2)
     expect(notRunEffect).not.toHaveBeenCalled()
@@ -195,7 +205,7 @@ describe('Action Handler', () => {
       blockMeta,
       lastIrreversibleBlockNumber: 2,
     }
-    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
+    const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {}, false)
     actionHandler._runEffects(versionedActions, {}, nextBlock)
 
     expect(actionHandler._handlerVersionName).toEqual('v2')
@@ -220,7 +230,7 @@ describe('Action Handler', () => {
       blockMeta,
       lastIrreversibleBlockNumber: 1,
     }
-    const versionedActions = await actionHandler._applyUpdaters({}, upgradeHandler[0], {}, false)
+    const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {}, false)
     actionHandler._runEffects(versionedActions, {}, nextBlock)
 
     expect(runEffect).not.toHaveBeenCalled()
@@ -236,7 +246,7 @@ describe('Action Handler', () => {
       blockMeta: blockMeta2,
       lastIrreversibleBlockNumber: 2,
     }
-    const versionedActions2 = await actionHandler._applyUpdaters({}, upgradeHandler[1], {}, false)
+    const versionedActions2 = await actionHandler._applyUpdaters({}, nextBlock2, {}, false)
     actionHandler._runEffects(versionedActions2, {}, nextBlock2)
 
     expect(runEffect).toHaveBeenCalledTimes(2)
