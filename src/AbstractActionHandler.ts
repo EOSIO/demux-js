@@ -5,7 +5,6 @@ import {
   MissingHandlerVersionError,
 } from './errors'
 import {
-  Block,
   DeferredEffects,
   Effect,
   HandlerInfo,
@@ -116,7 +115,7 @@ export abstract class AbstractActionHandler {
    */
   protected abstract async updateIndexState(
     state: any,
-    block: Block,
+    nextBlock: NextBlock,
     isReplay: boolean,
     handlerVersionName: string,
     context?: any,
@@ -168,12 +167,12 @@ export abstract class AbstractActionHandler {
    */
   protected async applyUpdaters(
     state: any,
-    block: Block,
+    nextBlock: NextBlock,
     context: any,
     isReplay: boolean,
   ): Promise<VersionedAction[]> {
     const versionedActions = [] as VersionedAction[]
-    const { actions, blockInfo } = block
+    const { block: { actions, blockInfo } } = nextBlock
     for (const action of actions) {
       let updaterIndex = -1
       for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
@@ -186,7 +185,7 @@ export abstract class AbstractActionHandler {
           } else if (newVersion) {
             this.log.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
             this.warnSkippingUpdaters(updaterIndex, action.type)
-            await this.updateIndexState(state, block, isReplay, newVersion, context)
+            await this.updateIndexState(state, nextBlock, isReplay, newVersion, context)
             this.handlerVersionName = newVersion
             break
           }
@@ -237,12 +236,12 @@ export abstract class AbstractActionHandler {
     const { block } = nextBlock
     const { blockInfo } = block
 
-    const versionedActions = await this.applyUpdaters(state, block, context, isReplay)
+    const versionedActions = await this.applyUpdaters(state, nextBlock, context, isReplay)
     if (!isReplay) {
       this.runEffects(versionedActions, context, nextBlock)
     }
 
-    await this.updateIndexState(state, block, isReplay, this.handlerVersionName, context)
+    await this.updateIndexState(state, nextBlock, isReplay, this.handlerVersionName, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
   }

@@ -1,6 +1,6 @@
 import { AbstractActionHandler } from '../AbstractActionHandler'
 import { NotInitializedError } from '../errors'
-import { Block, IndexState, NextBlock, VersionedAction } from '../interfaces'
+import { IndexState, NextBlock, VersionedAction } from '../interfaces'
 
 export class TestActionHandler extends AbstractActionHandler {
   public isInitialized: boolean = false
@@ -38,11 +38,11 @@ export class TestActionHandler extends AbstractActionHandler {
 
   public async _applyUpdaters(
     state: any,
-    block: Block,
+    nextBlock: NextBlock,
     context: any,
     isReplay: boolean,
   ): Promise<VersionedAction[]> {
-    return this.applyUpdaters(state, block, context, isReplay)
+    return this.applyUpdaters(state, nextBlock, context, isReplay)
   }
 
   public _runEffects(
@@ -70,8 +70,8 @@ export class TestActionHandler extends AbstractActionHandler {
     return super.handleBlock(nextBlock, isReplay)
   }
 
-  protected async updateIndexState(state: any, block: Block, isReplay: boolean, handlerVersionName: string) {
-    const { blockNumber, blockHash } = block.blockInfo
+  protected async updateIndexState(state: any, nextBlock: NextBlock, isReplay: boolean, handlerVersionName: string) {
+    const { blockNumber, blockHash } = nextBlock.block.blockInfo
     state.indexState = { blockNumber, blockHash, isReplay, handlerVersionName }
   }
 
