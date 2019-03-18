@@ -53,10 +53,6 @@ export class TestActionHandler extends AbstractActionHandler {
     this.runEffects(versionedActions, context, nextBlock)
   }
 
-  public _matchActionType(candidateType: string, subscribedType: string): boolean {
-    return this.matchActionType(candidateType, subscribedType)
-  }
-
   protected async loadIndexState(): Promise<IndexState> {
     return this.state.indexState
   }
