@@ -36,12 +36,13 @@
   },
   "scripts": {
     "build": "rm -rf dist/* && tsc",
-    "build-docs": "./scripts/build-docs.sh",
-    "build-all": "rm -rf dist/* && tsc && ./scripts/build-docs.sh",
+    "build-docs": "rm -rf docs && ./scripts/build-docs.sh",
+    "build-all": "yarn build && yarn build-docs",
     "example": "./scripts/run-example.sh",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "jest --detectOpenHandles --maxWorkers=2",
-    "current-version": "echo $npm_package_version"
+    "current-version": "echo $npm_package_version",
+    "prepublishOnly": "yarn build"
   },
   "jest": {
     "moduleFileExtensions": [
