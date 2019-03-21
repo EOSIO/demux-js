@@ -259,7 +259,7 @@ export abstract class AbstractActionHandler {
     return Array(end - start).fill(0).map((_, i: number) => i + start)
   }
 
-  private runOrDeferEffect(
+  protected runOrDeferEffect(
     effect: Effect,
     payload: any,
     nextBlock: NextBlock,
