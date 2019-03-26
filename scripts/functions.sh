@@ -72,8 +72,8 @@ publish_edge() {
   echo "  Publishing edge release to NPM..."
 
   # Run the deploy build and increment the package versions
-  current_commit="$(git rev-parse --short HEAD)";
-  npm version prerelease -preid "${current_commit}" -no-git-tag-version
+  new_version=${TRAVIS_BUILD_NUMBER}
+  npm version prerelease -preid "${new_version}" -no-git-tag-version
   git commit -a -m "Updating version [skip ci]"
   cp .npmrc.template $HOME/.npmrc
   npm publish --tag edge
