@@ -1,5 +1,5 @@
 import { MismatchedBlockHashError, NotInitializedError } from './errors'
-import { ActionCallback, StatelessActionCallback } from './interfaces'
+import { ActionCallback, EffectRunMode, StatelessActionCallback } from './interfaces'
 import blockchains from './testHelpers/blockchains'
 import { TestActionHandler } from './testHelpers/TestActionHandler'
 
@@ -7,6 +7,9 @@ const { blockchain, upgradeHandler } = blockchains
 
 describe('Action Handler', () => {
   let actionHandler: TestActionHandler
+  let noEffectActionHandler: TestActionHandler
+  let deferredEffectActionHandler: TestActionHandler
+  let immediateEffectActionHandler: TestActionHandler
 
   let runUpdater: ActionCallback
   let runEffect: StatelessActionCallback
@@ -37,7 +40,7 @@ describe('Action Handler', () => {
     notRunUpdaterAfterUpgrade = jest.fn()
     notRunEffectAfterUpgrade = jest.fn()
 
-    actionHandler = new TestActionHandler([
+    const handlerVersions = [
       {
         versionName: 'v1',
         updaters: [
@@ -97,9 +100,17 @@ describe('Action Handler', () => {
           },
         ],
       },
-    ])
+    ]
+
+    actionHandler = new TestActionHandler(handlerVersions)
+    noEffectActionHandler = new TestActionHandler(handlerVersions, EffectRunMode.None)
+    deferredEffectActionHandler = new TestActionHandler(handlerVersions, EffectRunMode.OnlyDeferred)
+    immediateEffectActionHandler = new TestActionHandler(handlerVersions, EffectRunMode.OnlyImmediate)
 
     actionHandler.isInitialized = true
+    noEffectActionHandler.isInitialized = true
+    deferredEffectActionHandler.isInitialized = true
+    immediateEffectActionHandler.isInitialized = true
   })
 
   it('runs the correct updater based on action type', async () => {
@@ -177,6 +188,7 @@ describe('Action Handler', () => {
   })
 
   it('throws error if previous block hash and last processed don\'t match up', async () => {
+    await actionHandler.initialize()
     actionHandler.setLastProcessedBlockNumber(3)
     actionHandler.setLastProcessedBlockHash('asdfasdfasdf')
     const blockMeta = {
@@ -189,6 +201,7 @@ describe('Action Handler', () => {
       blockMeta,
       lastIrreversibleBlockNumber: 1,
     }
+
     const result = actionHandler.handleBlock(nextBlock, false)
     // tslint:disable-next-line:no-floating-promises
     expect(result).rejects.toThrow(MismatchedBlockHashError)
@@ -405,5 +418,53 @@ describe('Action Handler', () => {
     const result = actionHandler.handleBlock(nextBlock, false)
     // tslint:disable-next-line:no-floating-promises
     expect(result).rejects.toThrow(NotInitializedError)
+  })
+
+  it(`doesn't run effect when effect mode is none`, async () => {
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[1],
+      blockMeta,
+      lastIrreversibleBlockNumber: 2,
+    }
+    const versionedActions = await noEffectActionHandler._applyUpdaters({}, nextBlock, {},  false)
+    noEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
+    expect(runEffect).not.toHaveBeenCalled()
+  })
+
+  it(`runs effect when effect mode is OnlyDeferred`, async () => {
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[1],
+      blockMeta,
+      lastIrreversibleBlockNumber: 2,
+    }
+    const versionedActions = await deferredEffectActionHandler._applyUpdaters({}, nextBlock, {},  false)
+    deferredEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
+    expect(runEffect).toHaveBeenCalled()
+  })
+
+  it(`doesn't run effect when effect mode is OnlyImmediate`, async () => {
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[1],
+      blockMeta,
+      lastIrreversibleBlockNumber: 2,
+    }
+    const versionedActions = await immediateEffectActionHandler._applyUpdaters({}, nextBlock, {},  false)
+    immediateEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
+    expect(runEffect).not.toHaveBeenCalled()
   })
 })
