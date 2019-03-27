@@ -72,8 +72,7 @@ describe('Action Reader', () => {
   it('does not seek to block earlier than startAtBlock', async () => {
     await actionReaderStartAt3.getNextBlock()
     const result = actionReaderStartAt3.seekToBlock(2)
-    // tslint:disable-next-line:no-floating-promises
-    expect(result).rejects.toThrow(ImproperStartAtBlockError)
+    await expect(result).rejects.toThrow(ImproperStartAtBlockError)
   })
 
   it('handles rollback correctly', async () => {
@@ -129,7 +128,6 @@ describe('Action Reader', () => {
   it('continues ifSetup true', async () => {
     actionReader.isInitialized = false
     const result = actionReader.getNextBlock()
-    // tslint:disable-next-line:no-floating-promises
-    expect(result).rejects.toThrow(NotInitializedError)
+    await expect(result).rejects.toThrow(NotInitializedError)
   })
 })
