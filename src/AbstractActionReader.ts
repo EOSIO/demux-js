@@ -82,11 +82,11 @@ export abstract class AbstractActionReader {
       isEarliestBlock: false,
     }
 
-    this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
-
     if (!this.initialized) {
       await this.initialize()
     }
+
+    this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
 
     if (this.currentBlockNumber === this.headBlockNumber) {
       this.headBlockNumber = await this.getLatestNeededBlockNumber()
