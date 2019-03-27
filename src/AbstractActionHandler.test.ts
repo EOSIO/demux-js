@@ -203,8 +203,7 @@ describe('Action Handler', () => {
     }
 
     const result = actionHandler.handleBlock(nextBlock, false)
-    // tslint:disable-next-line:no-floating-promises
-    expect(result).rejects.toThrow(MismatchedBlockHashError)
+    await expect(result).rejects.toThrow(MismatchedBlockHashError)
   })
 
   it('upgrades the action handler correctly', async () => {
@@ -416,8 +415,7 @@ describe('Action Handler', () => {
     }
     actionHandler.isInitialized = false
     const result = actionHandler.handleBlock(nextBlock, false)
-    // tslint:disable-next-line:no-floating-promises
-    expect(result).rejects.toThrow(NotInitializedError)
+    await expect(result).rejects.toThrow(NotInitializedError)
   })
 
   it(`doesn't run effect when effect mode is none`, async () => {

@@ -59,7 +59,6 @@ export abstract class AbstractActionHandler {
 
     if (!this.initialized) {
       await this.initialize()
-      this.initialized = true
     }
 
     await this.handleRollback(isRollback, blockInfo.blockNumber, isReplay, isEarliestBlock)
@@ -112,6 +111,7 @@ export abstract class AbstractActionHandler {
   public async initialize(): Promise<void> {
     await this.setup()
     await this.refreshIndexState()
+    this.initialized = true
   }
 
   /**
