@@ -113,6 +113,13 @@ export interface ReaderInfo {
   lastIrreversibleBlockNumber: number
 }
 
+export enum EffectRunMode {
+  All = 'all',
+  OnlyImmediate = 'onlyImmediate',
+  OnlyDeferred = 'onlyDeferred',
+  None = 'none',
+}
+
 export enum IndexingStatus {
   Initial = 'initial',
   Indexing = 'indexing',

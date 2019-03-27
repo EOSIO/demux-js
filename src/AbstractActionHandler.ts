@@ -5,8 +5,10 @@ import {
   MissingHandlerVersionError,
 } from './errors'
 import {
+  Action,
   DeferredEffects,
   Effect,
+  EffectRunMode,
   HandlerInfo,
   HandlerVersion,
   IndexState,
@@ -33,9 +35,12 @@ export abstract class AbstractActionHandler {
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
    *                         version name is `"v1"`.
+   *
+   * @param effectRunMode    An EffectRunMode that describes what effects should be run.
    */
   constructor(
     handlerVersions: HandlerVersion[],
+    protected effectRunMode: EffectRunMode = EffectRunMode.All,
   ) {
     this.initHandlerVersions(handlerVersions)
     this.log = Logger.createLogger({ name: 'demux' })
@@ -206,7 +211,7 @@ export abstract class AbstractActionHandler {
     this.runDeferredEffects(nextBlock.lastIrreversibleBlockNumber)
     for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
-        if (this.matchActionType(action.type, effect.actionType)) {
+        if (this.shouldRunOrDeferEffect(effect, action)) {
           this.runOrDeferEffect(effect, action.payload, nextBlock, context)
         }
       }
@@ -278,6 +283,19 @@ export abstract class AbstractActionHandler {
       }
       this.deferredEffects[blockNumber].push(() => effect.run(payload, block, context))
     }
+  }
+
+  protected shouldRunOrDeferEffect(effect: Effect, action: Action) {
+    if (!this.matchActionType(action.type, effect.actionType)) {
+      return false
+    } else if (this.effectRunMode === EffectRunMode.None) {
+      return false
+    } else if (this.effectRunMode === EffectRunMode.OnlyImmediate && effect.deferUntilIrreversible) {
+      return false
+    } else if (this.effectRunMode === EffectRunMode.OnlyDeferred && !effect.deferUntilIrreversible) {
+      return false
+    }
+    return true
   }
 
   private runDeferredEffects(lastIrreversibleBlockNumber: number) {
