@@ -30,7 +30,8 @@ clean_git() {
   # Echo the status to the log so that we can see it is OK
   git status
 
-  if $(git diff-index --quiet HEAD --); then
+  clean_tree=$(git diff-index --quiet HEAD --)
+  if $clean_tree; then
     echo "✔ Working tree clean"
     return 0
   fi
@@ -68,15 +69,28 @@ check_version() {
   return 0
 }
 
+current_version() {
+  version=$(grep '"version"' package.json | sed 's/.*\([0-9]\.[0-9]\.[0-9].*\)",/\1/g')
+  return "$version"
+}
+
+update_package_json() {
+  new_version=$1
+  sed -i.bak "s/\"version\": \"\([0-9]\.[0-9]\.[0-9].*\)\",/\"version\": \"${new_version}\",/g" package.json
+}
+
 publish_edge() {
   echo "  Publishing edge release to NPM..."
 
-  # Run the deploy build and increment the package versions
-  new_version=${TRAVIS_BUILD_NUMBER}
-  npm version prerelease -preid "${new_version}" -no-git-tag-version
+  version=$(current_version)
+  new_version="${version}-${TRAVIS_BUILD_NUMBER}"
+  update_package_json "$new_version"
   git commit -a -m "Updating version [skip ci]"
-  cp .npmrc.template $HOME/.npmrc
+  cp .npmrc.template "$HOME"/.npmrc
   npm publish --tag edge
+
+
+  rm package.json.bak
 
   echo "✔ Published edge release"
 }
@@ -84,7 +98,7 @@ publish_edge() {
 publish_latest() {
   echo "  Publishing new release to NPM..."
 
-  cp .npmrc.template $HOME/.npmrc
+  cp .npmrc.template "$HOME"/.npmrc
   npm publish
 
   echo "✔ Published new release"
