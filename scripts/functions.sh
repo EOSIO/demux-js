@@ -71,7 +71,7 @@ check_version() {
 
 current_version() {
   version=$(grep '"version"' package.json | sed 's/.*\([0-9]\.[0-9]\.[0-9].*\)",/\1/g')
-  return "$version"
+  echo "$version"
 }
 
 update_package_json() {
