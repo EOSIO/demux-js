@@ -271,17 +271,17 @@ export abstract class AbstractActionHandler {
     context: any,
   ) {
     const { block, lastIrreversibleBlockNumber } = nextBlock
-    const { blockNumber } = block.blockInfo
+    const { blockInfo } = block
     const shouldRunImmediately = (
-      !effect.deferUntilIrreversible || block.blockInfo.blockNumber <= lastIrreversibleBlockNumber
+      !effect.deferUntilIrreversible || blockInfo.blockNumber <= lastIrreversibleBlockNumber
     )
     if (shouldRunImmediately) {
-      effect.run(payload, block, context)
+      effect.run(payload, blockInfo, context)
     } else {
-      if (!this.deferredEffects[blockNumber]) {
-        this.deferredEffects[blockNumber] = []
+      if (!this.deferredEffects[blockInfo.blockNumber]) {
+        this.deferredEffects[blockInfo.blockNumber] = []
       }
-      this.deferredEffects[blockNumber].push(() => effect.run(payload, block, context))
+      this.deferredEffects[blockInfo.blockNumber].push(() => effect.run(payload, blockInfo, context))
     }
   }
 

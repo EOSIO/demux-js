@@ -64,7 +64,7 @@ export type ActionCallback = (
 
 export type StatelessActionCallback = (
   payload: any,
-  block: Block,
+  blockInfo: BlockInfo,
   context: any,
 ) => void | Promise<void>
 
