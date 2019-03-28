@@ -14,6 +14,10 @@ export interface ActionReaderOptions {
   onlyIrreversible?: boolean
 }
 
+export interface JsonActionReaderOptions extends ActionReaderOptions {
+  blockchain: Block[]
+}
+
 export interface Block {
   actions: Action[]
   blockInfo: BlockInfo

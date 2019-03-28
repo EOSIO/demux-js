@@ -84,3 +84,10 @@ export class NotInitializedError extends RethrownError {
     Object.setPrototypeOf(this, NotInitializedError.prototype)
   }
 }
+
+export class JsonBlockIndicatesWrongPosition extends Error {
+  constructor(blockNumber: number, position: number) {
+    super(`Block with indicated position ${blockNumber} has actual position of ${position}.`)
+    Object.setPrototypeOf(this, MismatchedBlockHashError.prototype)
+  }
+}
