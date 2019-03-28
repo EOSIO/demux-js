@@ -91,3 +91,10 @@ export class JsonBlockIndicatesWrongPosition extends Error {
     Object.setPrototypeOf(this, MismatchedBlockHashError.prototype)
   }
 }
+
+export class JsonBlockDoesNotExist extends Error {
+  constructor(blockNumber: number) {
+    super(`Block at position ${blockNumber} does not exist.`)
+    Object.setPrototypeOf(this, MismatchedBlockHashError.prototype)
+  }
+}

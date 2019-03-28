@@ -1,6 +1,6 @@
 import { AbstractActionReader } from './AbstractActionReader'
 import { Block, JsonActionReaderOptions } from './interfaces'
-import { JsonBlockIndicatesWrongPosition } from './errors'
+import { JsonBlockDoesNotExist, JsonBlockIndicatesWrongPosition } from './errors'
 
 /**
  * Reads from an array of `Block` objects, useful for testing.
@@ -24,7 +24,7 @@ export class JsonActionReader extends AbstractActionReader {
   public async getBlock(blockNumber: number): Promise<Block> {
     const block = this.blockchain[blockNumber - 1]
     if (!block) {
-      throw Error(`Block at position ${blockNumber} does not exist.`)
+      throw JsonBlockDoesNotExist
     }
     if (block.blockInfo.blockNumber !== blockNumber) {
       throw JsonBlockIndicatesWrongPosition
