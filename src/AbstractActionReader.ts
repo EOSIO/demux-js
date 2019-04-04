@@ -1,4 +1,4 @@
-import * as Logger from 'bunyan'
+import { BunyanProvider, Logger } from './BunyanProvider'
 import {
   ImproperSeekToBlockError,
   ImproperStartAtBlockError,
@@ -48,7 +48,7 @@ export abstract class AbstractActionReader {
     this.currentBlockNumber = optionsWithDefaults.startAtBlock - 1
     this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
 
-    this.log = Logger.createLogger({ name: 'demux' })
+    this.log = BunyanProvider.getLogger()
   }
 
   /**

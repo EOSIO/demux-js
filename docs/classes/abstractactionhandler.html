@@ -908,6 +908,9 @@ img { max-width: 100%; }
 <nav class="tsd-navigation secondary">
 	<ul>
 		<li class=" tsd-kind-enum">
+			<a href="../enums/effectrunmode.html" class="tsd-kind-icon">Effect<wbr>Run<wbr>Mode</a>
+		</li>
+		<li class=" tsd-kind-enum">
 			<a href="../enums/indexingstatus.html" class="tsd-kind-icon">Indexing<wbr>Status</a>
 		</li>
 		<li class="current tsd-kind-class">
@@ -918,6 +921,9 @@ img { max-width: 100%; }
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a href="abstractactionhandler.html#deferredeffects" class="tsd-kind-icon">deferred<wbr>Effects</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a href="abstractactionhandler.html#effectrunmode" class="tsd-kind-icon">effect<wbr>Run<wbr>Mode</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a href="abstractactionhandler.html#handlerversionmap" class="tsd-kind-icon">handler<wbr>Version<wbr>Map</a>
@@ -988,11 +994,14 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#runeffects" class="tsd-kind-icon">run<wbr>Effects</a>
 				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#runordefereffect" class="tsd-kind-icon">run<wbr>OrDefer<wbr>Effect</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#setup" class="tsd-kind-icon">setup</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a href="abstractactionhandler.html#shouldrunordefereffect" class="tsd-kind-icon">should<wbr>Run<wbr>OrDefer<wbr>Effect</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a href="abstractactionhandler.html#updateindexstate" class="tsd-kind-icon">update<wbr>Index<wbr>State</a>
@@ -1028,6 +1037,15 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-class">
 			<a href="improperstartatblockerror.html" class="tsd-kind-icon">Improper<wbr>Start<wbr>AtBlock<wbr>Error</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="jsonactionreader.html" class="tsd-kind-icon">Json<wbr>Action<wbr>Reader</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="jsonblockdoesnotexist.html" class="tsd-kind-icon">Json<wbr>Block<wbr>Does<wbr>Not<wbr>Exist</a>
+		</li>
+		<li class=" tsd-kind-class">
+			<a href="jsonblockindicateswrongposition.html" class="tsd-kind-icon">Json<wbr>Block<wbr>Indicates<wbr>Wrong<wbr>Position</a>
 		</li>
 		<li class=" tsd-kind-class">
 			<a href="mismatchedblockhasherror.html" class="tsd-kind-icon">Mismatched<wbr>Block<wbr>Hash<wbr>Error</a>
@@ -1079,6 +1097,9 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/indexstate.html" class="tsd-kind-icon">Index<wbr>State</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="../interfaces/jsonactionreaderoptions.html" class="tsd-kind-icon">Json<wbr>Action<wbr>Reader<wbr>Options</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/nextblock.html" class="tsd-kind-icon">Next<wbr>Block</a>
@@ -1137,6 +1158,7 @@ img { max-width: 100%; }
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#deferredeffects" class="tsd-kind-icon">deferred<wbr>Effects</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#effectrunmode" class="tsd-kind-icon">effect<wbr>Run<wbr>Mode</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#handlerversionmap" class="tsd-kind-icon">handler<wbr>Version<wbr>Map</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="abstractactionhandler.html#handlerversionname" class="tsd-kind-icon">handler<wbr>Version<wbr>Name</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#initialized" class="tsd-kind-icon">initialized</a></li>
@@ -1170,8 +1192,9 @@ img { max-width: 100%; }
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#rollbackto" class="tsd-kind-icon">rollback<wbr>To</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#rundeferredeffects" class="tsd-kind-icon">run<wbr>Deferred<wbr>Effects</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#runeffects" class="tsd-kind-icon">run<wbr>Effects</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#runordefereffect" class="tsd-kind-icon">run<wbr>OrDefer<wbr>Effect</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#runordefereffect" class="tsd-kind-icon">run<wbr>OrDefer<wbr>Effect</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#setup" class="tsd-kind-icon">setup</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#shouldrunordefereffect" class="tsd-kind-icon">should<wbr>Run<wbr>OrDefer<wbr>Effect</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="abstractactionhandler.html#updateindexstate" class="tsd-kind-icon">update<wbr>Index<wbr>State</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#warnhandlerversionnonexistent" class="tsd-kind-icon">warn<wbr>Handler<wbr>Version<wbr>Nonexistent</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="abstractactionhandler.html#warnincorrectfirsthandler" class="tsd-kind-icon">warn<wbr>Incorrect<wbr>First<wbr>Handler</a></li>
@@ -1188,13 +1211,13 @@ img { max-width: 100%; }
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">new <wbr>Abstract<wbr>Action<wbr>Handler<span class="tsd-signature-symbol">(</span>handlerVersions<span class="tsd-signature-symbol">: </span><a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></li>
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Abstract<wbr>Action<wbr>Handler<span class="tsd-signature-symbol">(</span>handlerVersions<span class="tsd-signature-symbol">: </span><a href="../interfaces/handlerversion.html" class="tsd-signature-type">HandlerVersion</a><span class="tsd-signature-symbol">[]</span>, effectRunMode<span class="tsd-signature-symbol">?: </span><a href="../enums/effectrunmode.html" class="tsd-signature-type">EffectRunMode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="abstractactionhandler.html" class="tsd-signature-type">AbstractActionHandler</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L32">src/AbstractActionHandler.ts:32</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L33">AbstractActionHandler.ts:33</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1207,6 +1230,14 @@ img { max-width: 100%; }
 									<div class="lead">
 										<p>An array of <code>HandlerVersion</code>s that are to be used when processing blocks. The default
 										version name is <code>&quot;v1&quot;</code>.</p>
+									</div>
+								</div>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> effectRunMode: <a href="../enums/effectrunmode.html" class="tsd-signature-type">EffectRunMode</a><span class="tsd-signature-symbol"> =&nbsp;EffectRunMode.All</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>An EffectRunMode that describes what effects should be run.</p>
 									</div>
 								</div>
 							</li>
@@ -1224,9 +1255,24 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">deferred<wbr>Effects<span class="tsd-signature-symbol">:</span> <a href="../interfaces/deferredeffects.html" class="tsd-signature-type">DeferredEffects</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L31">src/AbstractActionHandler.ts:31</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L32">AbstractActionHandler.ts:32</a></li>
 					</ul>
 				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+				<a name="effectrunmode" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> effect<wbr>Run<wbr>Mode</h3>
+				<div class="tsd-signature tsd-kind-icon">effect<wbr>Run<wbr>Mode<span class="tsd-signature-symbol">:</span> <a href="../enums/effectrunmode.html" class="tsd-signature-type">EffectRunMode</a></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L43">AbstractActionHandler.ts:43</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>An EffectRunMode that describes what effects should be run.</p>
+					</div>
+				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 				<a name="handlerversionmap" class="tsd-anchor"></a>
@@ -1234,7 +1280,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">handler<wbr>Version<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L32">src/AbstractActionHandler.ts:32</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L33">AbstractActionHandler.ts:33</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1252,7 +1298,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">handler<wbr>Version<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;v1&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L28">src/AbstractActionHandler.ts:28</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L29">AbstractActionHandler.ts:29</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1262,7 +1308,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">initialized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L30">src/AbstractActionHandler.ts:30</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L31">AbstractActionHandler.ts:31</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1272,7 +1318,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L27">src/AbstractActionHandler.ts:27</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L28">AbstractActionHandler.ts:28</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1282,7 +1328,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">last<wbr>Processed<wbr>Block<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L26">src/AbstractActionHandler.ts:26</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L27">AbstractActionHandler.ts:27</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1292,7 +1338,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Logger</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L29">src/AbstractActionHandler.ts:29</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L30">AbstractActionHandler.ts:30</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1305,7 +1351,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">info<span class="tsd-signature-symbol">:</span> </div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L97">src/AbstractActionHandler.ts:97</a></li>
+						<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L100">AbstractActionHandler.ts:100</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1321,13 +1367,13 @@ img { max-width: 100%; }
 				<a name="applyupdaters" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagProtected">Protected</span> apply<wbr>Updaters</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">apply<wbr>Updaters<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/versionedaction.html" class="tsd-signature-type">VersionedAction</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">apply<wbr>Updaters<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, nextBlock<span class="tsd-signature-symbol">: </span><a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/versionedaction.html" class="tsd-signature-type">VersionedAction</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L165">src/AbstractActionHandler.ts:165</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L169">AbstractActionHandler.ts:169</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1344,7 +1390,7 @@ img { max-width: 100%; }
 								<h5>state: <span class="tsd-signature-type">any</span></h5>
 							</li>
 							<li>
-								<h5>block: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
+								<h5>nextBlock: <a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a></h5>
 							</li>
 							<li>
 								<h5>context: <span class="tsd-signature-type">any</span></h5>
@@ -1367,7 +1413,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L298">src/AbstractActionHandler.ts:298</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L315">AbstractActionHandler.ts:315</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -1384,7 +1430,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L227">src/AbstractActionHandler.ts:227</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L231">AbstractActionHandler.ts:231</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1421,7 +1467,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L48">src/AbstractActionHandler.ts:48</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L52">AbstractActionHandler.ts:52</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1452,7 +1498,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L246">src/AbstractActionHandler.ts:246</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L250">AbstractActionHandler.ts:250</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1484,7 +1530,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L138">src/AbstractActionHandler.ts:138</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L142">AbstractActionHandler.ts:142</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1535,7 +1581,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L314">src/AbstractActionHandler.ts:314</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L331">AbstractActionHandler.ts:331</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1558,7 +1604,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L108">src/AbstractActionHandler.ts:108</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L111">AbstractActionHandler.ts:111</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1580,7 +1626,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L131">src/AbstractActionHandler.ts:131</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L135">AbstractActionHandler.ts:135</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1605,7 +1651,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L155">src/AbstractActionHandler.ts:155</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L159">AbstractActionHandler.ts:159</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1645,7 +1691,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L259">src/AbstractActionHandler.ts:259</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L263">AbstractActionHandler.ts:263</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1671,7 +1717,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L332">src/AbstractActionHandler.ts:332</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L349">AbstractActionHandler.ts:349</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1688,7 +1734,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L306">src/AbstractActionHandler.ts:306</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L323">AbstractActionHandler.ts:323</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1711,7 +1757,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L222">src/AbstractActionHandler.ts:222</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L226">AbstractActionHandler.ts:226</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1741,7 +1787,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L284">src/AbstractActionHandler.ts:284</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L301">AbstractActionHandler.ts:301</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1764,7 +1810,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L202">src/AbstractActionHandler.ts:202</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L206">AbstractActionHandler.ts:206</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1788,17 +1834,17 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 				<a name="runordefereffect" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagPrivate">Private</span> run<wbr>OrDefer<wbr>Effect</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> run<wbr>OrDefer<wbr>Effect</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<li class="tsd-signature tsd-kind-icon">run<wbr>OrDefer<wbr>Effect<span class="tsd-signature-symbol">(</span>effect<span class="tsd-signature-symbol">: </span><a href="../interfaces/effect.html" class="tsd-signature-type">Effect</a>, payload<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, nextBlock<span class="tsd-signature-symbol">: </span><a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a>, context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L263">src/AbstractActionHandler.ts:263</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L267">AbstractActionHandler.ts:267</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1830,7 +1876,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L143">src/AbstractActionHandler.ts:143</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L147">AbstractActionHandler.ts:147</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1843,16 +1889,42 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-				<a name="updateindexstate" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> update<wbr>Index<wbr>State</h3>
+				<a name="shouldrunordefereffect" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> should<wbr>Run<wbr>OrDefer<wbr>Effect</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<li class="tsd-signature tsd-kind-icon">update<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, block<span class="tsd-signature-symbol">: </span><a href="../interfaces/block.html" class="tsd-signature-type">Block</a>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, handlerVersionName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">should<wbr>Run<wbr>OrDefer<wbr>Effect<span class="tsd-signature-symbol">(</span>effect<span class="tsd-signature-symbol">: </span><a href="../interfaces/effect.html" class="tsd-signature-type">Effect</a>, action<span class="tsd-signature-symbol">: </span><a href="../interfaces/action.html" class="tsd-signature-type">Action</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L117">src/AbstractActionHandler.ts:117</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L288">AbstractActionHandler.ts:288</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>effect: <a href="../interfaces/effect.html" class="tsd-signature-type">Effect</a></h5>
+							</li>
+							<li>
+								<h5>action: <a href="../interfaces/action.html" class="tsd-signature-type">Action</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+				<a name="updateindexstate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagProtected">Protected</span> <span class="tsd-flag ts-flagAbstract">Abstract</span> update<wbr>Index<wbr>State</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<li class="tsd-signature tsd-kind-icon">update<wbr>Index<wbr>State<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, nextBlock<span class="tsd-signature-symbol">: </span><a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a>, isReplay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, handlerVersionName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L121">AbstractActionHandler.ts:121</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1867,7 +1939,7 @@ img { max-width: 100%; }
 								<h5>state: <span class="tsd-signature-type">any</span></h5>
 							</li>
 							<li>
-								<h5>block: <a href="../interfaces/block.html" class="tsd-signature-type">Block</a></h5>
+								<h5>nextBlock: <a href="../interfaces/nextblock.html" class="tsd-signature-type">NextBlock</a></h5>
 							</li>
 							<li>
 								<h5>isReplay: <span class="tsd-signature-type">boolean</span></h5>
@@ -1893,7 +1965,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L350">src/AbstractActionHandler.ts:350</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L367">AbstractActionHandler.ts:367</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1916,7 +1988,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L344">src/AbstractActionHandler.ts:344</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L361">AbstractActionHandler.ts:361</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1939,7 +2011,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L339">src/AbstractActionHandler.ts:339</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L356">AbstractActionHandler.ts:356</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1962,7 +2034,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/EOSIO/demux/blob/4e25e05/src/AbstractActionHandler.ts#L355">src/AbstractActionHandler.ts:355</a></li>
+								<li>Defined in <a href="https://github.com/EOSIO/demux-js/blob/55b5f53/src/AbstractActionHandler.ts#L372">AbstractActionHandler.ts:372</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
