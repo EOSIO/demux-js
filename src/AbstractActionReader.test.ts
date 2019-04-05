@@ -69,6 +69,13 @@ describe('Action Reader', () => {
     expect(block.blockInfo.blockNumber).toBe(2)
   })
 
+  it('seeks to head block + 1', async () => {
+    await actionReader.getNextBlock()
+    await actionReader.seekToBlock(5)
+    const { block } = await actionReader.getNextBlock()
+    expect(block.blockInfo.blockNumber).toBe(4)
+  })
+
   it('does not seek to block earlier than startAtBlock', async () => {
     await actionReaderStartAt3.getNextBlock()
     const result = actionReaderStartAt3.seekToBlock(2)

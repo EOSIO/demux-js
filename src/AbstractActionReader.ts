@@ -143,7 +143,7 @@ export abstract class AbstractActionReader {
     if (blockNumber < this.startAtBlock) {
       throw new ImproperStartAtBlockError()
     }
-    if (blockNumber > this.headBlockNumber) {
+    if (blockNumber > this.headBlockNumber + 1) {
       throw new ImproperSeekToBlockError(blockNumber)
     }
     this.currentBlockNumber = blockNumber - 1
