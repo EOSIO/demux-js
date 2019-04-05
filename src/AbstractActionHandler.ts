@@ -1,4 +1,4 @@
-import * as Logger from 'bunyan'
+import { BunyanProvider, Logger } from './BunyanProvider'
 import {
   DuplicateHandlerVersionError,
   MismatchedBlockHashError,
@@ -43,7 +43,7 @@ export abstract class AbstractActionHandler {
     protected effectRunMode: EffectRunMode = EffectRunMode.All,
   ) {
     this.initHandlerVersions(handlerVersions)
-    this.log = Logger.createLogger({ name: 'demux' })
+    this.log = BunyanProvider.getLogger()
   }
 
   /**

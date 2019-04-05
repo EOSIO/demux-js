@@ -1,6 +1,6 @@
-import * as Logger from 'bunyan'
 import { AbstractActionHandler } from './AbstractActionHandler'
 import { AbstractActionReader } from './AbstractActionReader'
+import { BunyanProvider, Logger } from './BunyanProvider'
 import { DemuxInfo, IndexingStatus } from './interfaces'
 
 /**
@@ -25,7 +25,7 @@ export class BaseActionWatcher {
     protected actionHandler: AbstractActionHandler,
     protected pollInterval: number,
   ) {
-    this.log = Logger.createLogger({ name: 'demux' })
+    this.log = BunyanProvider.getLogger()
   }
 
   /**
