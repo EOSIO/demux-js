@@ -144,7 +144,7 @@ export abstract class AbstractActionHandler {
   /**
    * Idempotently performs any required setup.
    */
-  protected abstract async setup(): Promise<void>
+  protected async setup(): Promise<void> {}
 
   /**
    * This method is used when matching the types of incoming actions against the types the `Updater`s and `Effect`s are
