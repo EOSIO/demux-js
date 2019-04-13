@@ -71,6 +71,9 @@ class ObjectActionHandler extends AbstractActionHandler {
     }
     state = stateHistory[blockNumber]
   }
+
+  async setup() {
+  }
 }
 
 module.exports = ObjectActionHandler

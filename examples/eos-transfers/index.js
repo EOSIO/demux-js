@@ -24,10 +24,11 @@ const actionHandler = new ObjectActionHandler([handlerVersion])
  * More information can be found on the main demux-eos repository:
  * https://github.com/EOSIO/demux-js-eos
  */
-const actionReader = new NodeosActionReader(
-  "http://mainnet.eoscalgary.io", // Thanks EOS Calgary!
-  0,
-)
+const actionReader = new NodeosActionReader({
+  startAtBlock: 50000000,
+  onlyIrreversible: false,
+  nodeosEndpoint: "https://api.eosnewyork.io"
+})
 
 /* BaseActionWatcher
  * This ready-to-use base class helps coordinate the Action Reader and Action Handler, passing through block information
