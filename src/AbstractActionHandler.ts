@@ -155,9 +155,9 @@ export abstract class AbstractActionHandler {
    *
    * @param candidateType   The incoming action's type
    * @param subscribedType  The type the Updater of Effect is subscribed to
-   * @param _payload        The payload of the incoming action.
+   * @param _payload        The payload of the incoming Action.
    */
-  protected matchActionType(candidateType: string, subscribedType: string, _payload: any): boolean { // tslint:disable-line
+  protected matchActionType(candidateType: string, subscribedType: string, _payload?: any): boolean { // tslint:disable-line
     return candidateType === subscribedType
   }
 
