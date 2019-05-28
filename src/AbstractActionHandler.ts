@@ -6,7 +6,6 @@ import {
 } from './errors'
 import {
   Action,
-  BlockInfo,
   DeferredEffects,
   Effect,
   EffectRunMode,
