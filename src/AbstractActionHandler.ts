@@ -155,8 +155,9 @@ export abstract class AbstractActionHandler {
    *
    * @param candidateType   The incoming action's type
    * @param subscribedType  The type the Updater of Effect is subscribed to
+   * @param _payload        The payload of the incoming action.
    */
-  protected matchActionType(candidateType: string, subscribedType: string): boolean {
+  protected matchActionType(candidateType: string, subscribedType: string, _payload: any): boolean { // tslint:disable-line
     return candidateType === subscribedType
   }
 
@@ -178,7 +179,7 @@ export abstract class AbstractActionHandler {
       let updaterIndex = -1
       for (const updater of this.handlerVersionMap[this.handlerVersionName].updaters) {
         updaterIndex += 1
-        if (this.matchActionType(action.type, updater.actionType)) {
+        if (this.matchActionType(action.type, updater.actionType, action.payload)) {
           const { payload } = action
           const newVersion = await updater.apply(state, payload, blockInfo, context)
           if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
@@ -286,7 +287,7 @@ export abstract class AbstractActionHandler {
   }
 
   protected shouldRunOrDeferEffect(effect: Effect, action: Action) {
-    if (!this.matchActionType(action.type, effect.actionType)) {
+    if (!this.matchActionType(action.type, effect.actionType, action.payload)) {
       return false
     } else if (this.effectRunMode === EffectRunMode.None) {
       return false
