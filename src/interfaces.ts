@@ -14,6 +14,15 @@ export interface ActionReaderOptions {
   onlyIrreversible?: boolean
 }
 
+export interface ActionWatcherOptions {
+  pollInterval?: number
+  velocitySampleSize?: number
+}
+
+export interface ExpressActionWatcherOptions extends ActionWatcherOptions {
+  port: number
+}
+
 export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
 }
@@ -99,8 +108,7 @@ export type CurriedEffectRun = (
 )
 
 export interface DeferredEffects {
-  // Block number
-  [key: number]: CurriedEffectRun[]
+  [blockNumber: number]: CurriedEffectRun[]
 }
 
 export interface HandlerInfo {
@@ -132,9 +140,16 @@ export enum IndexingStatus {
   Stopped = 'stopped',
 }
 
-export interface DemuxInfo {
+export interface WatcherInfo {
   indexingStatus: IndexingStatus
   error?: Error
+  currentBlockVelocity: number
+  currentBlockInterval: number
+  maxBlockVelocity: number
+}
+
+export interface DemuxInfo {
+  watcher: WatcherInfo
   handler: HandlerInfo
   reader: ReaderInfo
 }

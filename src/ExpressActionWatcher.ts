@@ -3,6 +3,7 @@ import * as http from 'http'
 import { AbstractActionHandler } from './AbstractActionHandler'
 import { AbstractActionReader } from './AbstractActionReader'
 import { BaseActionWatcher } from './BaseActionWatcher'
+import { ExpressActionWatcherOptions } from './interfaces'
 
 /**
  * Exposes the BaseActionWatcher's API methods through a simple REST interface using Express
@@ -12,14 +13,16 @@ export class ExpressActionWatcher extends BaseActionWatcher {
    * @param port  The port to use for the Express server
    */
   public express: express.Express = express() // How expressive
+  protected port: number
   private server: http.Server | null = null
   constructor(
     protected actionReader: AbstractActionReader,
     protected actionHandler: AbstractActionHandler,
-    protected pollInterval: number,
-    protected port: number,
+    protected options: ExpressActionWatcherOptions,
   ) {
-    super(actionReader, actionHandler, pollInterval)
+    super(actionReader, actionHandler, options)
+
+    this.port = options.port
 
     this.express.get('/info', (_, res: express.Response) => {
       res.json(this.info)
