@@ -1,5 +1,5 @@
 import { BaseActionWatcher } from './BaseActionWatcher'
-import { Block } from './interfaces'
+import { ActionWatcherOptions, Block } from './interfaces'
 import blockchains from './testHelpers/blockchains'
 import { TestActionHandler } from './testHelpers/TestActionHandler'
 import { TestActionReader } from './testHelpers/TestActionReader'
@@ -7,6 +7,9 @@ import { TestActionReader } from './testHelpers/TestActionReader'
 class TestActionWatcher extends BaseActionWatcher {
   public async _checkForBlocks(isReplay: boolean = false) {
     await this.checkForBlocks(isReplay)
+  }
+  public setProcessIntervals(intervals: Array<[number, number]>) {
+    this.processIntervals = intervals
   }
 }
 
@@ -63,9 +66,13 @@ describe('BaseActionWatcher', () => {
     actionHandlerNegative = new TestActionHandler([{ versionName: 'v1', updaters, effects }])
     actionHandlerNegative.isInitialized = true
 
-    actionWatcher = new TestActionWatcher(actionReader, actionHandler, 500)
-    actionWatcherStartAt3 = new TestActionWatcher(actionReaderStartAt3, actionHandlerStartAt3, 500)
-    actionWatcherNegative = new TestActionWatcher(actionReaderNegative, actionHandlerNegative, 500)
+    const actionWatcherOptions: ActionWatcherOptions = {
+      pollInterval: 500,
+      velocitySampleSize: 3
+    }
+    actionWatcher = new TestActionWatcher(actionReader, actionHandler, actionWatcherOptions)
+    actionWatcherStartAt3 = new TestActionWatcher(actionReaderStartAt3, actionHandlerStartAt3, actionWatcherOptions)
+    actionWatcherNegative = new TestActionWatcher(actionReaderNegative, actionHandlerNegative, actionWatcherOptions)
   })
 
   it('processes blocks', async () => {
@@ -169,5 +176,34 @@ describe('BaseActionWatcher', () => {
     expect(actionHandler.state.indexState.blockNumber).toEqual(5)
     expect(actionReader.currentBlockNumber).toBe(5)
     expect(actionReader.headBlockNumber).toBe(5)
+  })
+
+  it('gives the correct block velocity', () => {
+    actionWatcher.setProcessIntervals([
+      [0, 1000],
+      [2000, 3000],
+      [4000, 5000],
+    ])
+    const { currentBlockVelocity, currentBlockInterval, maxBlockVelocity } = actionWatcher.info.watcher
+    expect(currentBlockVelocity).toEqual(0.5)
+    expect(currentBlockInterval).toEqual(2)
+    expect(maxBlockVelocity).toEqual(1)
+  })
+
+  it('gives no block velocity', () => {
+    actionWatcher.setProcessIntervals([
+      [0, 1000],
+    ])
+    const { currentBlockVelocity, currentBlockInterval, maxBlockVelocity } = actionWatcher.info.watcher
+    expect(currentBlockVelocity).toEqual(0)
+    expect(currentBlockInterval).toEqual(0)
+    expect(maxBlockVelocity).toEqual(1)
+  })
+
+  it('gives no max block velocity', () => {
+    const { currentBlockVelocity, currentBlockInterval, maxBlockVelocity } = actionWatcher.info.watcher
+    expect(currentBlockVelocity).toEqual(0)
+    expect(currentBlockInterval).toEqual(0)
+    expect(maxBlockVelocity).toEqual(0)
   })
 })

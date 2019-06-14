@@ -34,7 +34,7 @@ describe('ExpressActionWatcher', () => {
     actionHandler = new TestActionHandler([{ versionName: 'v1', updaters, effects: [] }])
     actionHandler.isInitialized = true
 
-    expressActionWatcher = new ExpressActionWatcher(actionReader, actionHandler, 500, 56544)
+    expressActionWatcher = new ExpressActionWatcher(actionReader, actionHandler, { pollInterval: 500, port: 56544 })
   })
 
   afterEach(() => {
@@ -48,7 +48,6 @@ describe('ExpressActionWatcher', () => {
 
     const status = await server.get('/info')
     expect(JSON.parse(status.text)).toEqual({
-      indexingStatus: 'initial',
       handler: {
         lastProcessedBlockHash: '',
         lastProcessedBlockNumber: 0,
@@ -61,6 +60,12 @@ describe('ExpressActionWatcher', () => {
         onlyIrreversible: false,
         startAtBlock: 1,
       },
+      watcher: {
+        currentBlockInterval: 0,
+        currentBlockVelocity: 0,
+        indexingStatus: 'initial',
+        maxBlockVelocity: 0,
+      },
     })
   })
 
@@ -72,22 +77,21 @@ describe('ExpressActionWatcher', () => {
     expect(JSON.parse(started.text)).toEqual({
       success: true,
     })
-    const status = await server.get('/info')
-    expect(JSON.parse(status.text)).toEqual({
-      indexingStatus: 'indexing',
-      handler: {
-        lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
-        lastProcessedBlockNumber: 4,
-        handlerVersionName: 'v1',
-      },
-      reader: {
-        currentBlockNumber: 4,
-        headBlockNumber: 4,
-        lastIrreversibleBlockNumber: 4,
-        onlyIrreversible: false,
-        startAtBlock: 1,
-      },
+    const statusText = await server.get('/info')
+    const status = JSON.parse(statusText.text)
+    expect(status.handler).toEqual({
+      lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
+      lastProcessedBlockNumber: 4,
+      handlerVersionName: 'v1',
     })
+    expect(status.reader).toEqual({
+      currentBlockNumber: 4,
+      headBlockNumber: 4,
+      lastIrreversibleBlockNumber: 4,
+      onlyIrreversible: false,
+      startAtBlock: 1,
+    })
+    expect(status.watcher.indexingStatus).toEqual('indexing')
   })
 
   it('pauses indexing', async () => {
@@ -99,38 +103,36 @@ describe('ExpressActionWatcher', () => {
     expect(JSON.parse(paused.text)).toEqual({
       success: true,
     })
-    const status1 = await server.get('/info')
-    expect(JSON.parse(status1.text)).toEqual({
-      indexingStatus: 'pausing',
-      handler: {
-        lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
-        lastProcessedBlockNumber: 4,
-        handlerVersionName: 'v1',
-      },
-      reader: {
-        currentBlockNumber: 4,
-        headBlockNumber: 4,
-        lastIrreversibleBlockNumber: 4,
-        onlyIrreversible: false,
-        startAtBlock: 1,
-      },
+    const statusText1 = await server.get('/info')
+    const status1 = JSON.parse(statusText1.text)
+    expect(status1.handler).toEqual({
+      lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
+      lastProcessedBlockNumber: 4,
+      handlerVersionName: 'v1',
     })
+    expect(status1.reader).toEqual({
+      currentBlockNumber: 4,
+      headBlockNumber: 4,
+      lastIrreversibleBlockNumber: 4,
+      onlyIrreversible: false,
+      startAtBlock: 1,
+    })
+    expect(status1.watcher.indexingStatus).toEqual('pausing')
     await wait(500)
-    const status2 = await server.get('/info')
-    expect(JSON.parse(status2.text)).toEqual({
-      indexingStatus: 'paused',
-      handler: {
-        lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
-        lastProcessedBlockNumber: 4,
-        handlerVersionName: 'v1',
-      },
-      reader: {
-        currentBlockNumber: 4,
-        headBlockNumber: 4,
-        lastIrreversibleBlockNumber: 4,
-        onlyIrreversible: false,
-        startAtBlock: 1,
-      },
+    const status2Text = await server.get('/info')
+    const status2 = JSON.parse(status2Text.text)
+    expect(status2.handler).toEqual({
+      lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
+      lastProcessedBlockNumber: 4,
+      handlerVersionName: 'v1',
     })
+    expect(status2.reader).toEqual({
+      currentBlockNumber: 4,
+      headBlockNumber: 4,
+      lastIrreversibleBlockNumber: 4,
+      onlyIrreversible: false,
+      startAtBlock: 1,
+    })
+    expect(status2.watcher.indexingStatus).toEqual('paused')
   })
 })
