@@ -14,6 +14,11 @@ export interface ActionReaderOptions {
   onlyIrreversible?: boolean
 }
 
+export interface ActionWatcherOptions {
+  pollInterval?: number
+  velocitySampleSize?: number
+}
+
 export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
 }
@@ -132,9 +137,16 @@ export enum IndexingStatus {
   Stopped = 'stopped',
 }
 
-export interface DemuxInfo {
+export interface WatcherInfo {
   indexingStatus: IndexingStatus
   error?: Error
+  currentBlockVelocity: number
+  currentBlockInterval: number
+  maxBlockVelocity: number
+}
+
+export interface DemuxInfo {
+  watcher: WatcherInfo
   handler: HandlerInfo
   reader: ReaderInfo
 }
