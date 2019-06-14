@@ -19,6 +19,10 @@ export interface ActionWatcherOptions {
   velocitySampleSize?: number
 }
 
+export interface ExpressActionWatcherOptions extends ActionWatcherOptions {
+  port: number
+}
+
 export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
 }
@@ -104,8 +108,7 @@ export type CurriedEffectRun = (
 )
 
 export interface DeferredEffects {
-  // Block number
-  [key: number]: CurriedEffectRun[]
+  [blockNumber: number]: CurriedEffectRun[]
 }
 
 export interface HandlerInfo {
