@@ -28,13 +28,13 @@ describe('BaseActionWatcher', () => {
   const runEffect = jest.fn()
 
   beforeEach(() => {
-    actionReader = new TestActionReader()
+    actionReader = new TestActionReader({ logLevel: 'error' })
     actionReader.isInitialized = true
 
-    actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
+    actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3, logLevel: 'error' })
     actionReaderStartAt3.isInitialized = true
 
-    actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
+    actionReaderNegative = new TestActionReader({ startAtBlock: -1, logLevel: 'error' })
     actionReaderNegative.isInitialized = true
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
@@ -68,7 +68,8 @@ describe('BaseActionWatcher', () => {
 
     const actionWatcherOptions: ActionWatcherOptions = {
       pollInterval: 500,
-      velocitySampleSize: 3
+      velocitySampleSize: 3,
+      logLevel: 'error',
     }
     actionWatcher = new TestActionWatcher(actionReader, actionHandler, actionWatcherOptions)
     actionWatcherStartAt3 = new TestActionWatcher(actionReaderStartAt3, actionHandlerStartAt3, actionWatcherOptions)

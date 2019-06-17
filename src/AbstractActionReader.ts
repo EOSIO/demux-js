@@ -13,6 +13,7 @@ import {
   NextBlock,
   ReaderInfo,
 } from './interfaces'
+import { LogLevel } from 'bunyan'
 
 const defaultBlock: Block = {
   blockInfo: {
@@ -42,6 +43,7 @@ export abstract class AbstractActionReader {
     const optionsWithDefaults = {
       startAtBlock: 1,
       onlyIrreversible: false,
+      logLevel: 'info' as LogLevel,
       ...options,
     }
     this.startAtBlock = optionsWithDefaults.startAtBlock
@@ -49,6 +51,7 @@ export abstract class AbstractActionReader {
     this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
 
     this.log = BunyanProvider.getLogger()
+    this.log.level(optionsWithDefaults.logLevel)
   }
 
   /**

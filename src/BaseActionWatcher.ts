@@ -2,6 +2,7 @@ import { AbstractActionHandler } from './AbstractActionHandler'
 import { AbstractActionReader } from './AbstractActionReader'
 import { BunyanProvider, Logger } from './BunyanProvider'
 import { ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo } from './interfaces'
+import { LogLevel } from 'bunyan'
 
 /**
  * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
@@ -31,11 +32,13 @@ export class BaseActionWatcher {
     const optionsWithDefault = {
       pollInterval: 250,
       velocitySampleSize: 20,
+      logLevel: 'info' as LogLevel,
       ...options,
     }
     this.pollInterval = optionsWithDefault.pollInterval
     this.velocitySampleSize = optionsWithDefault.velocitySampleSize
     this.log = BunyanProvider.getLogger()
+    this.log.level(optionsWithDefault.logLevel)
   }
 
   /**
