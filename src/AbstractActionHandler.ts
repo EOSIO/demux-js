@@ -6,6 +6,7 @@ import {
 } from './errors'
 import {
   Action,
+  ActionReaderOptions,
   DeferredEffects,
   Effect,
   EffectRunMode,
@@ -15,6 +16,7 @@ import {
   NextBlock,
   VersionedAction,
 } from './interfaces'
+import { LogLevel } from 'bunyan'
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -28,9 +30,10 @@ export abstract class AbstractActionHandler {
   public lastProcessedBlockHash: string = ''
   public handlerVersionName: string = 'v1'
   protected log: Logger
+  protected effectRunMode: EffectRunMode
   protected initialized: boolean = false
   private deferredEffects: DeferredEffects = {}
-  private handlerVersionMap: { [key: string]: HandlerVersion } = {}
+  private handlerVersionMap: { [versionName: string]: HandlerVersion } = {}
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
@@ -40,10 +43,17 @@ export abstract class AbstractActionHandler {
    */
   constructor(
     handlerVersions: HandlerVersion[],
-    protected effectRunMode: EffectRunMode = EffectRunMode.All,
+    options: ActionReaderOptions,
   ) {
+    const optionsWithDefaults = {
+      effectRunMode: EffectRunMode.All,
+      logLevel: 'info' as LogLevel,
+      ...options,
+    }
     this.initHandlerVersions(handlerVersions)
+    this.effectRunMode = optionsWithDefaults.effectRunMode
     this.log = BunyanProvider.getLogger()
+    this.log.level(optionsWithDefaults.logLevel)
   }
 
   /**
