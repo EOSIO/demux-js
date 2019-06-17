@@ -24,7 +24,7 @@ export interface ActionWatcherOptions {
 }
 
 export interface ExpressActionWatcherOptions extends ActionWatcherOptions {
-  port: number
+  port?: number
 }
 
 export interface JsonActionReaderOptions extends ActionReaderOptions {
