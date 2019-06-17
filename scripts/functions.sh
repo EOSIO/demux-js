@@ -57,15 +57,15 @@ check_head() {
 
 check_version() {
   echo "  Checking if version of tag matches version in package.json..."
-  if ! [ "$TRAVIS_TAG" = "$(npm run current-version --silent)" ]; then
+  if ! [ "$TRAVIS_TAG" = "$(yarn current-version --silent)" ]; then
     echo "✖ Tag does not match the version in package.json!"
     echo "  - Tag: $TRAVIS_TAG"
-    echo "  - Version: $(npm run current-version --silent)"
+    echo "  - Version: $(yarn current-version --silent)"
     return 1
   fi
   echo "✔ Tag matches version in package.json"
   echo "  - Tag: $TRAVIS_TAG"
-  echo "  - Version: $(npm run current-version --silent)"
+  echo "  - Version: $(yarn current-version --silent)"
   return 0
 }
 
