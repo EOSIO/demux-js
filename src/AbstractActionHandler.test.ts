@@ -2,6 +2,8 @@ import { MismatchedBlockHashError, NotInitializedError } from './errors'
 import { ActionCallback, EffectRunMode, StatelessActionCallback } from './interfaces'
 import blockchains from './testHelpers/blockchains'
 import { TestActionHandler } from './testHelpers/TestActionHandler'
+import { wait } from './testHelpers/wait'
+import Mock = jest.Mock
 
 const { blockchain, upgradeHandler } = blockchains
 
@@ -17,6 +19,10 @@ describe('Action Handler', () => {
   let notRunUpdater: ActionCallback
   let notRunEffect: StatelessActionCallback
 
+  let startSlowEffect: Mock
+  let finishSlowEffect: Mock
+  let startThrownEffect: Mock
+
   let runUpgradeUpdater: ActionCallback
 
   let runUpdaterAfterUpgrade: ActionCallback
@@ -31,6 +37,10 @@ describe('Action Handler', () => {
 
     notRunUpdater = jest.fn()
     notRunEffect = jest.fn()
+
+    startSlowEffect = jest.fn()
+    finishSlowEffect = jest.fn()
+    startThrownEffect = jest.fn()
 
     runUpgradeUpdater = jest.fn().mockReturnValue('v2')
 
@@ -73,6 +83,21 @@ describe('Action Handler', () => {
             run: notRunEffect,
             deferUntilIrreversible: true,
           },
+          {
+            actionType: 'testing::action',
+            run: async () => {
+              startSlowEffect()
+              await wait(100, finishSlowEffect)
+            },
+            deferUntilIrreversible: false,
+          },
+          {
+            actionType: 'eosio.system::regproducer',
+            run: () => {
+              startThrownEffect()
+              throw Error('Thrown effect')
+            }
+          }
         ],
       },
       {
@@ -102,10 +127,22 @@ describe('Action Handler', () => {
       },
     ]
 
-    actionHandler = new TestActionHandler(handlerVersions)
-    noEffectActionHandler = new TestActionHandler(handlerVersions, EffectRunMode.None)
-    deferredEffectActionHandler = new TestActionHandler(handlerVersions, EffectRunMode.OnlyDeferred)
-    immediateEffectActionHandler = new TestActionHandler(handlerVersions, EffectRunMode.OnlyImmediate)
+    actionHandler = new TestActionHandler(
+      handlerVersions,
+      { logLevel: 'error' }
+    )
+    noEffectActionHandler = new TestActionHandler(
+      handlerVersions,
+      { logLevel: 'error', effectRunMode: EffectRunMode.None}
+    )
+    deferredEffectActionHandler = new TestActionHandler(
+      handlerVersions,
+      { logLevel: 'error', effectRunMode: EffectRunMode.OnlyDeferred}
+    )
+    immediateEffectActionHandler = new TestActionHandler(
+      handlerVersions,
+      { logLevel: 'error', effectRunMode: EffectRunMode.OnlyImmediate}
+    )
 
     actionHandler.isInitialized = true
     noEffectActionHandler.isInitialized = true
@@ -141,7 +178,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 2,
     }
     const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {},  false)
-    actionHandler._runEffects(versionedActions, {}, nextBlock)
+    await actionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).toHaveBeenCalledTimes(2)
     expect(notRunEffect).not.toHaveBeenCalled()
   })
@@ -218,7 +255,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 2,
     }
     const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {}, false)
-    actionHandler._runEffects(versionedActions, {}, nextBlock)
+    await actionHandler._runEffects(versionedActions, {}, nextBlock)
 
     expect(actionHandler._handlerVersionName).toEqual('v2')
     expect(runUpdater).toHaveBeenCalledTimes(1)
@@ -243,7 +280,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 1,
     }
     const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {}, false)
-    actionHandler._runEffects(versionedActions, {}, nextBlock)
+    await actionHandler._runEffects(versionedActions, {}, nextBlock)
 
     expect(runEffect).not.toHaveBeenCalled()
     expect(runEffectAfterUpgrade).not.toHaveBeenCalled()
@@ -259,7 +296,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 2,
     }
     const versionedActions2 = await actionHandler._applyUpdaters({}, nextBlock2, {}, false)
-    actionHandler._runEffects(versionedActions2, {}, nextBlock2)
+    await actionHandler._runEffects(versionedActions2, {}, nextBlock2)
 
     expect(runEffect).toHaveBeenCalledTimes(2)
     expect(runEffectAfterUpgrade).toHaveBeenCalledTimes(1)
@@ -430,7 +467,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 2,
     }
     const versionedActions = await noEffectActionHandler._applyUpdaters({}, nextBlock, {},  false)
-    noEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
+    await noEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).not.toHaveBeenCalled()
   })
 
@@ -446,7 +483,7 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 2,
     }
     const versionedActions = await deferredEffectActionHandler._applyUpdaters({}, nextBlock, {},  false)
-    deferredEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
+    await deferredEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).toHaveBeenCalled()
   })
 
@@ -462,7 +499,47 @@ describe('Action Handler', () => {
       lastIrreversibleBlockNumber: 2,
     }
     const versionedActions = await immediateEffectActionHandler._applyUpdaters({}, nextBlock, {},  false)
-    immediateEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
+    await immediateEffectActionHandler._runEffects(versionedActions, {}, nextBlock)
     expect(runEffect).not.toHaveBeenCalled()
+  })
+
+  it('keeps track of running effects', async () => {
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[0],
+      blockMeta,
+      lastIrreversibleBlockNumber: 2,
+    }
+    const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {},  false)
+    await actionHandler._runEffects(versionedActions, {}, nextBlock)
+    expect(startSlowEffect).toHaveBeenCalled()
+    expect(finishSlowEffect).not.toHaveBeenCalled()
+    expect(actionHandler.info.numberOfRunningEffects).toEqual(1)
+    await wait(200)
+    expect(finishSlowEffect).toHaveBeenCalled()
+    expect(actionHandler.info.numberOfRunningEffects).toEqual(0)
+  })
+
+  it('keeps track of thrown effects', async () => {
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: true,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[1],
+      blockMeta,
+      lastIrreversibleBlockNumber: 2,
+    }
+    const versionedActions = await actionHandler._applyUpdaters({}, nextBlock, {},  false)
+    await actionHandler._runEffects(versionedActions, {}, nextBlock)
+    expect(startThrownEffect).toHaveBeenCalled()
+    expect(actionHandler.info.numberOfRunningEffects).toEqual(0)
+    expect(actionHandler.info.effectErrors).toHaveLength(1)
+    expect(actionHandler.info.effectErrors[0].startsWith('Error: Thrown effect')).toBeTruthy()
   })
 })
