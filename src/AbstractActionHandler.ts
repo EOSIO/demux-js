@@ -40,10 +40,11 @@ export abstract class AbstractActionHandler {
    *                         version name is `"v1"`.
    *
    * @param effectRunMode    An EffectRunMode that describes what effects should be run.
+   * @param options
    */
   constructor(
     handlerVersions: HandlerVersion[],
-    options: ActionReaderOptions,
+    options?: ActionReaderOptions,
   ) {
     const optionsWithDefaults = {
       effectRunMode: EffectRunMode.All,
