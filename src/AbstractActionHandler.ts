@@ -7,15 +7,18 @@ import {
 import {
   Action,
   ActionReaderOptions,
+  BlockInfo,
+  CurriedEffectRun,
   DeferredEffects,
   Effect,
-  EffectRunMode,
+  EffectRunMode, EffectsInfo,
   HandlerInfo,
   HandlerVersion,
   IndexState,
   NextBlock,
   VersionedAction,
 } from './interfaces'
+import { QueryablePromise, makeQuerablePromise } from './makeQueryablePromise'
 import { LogLevel } from 'bunyan'
 
 /**
@@ -34,12 +37,14 @@ export abstract class AbstractActionHandler {
   protected initialized: boolean = false
   private deferredEffects: DeferredEffects = {}
   private handlerVersionMap: { [versionName: string]: HandlerVersion } = {}
+  private runningEffects: Array<QueryablePromise<void>> = []
+  private effectErrors: string[] = []
+  private maxEffectErrors: number
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
    *                         version name is `"v1"`.
    *
-   * @param effectRunMode    An EffectRunMode that describes what effects should be run.
    * @param options
    */
   constructor(
@@ -49,10 +54,12 @@ export abstract class AbstractActionHandler {
     const optionsWithDefaults = {
       effectRunMode: EffectRunMode.All,
       logLevel: 'info' as LogLevel,
+      maxEffectErrors: 100,
       ...options,
     }
     this.initHandlerVersions(handlerVersions)
     this.effectRunMode = optionsWithDefaults.effectRunMode
+    this.maxEffectErrors = optionsWithDefaults.maxEffectErrors
     this.log = BunyanProvider.getLogger()
     this.log.level(optionsWithDefaults.logLevel)
   }
@@ -114,10 +121,14 @@ export abstract class AbstractActionHandler {
    * Information about the current state of the Action Handler
    */
   public get info(): HandlerInfo {
+    const effectInfo = this.checkRunningEffects()
     return {
       lastProcessedBlockNumber: this.lastProcessedBlockNumber,
       lastProcessedBlockHash: this.lastProcessedBlockHash,
       handlerVersionName: this.handlerVersionName,
+      effectRunMode: this.effectRunMode,
+      numberOfRunningEffects: effectInfo.numberOfRunningEffects,
+      effectErrors: effectInfo.effectErrors,
     }
   }
 
@@ -233,16 +244,16 @@ export abstract class AbstractActionHandler {
   /**
    * Process versioned actions against asynchronous side effects.
    */
-  protected runEffects(
+  protected async runEffects(
     versionedActions: VersionedAction[],
     context: any,
     nextBlock: NextBlock,
   ) {
-    this.runDeferredEffects(nextBlock.lastIrreversibleBlockNumber)
+    await this.runDeferredEffects(nextBlock.lastIrreversibleBlockNumber)
     for (const { action, handlerVersionName } of versionedActions) {
       for (const effect of this.handlerVersionMap[handlerVersionName].effects) {
         if (this.shouldRunOrDeferEffect(effect, action)) {
-          this.runOrDeferEffect(effect, action.payload, nextBlock, context)
+          await this.runOrDeferEffect(effect, action.payload, nextBlock, context)
         }
       }
     }
@@ -269,12 +280,13 @@ export abstract class AbstractActionHandler {
 
     const versionedActions = await this.applyUpdaters(state, nextBlock, context, isReplay)
     if (!isReplay) {
-      this.runEffects(versionedActions, context, nextBlock)
+      await this.runEffects(versionedActions, context, nextBlock)
     }
 
     await this.loggedUpdateIndexState(state, nextBlock, isReplay, this.handlerVersionName, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
+    this.checkRunningEffects()
   }
 
   private async handleRollback(isRollback: boolean, blockNumber: number, isReplay: boolean, isEarliestBlock: boolean) {
@@ -297,7 +309,7 @@ export abstract class AbstractActionHandler {
     return Array(end - start).fill(0).map((_, i: number) => i + start)
   }
 
-  protected runOrDeferEffect(
+  protected async runOrDeferEffect(
     effect: Effect,
     payload: any,
     nextBlock: NextBlock,
@@ -305,16 +317,23 @@ export abstract class AbstractActionHandler {
   ) {
     const { block, lastIrreversibleBlockNumber } = nextBlock
     const { blockInfo } = block
+    const queueTime = Date.now()
+    const curriedEffectRun = this.curryEffectRun(effect, payload, blockInfo, context, queueTime)
     const shouldRunImmediately = (
       !effect.deferUntilIrreversible || blockInfo.blockNumber <= lastIrreversibleBlockNumber
     )
     if (shouldRunImmediately) {
-      effect.run(payload, blockInfo, context)
+      this.runningEffects.push(
+        makeQuerablePromise(curriedEffectRun(blockInfo.blockNumber, true), false),
+      )
     } else {
       if (!this.deferredEffects[blockInfo.blockNumber]) {
         this.deferredEffects[blockInfo.blockNumber] = []
       }
-      this.deferredEffects[blockInfo.blockNumber].push(() => effect.run(payload, blockInfo, context))
+      this.log.debug(
+        `Deferring effect for '${effect.actionType}' until block ${blockInfo.blockNumber} becomes irreversible`
+      )
+      this.deferredEffects[blockInfo.blockNumber].push(curriedEffectRun)
     }
   }
 
@@ -331,14 +350,38 @@ export abstract class AbstractActionHandler {
     return true
   }
 
-  private runDeferredEffects(lastIrreversibleBlockNumber: number) {
+  private curryEffectRun(
+    effect: Effect,
+    payload: any,
+    blockInfo: BlockInfo,
+    context: any,
+    queueTime: number,
+  ): CurriedEffectRun {
+    return async (currentBlockNumber: number, immediate: boolean = false) => {
+      const effectStart = Date.now()
+      const waitedBlocks = currentBlockNumber - blockInfo.blockNumber
+      const waitedTime = effectStart - queueTime
+      this.log.debug(
+        `Running ${immediate ? '' : 'deferred '}effect for '${effect.actionType}'...` +
+        (immediate ? '' : ` (waited ${waitedBlocks} blocks; ${waitedTime}ms)`)
+      )
+      await effect.run(payload, blockInfo, context)
+      const effectTime = Date.now() - effectStart
+      this.log.debug(`Ran ${immediate ? '' : 'deferred '}effect for '${effect.actionType}' (${effectTime}ms)`)
+    }
+  }
+
+  private async runDeferredEffects(lastIrreversibleBlockNumber: number) {
     const nextDeferredBlockNumber = this.getNextDeferredBlockNumber()
     if (!nextDeferredBlockNumber) { return }
     for (const blockNumber of this.range(nextDeferredBlockNumber, lastIrreversibleBlockNumber + 1)) {
       if (this.deferredEffects[blockNumber]) {
         const effects = this.deferredEffects[blockNumber]
-        for (const deferredEffect of effects) {
-          deferredEffect()
+        this.log.debug(`Block ${blockNumber} is now irreversible, running ${effects.length} deferred effects`)
+        for (const deferredEffectRun of effects) {
+          this.runningEffects.push(
+            makeQuerablePromise(deferredEffectRun(blockNumber), false)
+          )
         }
         delete this.deferredEffects[blockNumber]
       }
@@ -351,6 +394,27 @@ export abstract class AbstractActionHandler {
       return 0
     }
     return Math.min(...blockNumbers)
+  }
+
+  private checkRunningEffects(): EffectsInfo {
+    const newEffectErrors = this.runningEffects
+      .filter((effectPromise) => {
+        return effectPromise.isRejected()
+      })
+      .map((rejectedPromise): string => {
+        const error = rejectedPromise.error()
+        if (error && error.stack) {
+          return error.stack
+        }
+        return '(stack trace not captured)'
+      })
+    this.effectErrors.push(...newEffectErrors)
+    this.effectErrors.splice(0, this.effectErrors.length - this.maxEffectErrors)
+    this.runningEffects = this.runningEffects.filter((effectPromise) => effectPromise.isPending())
+    return {
+      numberOfRunningEffects: this.runningEffects.length,
+      effectErrors: this.effectErrors,
+    }
   }
 
   private rollbackDeferredEffects(rollbackTo: number) {

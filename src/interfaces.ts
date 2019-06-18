@@ -33,6 +33,7 @@ export interface JsonActionReaderOptions extends ActionReaderOptions {
 
 export interface ActionReaderOptions {
   effectRunMode?: EffectRunMode
+  maxEffectErrors?: number
   logLevel?: LogLevel
 }
 
@@ -113,17 +114,25 @@ export interface VersionedAction {
 }
 
 export type CurriedEffectRun = (
-  () => void | Promise<void>
+  (currentBlockNumber: number, immediate?: boolean) => Promise<void>
 )
 
 export interface DeferredEffects {
   [blockNumber: number]: CurriedEffectRun[]
 }
 
+export interface EffectsInfo {
+  numberOfRunningEffects: number
+  effectErrors: string[]
+}
+
 export interface HandlerInfo {
   lastProcessedBlockNumber: number
   lastProcessedBlockHash: string
   handlerVersionName: string
+  effectRunMode: EffectRunMode
+  numberOfRunningEffects: number
+  effectErrors: string[]
 }
 
 export interface ReaderInfo {
