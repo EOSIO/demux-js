@@ -2,6 +2,7 @@ import { AbstractActionHandler } from './AbstractActionHandler'
 import { AbstractActionReader } from './AbstractActionReader'
 import { BunyanProvider, Logger } from './BunyanProvider'
 import { ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo } from './interfaces'
+import { LogLevel } from 'bunyan'
 
 /**
  * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
@@ -31,11 +32,13 @@ export class BaseActionWatcher {
     const optionsWithDefault = {
       pollInterval: 250,
       velocitySampleSize: 20,
+      logLevel: 'info' as LogLevel,
       ...options,
     }
     this.pollInterval = optionsWithDefault.pollInterval
     this.velocitySampleSize = optionsWithDefault.velocitySampleSize
     this.log = BunyanProvider.getLogger()
+    this.log.level(optionsWithDefault.logLevel)
   }
 
   /**
@@ -62,7 +65,7 @@ export class BaseActionWatcher {
     this.error = null
     const startTime = Date.now()
 
-    this.log.debug('Checking for blocks')
+    this.log.debug('Checking for blocks...')
     try {
       await this.checkForBlocks(isReplay)
     } catch (err) {
@@ -148,8 +151,9 @@ export class BaseActionWatcher {
         return
       }
       const readStartTime = Date.now()
+      this.log.debug(`Processing block ${this.actionReader.currentBlockNumber + 1}...`)
       const nextBlock = await this.actionReader.getNextBlock()
-      const readDuration = readStartTime - Date.now()
+      const readDuration = Date.now() - readStartTime
       if (!nextBlock.blockMeta.isNewBlock) { break }
 
       const handleStartTime = Date.now()
@@ -158,17 +162,15 @@ export class BaseActionWatcher {
         isReplay,
       )
       const handleEndTime = Date.now()
-      const handleDuration = handleStartTime - handleEndTime
-      this.log.info(`Processed block ${nextBlock.block.blockInfo.blockNumber}`)
-      this.log.debug(`${readDuration}ms read + ${handleDuration}ms handle = ${readDuration + handleDuration}ms`)
+      const handleDuration = handleEndTime - handleStartTime
+      const processDuration = readDuration + handleDuration
+      const blockNumber = nextBlock.block.blockInfo.blockNumber
+      this.log.info(`Processed block ${blockNumber} (${processDuration}ms; ${nextBlock.block.actions.length} actions)`)
+      this.log.debug(`Block ${blockNumber} read time: ${readDuration}ms; Handle time: ${handleDuration}ms`)
       this.addProcessInterval(readStartTime, handleEndTime)
 
       if (nextBlockNumberNeeded) {
-        const seekStartTime = Date.now()
         await this.actionReader.seekToBlock(nextBlockNumberNeeded)
-        const seekDuration = seekStartTime - Date.now()
-        this.log.info(`Seeked to block ${nextBlockNumberNeeded}`)
-        this.log.debug(`Seek time: ${seekDuration}ms`)
       }
 
       headBlockNumber = this.actionReader.headBlockNumber

@@ -13,6 +13,7 @@ import {
   NextBlock,
   ReaderInfo,
 } from './interfaces'
+import { LogLevel } from 'bunyan'
 
 const defaultBlock: Block = {
   blockInfo: {
@@ -42,6 +43,7 @@ export abstract class AbstractActionReader {
     const optionsWithDefaults = {
       startAtBlock: 1,
       onlyIrreversible: false,
+      logLevel: 'info' as LogLevel,
       ...options,
     }
     this.startAtBlock = optionsWithDefaults.startAtBlock
@@ -49,6 +51,7 @@ export abstract class AbstractActionReader {
     this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
 
     this.log = BunyanProvider.getLogger()
+    this.log.level(optionsWithDefaults.logLevel)
   }
 
   /**
@@ -83,17 +86,27 @@ export abstract class AbstractActionReader {
     }
 
     if (!this.initialized) {
+      this.log.info('Action Reader was not initialized before started, so it is being initialized now')
       await this.initialize()
     }
 
+    this.log.debug('Getting last irreversible block number...')
+    const lastIrreversibleStart = Date.now()
     this.lastIrreversibleBlockNumber = await this.getLastIrreversibleBlockNumber()
+    const lastIrreversibleTime = Date.now() - lastIrreversibleStart
+    this.log.debug(
+      `Got last irreversible block number: ${this.lastIrreversibleBlockNumber} (${lastIrreversibleTime}ms)`
+    )
 
     if (this.currentBlockNumber === this.headBlockNumber) {
       this.headBlockNumber = await this.getLatestNeededBlockNumber()
     }
 
     if (this.currentBlockNumber < this.headBlockNumber) {
-      const unvalidatedBlockData = await this.getBlock(this.currentBlockNumber + 1)
+      const unvalidatedBlockData = await this.loggedGetBlock(
+        this.currentBlockNumber + 1,
+        'next block'
+      )
 
       const expectedHash = this.currentBlockData.blockInfo.blockHash
       const actualHash = this.currentBlockNumber ?
@@ -126,9 +139,18 @@ export abstract class AbstractActionReader {
    * Performs all required initialization for the reader.
    */
   public async initialize(): Promise<void> {
+    this.log.debug('Initializing Action Reader...')
+    const setupStart = Date.now()
     await this.setup()
+    const betweenSetupAndInit = Date.now()
     await this.initBlockState()
     this.initialized = true
+    const setupTime = betweenSetupAndInit - setupStart
+    const initTime = Date.now() - betweenSetupAndInit
+    const initializeTime = setupTime + initTime
+    this.log.debug(
+      `Initialized Action Reader (${setupTime}ms setup + ${initTime}ms block state init = ${initializeTime}ms)`
+    )
   }
 
   /**
@@ -139,6 +161,8 @@ export abstract class AbstractActionReader {
    * The next time `nextBlock()` is called, it will load the block after this input block number.
    */
   public async seekToBlock(blockNumber: number): Promise<void> {
+    this.log.debug(`Seeking to block ${blockNumber}...`)
+    const seekStart = Date.now()
     this.headBlockNumber = await this.getLatestNeededBlockNumber()
     if (blockNumber < this.startAtBlock) {
       throw new ImproperStartAtBlockError()
@@ -148,6 +172,8 @@ export abstract class AbstractActionReader {
     }
     this.currentBlockNumber = blockNumber - 1
     await this.reloadHistory()
+    const seekTime = Date.now() - seekStart
+    this.log.debug(`Seeked to block ${blockNumber} (${seekTime}ms)`)
   }
 
   /**
@@ -185,7 +211,10 @@ export abstract class AbstractActionReader {
       }
       const [previousBlockData] = this.blockHistory.slice(-1)
       this.log.info(`Refetching Block ${this.currentBlockData.blockInfo.blockNumber}...`)
-      this.currentBlockData = await this.getBlock(this.currentBlockData.blockInfo.blockNumber)
+      this.currentBlockData = await this.loggedGetBlock(
+        this.currentBlockData.blockInfo.blockNumber,
+        'resolving fork',
+      )
       const { blockInfo: currentBlockInfo } = this.currentBlockData
       const { blockInfo: previousBlockInfo } = previousBlockData
       if (currentBlockInfo.previousBlockHash === previousBlockInfo.blockHash) {
@@ -219,7 +248,12 @@ export abstract class AbstractActionReader {
     if (this.onlyIrreversible) {
       return this.lastIrreversibleBlockNumber
     } else {
-      return this.getHeadBlockNumber()
+      const headBlockFetchStart = Date.now()
+      this.log.debug('Getting head block number...')
+      const headBlockNumber = await this.getHeadBlockNumber()
+      const headBlockFetchTime = Date.now() - headBlockFetchStart
+      this.log.debug(`Got head block number: ${headBlockNumber} (${headBlockFetchTime}ms)`)
+      return headBlockNumber
     }
   }
 
@@ -261,7 +295,10 @@ export abstract class AbstractActionReader {
     }
     if (this.currentBlockNumber === 1) {
       this.blockHistory = [defaultBlock]
-      this.currentBlockData = await this.getBlock(1)
+      this.currentBlockData = await this.loggedGetBlock(
+        1,
+        'reloading history first block edge case'
+      )
       return
     }
     let historyRange = this.range(this.lastIrreversibleBlockNumber, this.currentBlockNumber + 1)
@@ -274,13 +311,20 @@ export abstract class AbstractActionReader {
       microForked = false
       this.blockHistory = []
       for (const blockNumber of historyRange) {
-        const historyBlock = await this.getBlock(blockNumber)
+        const historyBlock = await this.loggedGetBlock(
+          blockNumber,
+          'reloading history'
+        )
         if (this.blockHistory.length === 0) {
           this.blockHistory.push(historyBlock)
           continue
         }
         const latestHistoryBlockHash = this.blockHistory[this.blockHistory.length - 1].blockInfo.blockHash
         if (latestHistoryBlockHash !== historyBlock.blockInfo.previousBlockHash) {
+          this.log.info('Microforked while reloading history!')
+          this.log.info(`  EXPECTED: ${latestHistoryBlockHash}`)
+          this.log.info(`  RECEIVED: ${historyBlock.blockInfo.previousBlockHash}`)
+          this.log.info(`Scrapping history and trying again (try ${tryCount + 1})`)
           microForked = true
           break
         }
@@ -298,7 +342,21 @@ export abstract class AbstractActionReader {
     if (this.currentBlockData.blockInfo.blockNumber < this.lastIrreversibleBlockNumber && checkIrreversiblility) {
       throw new UnresolvedForkError()
     }
-    this.blockHistory.push(await this.getBlock(this.currentBlockData.blockInfo.blockNumber - 1))
+    this.blockHistory.push(
+      await this.loggedGetBlock(
+        this.currentBlockData.blockInfo.blockNumber - 1,
+        'populating history',
+      )
+    )
+  }
+
+  private async loggedGetBlock(blockNumber: number, logContext: string): Promise<Block> {
+    const getBlockStart = Date.now()
+    this.log.debug(`Getting block ${blockNumber}... (${logContext})`)
+    const block = await this.getBlock(blockNumber)
+    const getBlockFetchTime = Date.now() - getBlockStart
+    this.log.debug(`Got block ${blockNumber} (${getBlockFetchTime}ms; ${block.actions.length} actions)`)
+    return block
   }
 
   private logForkDetected(unvalidatedBlockData: Block, expectedHash: string, actualHash: string) {

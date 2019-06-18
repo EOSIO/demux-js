@@ -1,3 +1,5 @@
+import { LogLevel } from 'bunyan'
+
 export interface ActionReaderOptions {
   /**
    * For positive values, this sets the first block that this will start at. For negative
@@ -12,11 +14,13 @@ export interface ActionReaderOptions {
    * is the responsibility of the implementing class.
    */
   onlyIrreversible?: boolean
+  logLevel?: LogLevel
 }
 
 export interface ActionWatcherOptions {
   pollInterval?: number
   velocitySampleSize?: number
+  logLevel?: LogLevel
 }
 
 export interface ExpressActionWatcherOptions extends ActionWatcherOptions {

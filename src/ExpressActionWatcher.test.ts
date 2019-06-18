@@ -34,7 +34,15 @@ describe('ExpressActionWatcher', () => {
     actionHandler = new TestActionHandler([{ versionName: 'v1', updaters, effects: [] }])
     actionHandler.isInitialized = true
 
-    expressActionWatcher = new ExpressActionWatcher(actionReader, actionHandler, { pollInterval: 500, port: 56544 })
+    expressActionWatcher = new ExpressActionWatcher(
+      actionReader,
+      actionHandler,
+      {
+        pollInterval: 500,
+        port: 56544,
+        logLevel: 'error',
+      }
+    )
   })
 
   afterEach(() => {

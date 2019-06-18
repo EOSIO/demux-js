@@ -11,13 +11,13 @@ describe('Action Reader', () => {
   let forked: Block []
 
   beforeEach(() => {
-    actionReader = new TestActionReader()
+    actionReader = new TestActionReader({ logLevel: 'error' })
     actionReader.isInitialized = true
 
-    actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3 })
+    actionReaderStartAt3 = new TestActionReader({ startAtBlock: 3, logLevel: 'error' })
     actionReaderStartAt3.isInitialized = true
 
-    actionReaderNegative = new TestActionReader({ startAtBlock: -1 })
+    actionReaderNegative = new TestActionReader({ startAtBlock: -1, logLevel: 'error' })
     actionReaderNegative.isInitialized = true
 
     blockchain = JSON.parse(JSON.stringify(blockchains.blockchain))
