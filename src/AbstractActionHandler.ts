@@ -69,6 +69,7 @@ export abstract class AbstractActionHandler {
     const { isRollback, isEarliestBlock } = blockMeta
 
     if (!this.initialized) {
+      this.log.info('Action Handler was not initialized before started, so it is being initialized now')
       await this.initialize()
     }
 
@@ -79,6 +80,7 @@ export abstract class AbstractActionHandler {
     // Just processed this block; skip
     if (blockInfo.blockNumber === this.lastProcessedBlockNumber
         && blockInfo.blockHash === this.lastProcessedBlockHash) {
+      this.log.debug(`Block ${blockInfo.blockNumber} was just handled; skipping`)
       return null
     }
 
@@ -89,12 +91,15 @@ export abstract class AbstractActionHandler {
     // Only check if this is the block we need if it's not the first block
     if (!isEarliestBlock) {
       if (blockInfo.blockNumber !== nextBlockNeeded) {
+        this.log.debug(
+          `Got block ${blockInfo.blockNumber} but block ${nextBlockNeeded} is needed; ` +
+          `requesting block ${nextBlockNeeded}`
+        )
         return nextBlockNeeded
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-        const err = new MismatchedBlockHashError()
-        throw err
+        throw new MismatchedBlockHashError()
       }
     }
 
@@ -120,9 +125,18 @@ export abstract class AbstractActionHandler {
    * Performs all required initialization for the handler.
    */
   public async initialize(): Promise<void> {
+    this.log.debug('Initializing Action Handler...')
+    const setupStart = Date.now()
     await this.setup()
+    const betweenSetupAndIndexState = Date.now()
     await this.refreshIndexState()
     this.initialized = true
+    const setupTime = betweenSetupAndIndexState - setupStart
+    const indexStateTime = Date.now() - betweenSetupAndIndexState
+    const initializeTime = setupTime + indexStateTime
+    this.log.debug(
+      `Initialized Action Handler (${setupTime}ms setup + ${indexStateTime}ms index state = ${initializeTime}ms)`
+    )
   }
 
   /**
@@ -192,13 +206,17 @@ export abstract class AbstractActionHandler {
         updaterIndex += 1
         if (this.matchActionType(action.type, updater.actionType, action.payload)) {
           const { payload } = action
+          this.log.debug(`Applying updater for action type '${action.type}'...`)
+          const updaterStart = Date.now()
           const newVersion = await updater.apply(state, payload, blockInfo, context)
+          const updaterTime = Date.now() - updaterStart
+          this.log.debug(`Applied updater for action type '${action.type}' (${updaterTime}ms)`)
           if (newVersion && !this.handlerVersionMap.hasOwnProperty(newVersion)) {
             this.warnHandlerVersionNonexistent(newVersion)
           } else if (newVersion) {
-            this.log.info(`BLOCK ${blockInfo.blockNumber}: Updating Handler Version to '${newVersion}'`)
+            this.log.info(`Updated Handler Version to '${newVersion}' (block ${blockInfo.blockNumber})`)
             this.warnSkippingUpdaters(updaterIndex, action.type)
-            await this.updateIndexState(state, nextBlock, isReplay, newVersion, context)
+            await this.loggedUpdateIndexState(state, nextBlock, isReplay, newVersion, context)
             this.handlerVersionName = newVersion
             break
           }
@@ -254,7 +272,7 @@ export abstract class AbstractActionHandler {
       this.runEffects(versionedActions, context, nextBlock)
     }
 
-    await this.updateIndexState(state, nextBlock, isReplay, this.handlerVersionName, context)
+    await this.loggedUpdateIndexState(state, nextBlock, isReplay, this.handlerVersionName, context)
     this.lastProcessedBlockNumber = blockInfo.blockNumber
     this.lastProcessedBlockHash = blockInfo.blockHash
   }
@@ -263,9 +281,12 @@ export abstract class AbstractActionHandler {
     if (isRollback || (isReplay && isEarliestBlock)) {
       const rollbackBlockNumber = blockNumber - 1
       const rollbackCount = this.lastProcessedBlockNumber - rollbackBlockNumber
-      this.log.info(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
+      this.log.debug(`Rolling back ${rollbackCount} blocks to block ${rollbackBlockNumber}...`)
+      const rollbackStart = Date.now()
       await this.rollbackTo(rollbackBlockNumber)
       this.rollbackDeferredEffects(blockNumber)
+      const rollbackTime = Date.now() - rollbackStart
+      this.log.info(`Rolled back ${rollbackCount} blocks to block ${rollbackBlockNumber} (${rollbackTime}ms)`)
       await this.refreshIndexState()
     } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === '') {
       await this.refreshIndexState()
@@ -336,6 +357,9 @@ export abstract class AbstractActionHandler {
     const blockNumbers = Object.keys(this.deferredEffects).map((num) => parseInt(num, 10))
     const toRollBack = blockNumbers.filter((bn) => bn >= rollbackTo)
     for (const blockNumber of toRollBack) {
+      this.log.debug(
+        `Removing ${this.deferredEffects[blockNumber].length} deferred effects for rolled back block ${blockNumber}`
+      )
       delete this.deferredEffects[blockNumber]
     }
   }
@@ -358,11 +382,29 @@ export abstract class AbstractActionHandler {
     }
   }
 
+  private async loggedUpdateIndexState(
+    state: any,
+    nextBlock: NextBlock,
+    isReplay: boolean,
+    handlerVersionName: string,
+    context?: any,
+  ): Promise<void> {
+    this.log.debug('Updating Index State...')
+    const updateStart = Date.now()
+    await this.updateIndexState(state, nextBlock, isReplay, handlerVersionName, context)
+    const updateTime = Date.now() - updateStart
+    this.log.debug(`Updated Index State (${updateTime}ms)`)
+  }
+
   private async refreshIndexState() {
+    this.log.debug('Loading Index State...')
+    const refreshStart = Date.now()
     const { blockNumber, blockHash, handlerVersionName } = await this.loadIndexState()
     this.lastProcessedBlockNumber = blockNumber
     this.lastProcessedBlockHash = blockHash
     this.handlerVersionName = handlerVersionName
+    const refreshTime = Date.now() - refreshStart
+    this.log.debug(`Loaded Index State (${refreshTime}ms)`)
   }
 
   private warnMissingHandlerVersion(actualVersion: string) {
