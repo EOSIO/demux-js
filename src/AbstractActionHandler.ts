@@ -6,12 +6,13 @@ import {
 } from './errors'
 import {
   Action,
-  ActionReaderOptions,
+  ActionHandlerOptions,
   BlockInfo,
   CurriedEffectRun,
   DeferredEffects,
   Effect,
-  EffectRunMode, EffectsInfo,
+  EffectRunMode,
+  EffectsInfo,
   HandlerInfo,
   HandlerVersion,
   IndexState,
@@ -49,7 +50,7 @@ export abstract class AbstractActionHandler {
    */
   constructor(
     handlerVersions: HandlerVersion[],
-    options?: ActionReaderOptions,
+    options?: ActionHandlerOptions,
   ) {
     const optionsWithDefaults = {
       effectRunMode: EffectRunMode.All,
