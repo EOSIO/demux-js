@@ -31,7 +31,7 @@ export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
 }
 
-export interface ActionReaderOptions {
+export interface ActionHandlerOptions {
   effectRunMode?: EffectRunMode
   maxEffectErrors?: number
   logLevel?: LogLevel
