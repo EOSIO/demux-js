@@ -34,6 +34,7 @@ export abstract class AbstractActionHandler {
   public lastProcessedBlockHash: string = ''
   public lastIrreversibleBlockNumber: number = 0
   public handlerVersionName: string = 'v1'
+  public isReplay: boolean = false
   protected log: Logger
   protected effectRunMode: EffectRunMode
   protected initialized: boolean = false
@@ -463,11 +464,12 @@ export abstract class AbstractActionHandler {
   private async refreshIndexState() {
     this.log.debug('Loading Index State...')
     const refreshStart = Date.now()
-    const { blockNumber, blockHash, handlerVersionName, lastIrreversibleBlockNumber } = await this.loadIndexState()
-    this.lastProcessedBlockNumber = blockNumber
-    this.lastProcessedBlockHash = blockHash
-    this.lastIrreversibleBlockNumber = lastIrreversibleBlockNumber
-    this.handlerVersionName = handlerVersionName
+    const indexState = await this.loadIndexState()
+    this.lastProcessedBlockNumber = indexState.blockNumber
+    this.lastProcessedBlockHash = indexState.blockHash
+    this.lastIrreversibleBlockNumber = indexState.lastIrreversibleBlockNumber
+    this.handlerVersionName = indexState.handlerVersionName
+    this.isReplay = indexState.isReplay
     const refreshTime = Date.now() - refreshStart
     this.log.debug(`Loaded Index State (${refreshTime}ms)`)
   }
