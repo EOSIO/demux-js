@@ -5,9 +5,15 @@ import { IndexState, NextBlock, VersionedAction } from '../interfaces'
 export class TestActionHandler extends AbstractActionHandler {
   public isInitialized: boolean = false
 
-  public state: any = {
-    indexState: { blockNumber: 0, blockHash: '', isReplay: false, handlerVersionName: 'v1' },
+  private indexState: IndexState = {
+    blockNumber: 0,
+    blockHash: '',
+    isReplay: false,
+    handlerVersionName: 'v1',
+    lastIrreversibleBlockNumber: 0
   }
+
+  public state: any = { indexState: this.indexState }
 
   private hashHistory: { [key: number]: string } = { 0: '' }
 
@@ -30,10 +36,12 @@ export class TestActionHandler extends AbstractActionHandler {
 
   public setLastProcessedBlockHash(hash: string) {
     this.lastProcessedBlockHash = hash
+    this.indexState.blockHash = hash
   }
 
   public setLastProcessedBlockNumber(num: number) {
     this.lastProcessedBlockNumber = num
+    this.indexState.blockNumber = num
   }
 
   public async _applyUpdaters(
