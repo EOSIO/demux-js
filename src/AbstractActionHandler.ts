@@ -32,7 +32,9 @@ import { LogLevel } from 'bunyan'
 export abstract class AbstractActionHandler {
   public lastProcessedBlockNumber: number = 0
   public lastProcessedBlockHash: string = ''
+  public lastIrreversibleBlockNumber: number = 0
   public handlerVersionName: string = 'v1'
+  public isReplay: boolean = false
   protected log: Logger
   protected effectRunMode: EffectRunMode
   protected initialized: boolean = false
@@ -83,6 +85,7 @@ export abstract class AbstractActionHandler {
 
     await this.handleRollback(isRollback, blockInfo.blockNumber, isReplay, isEarliestBlock)
 
+    await this.refreshIndexState()
     const nextBlockNeeded = this.lastProcessedBlockNumber + 1
 
     // Just processed this block; skip
@@ -300,9 +303,6 @@ export abstract class AbstractActionHandler {
       this.rollbackDeferredEffects(blockNumber)
       const rollbackTime = Date.now() - rollbackStart
       this.log.info(`Rolled back ${rollbackCount} blocks to block ${rollbackBlockNumber} (${rollbackTime}ms)`)
-      await this.refreshIndexState()
-    } else if (this.lastProcessedBlockNumber === 0 && this.lastProcessedBlockHash === '') {
-      await this.refreshIndexState()
     }
   }
 
@@ -464,10 +464,12 @@ export abstract class AbstractActionHandler {
   private async refreshIndexState() {
     this.log.debug('Loading Index State...')
     const refreshStart = Date.now()
-    const { blockNumber, blockHash, handlerVersionName } = await this.loadIndexState()
-    this.lastProcessedBlockNumber = blockNumber
-    this.lastProcessedBlockHash = blockHash
-    this.handlerVersionName = handlerVersionName
+    const indexState = await this.loadIndexState()
+    this.lastProcessedBlockNumber = indexState.blockNumber
+    this.lastProcessedBlockHash = indexState.blockHash
+    this.lastIrreversibleBlockNumber = indexState.lastIrreversibleBlockNumber
+    this.handlerVersionName = indexState.handlerVersionName
+    this.isReplay = indexState.isReplay
     const refreshTime = Date.now() - refreshStart
     this.log.debug(`Loaded Index State (${refreshTime}ms)`)
   }
