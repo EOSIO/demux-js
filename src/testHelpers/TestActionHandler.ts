@@ -45,12 +45,12 @@ export class TestActionHandler extends AbstractActionHandler {
     return this.applyUpdaters(state, nextBlock, context, isReplay)
   }
 
-  public _runEffects(
+  public async _runEffects(
     versionedActions: VersionedAction[],
     context: any,
     nextBlock: NextBlock,
   ) {
-    this.runEffects(versionedActions, context, nextBlock)
+    await this.runEffects(versionedActions, context, nextBlock)
   }
 
   protected async loadIndexState(): Promise<IndexState> {

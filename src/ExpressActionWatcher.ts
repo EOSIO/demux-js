@@ -22,7 +22,7 @@ export class ExpressActionWatcher extends BaseActionWatcher {
   ) {
     super(actionReader, actionHandler, options)
 
-    this.port = options.port
+    this.port = options.port || 56544
 
     this.express.get('/info', (_, res: express.Response) => {
       res.json(this.info)

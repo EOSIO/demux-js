@@ -24,11 +24,17 @@ export interface ActionWatcherOptions {
 }
 
 export interface ExpressActionWatcherOptions extends ActionWatcherOptions {
-  port: number
+  port?: number
 }
 
 export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
+}
+
+export interface ActionReaderOptions {
+  effectRunMode?: EffectRunMode
+  maxEffectErrors?: number
+  logLevel?: LogLevel
 }
 
 export interface Block {
@@ -108,17 +114,25 @@ export interface VersionedAction {
 }
 
 export type CurriedEffectRun = (
-  () => void | Promise<void>
+  (currentBlockNumber: number, immediate?: boolean) => Promise<void>
 )
 
 export interface DeferredEffects {
   [blockNumber: number]: CurriedEffectRun[]
 }
 
+export interface EffectsInfo {
+  numberOfRunningEffects: number
+  effectErrors: string[]
+}
+
 export interface HandlerInfo {
   lastProcessedBlockNumber: number
   lastProcessedBlockHash: string
   handlerVersionName: string
+  effectRunMode: EffectRunMode
+  numberOfRunningEffects: number
+  effectErrors: string[]
 }
 
 export interface ReaderInfo {

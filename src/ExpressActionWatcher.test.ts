@@ -60,6 +60,9 @@ describe('ExpressActionWatcher', () => {
         lastProcessedBlockHash: '',
         lastProcessedBlockNumber: 0,
         handlerVersionName: 'v1',
+        effectRunMode: 'all',
+        effectErrors: [],
+        numberOfRunningEffects: 0,
       },
       reader: {
         currentBlockNumber: 0,
@@ -91,6 +94,9 @@ describe('ExpressActionWatcher', () => {
       lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
       lastProcessedBlockNumber: 4,
       handlerVersionName: 'v1',
+      effectRunMode: 'all',
+      effectErrors: [],
+      numberOfRunningEffects: 0,
     })
     expect(status.reader).toEqual({
       currentBlockNumber: 4,
@@ -117,6 +123,9 @@ describe('ExpressActionWatcher', () => {
       lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
       lastProcessedBlockNumber: 4,
       handlerVersionName: 'v1',
+      effectRunMode: 'all',
+      effectErrors: [],
+      numberOfRunningEffects: 0,
     })
     expect(status1.reader).toEqual({
       currentBlockNumber: 4,
@@ -133,6 +142,9 @@ describe('ExpressActionWatcher', () => {
       lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
       lastProcessedBlockNumber: 4,
       handlerVersionName: 'v1',
+      effectRunMode: 'all',
+      effectErrors: [],
+      numberOfRunningEffects: 0,
     })
     expect(status2.reader).toEqual({
       currentBlockNumber: 4,
