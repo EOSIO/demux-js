@@ -12,7 +12,7 @@ import {
   BlockMeta,
   NextBlock,
   ReaderInfo,
-  IActionReader
+  IActionReader,
 } from './interfaces'
 
 const defaultBlock: Block = {
