@@ -10,7 +10,7 @@ class BunyanProvider {
    * Create an return a 'child' logger of the root Bunyan logger. The root logger
    * is created on the first call to `getLogger` using the current set configuration.
    * Subsequent calls to `configure` will be ignored.
-   * 
+   *
    * @param logOptions The source name and log level for the child logger
    */
   public static getLogger(logOptions: LogOptions): Logger {
@@ -38,13 +38,19 @@ class BunyanProvider {
     if (BunyanProvider.loggerInstance) {
       BunyanProvider.loggerInstance.warn({ source: 'BunyanProvider'})
     }
-    BunyanProvider.rootConfig = { ...rootConfig }
+    BunyanProvider.rootConfig = {
+      ...BunyanProvider.defaultConfig,
+      ...rootConfig,
+    }
     BunyanProvider.loggerInstance = null
   }
 
-  private static rootConfig: Logger.LoggerOptions = {
-    name: 'demux'
+  private static defaultConfig: Logger.LoggerOptions = {
+    source: 'demux',
+    name: 'demux',
   }
+
+  private static rootConfig: Logger.LoggerOptions = BunyanProvider.defaultConfig
 
   private static loggerInstance: Logger | null = null
 
