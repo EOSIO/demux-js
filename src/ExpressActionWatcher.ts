@@ -1,9 +1,8 @@
 import express from 'express'
 import * as http from 'http'
 import { AbstractActionHandler } from './AbstractActionHandler'
-import { AbstractActionReader } from './AbstractActionReader'
 import { BaseActionWatcher } from './BaseActionWatcher'
-import { ExpressActionWatcherOptions } from './interfaces'
+import { ExpressActionWatcherOptions, IActionReader } from "./interfaces";
 
 /**
  * Exposes the BaseActionWatcher's API methods through a simple REST interface using Express
@@ -16,7 +15,7 @@ export class ExpressActionWatcher extends BaseActionWatcher {
   protected port: number
   private server: http.Server | null = null
   constructor(
-    protected actionReader: AbstractActionReader,
+    protected actionReader: IActionReader,
     protected actionHandler: AbstractActionHandler,
     protected options: ExpressActionWatcherOptions,
   ) {

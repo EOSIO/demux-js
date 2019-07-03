@@ -12,6 +12,7 @@ import {
   BlockMeta,
   NextBlock,
   ReaderInfo,
+  IActionReader
 } from './interfaces'
 
 const defaultBlock: Block = {
@@ -27,7 +28,7 @@ const defaultBlock: Block = {
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
  */
-export abstract class AbstractActionReader {
+export abstract class AbstractActionReader implements IActionReader {
   public startAtBlock: number
   public headBlockNumber: number = 0
   public currentBlockNumber: number

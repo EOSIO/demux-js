@@ -173,3 +173,17 @@ export interface DemuxInfo {
   handler: HandlerInfo
   reader: ReaderInfo
 }
+
+export interface IActionReader {
+  startAtBlock: number;
+  headBlockNumber: number;
+  currentBlockNumber: number;
+  info: ReaderInfo;
+
+  getHeadBlockNumber(): Promise<number>;
+  getLastIrreversibleBlockNumber(): Promise<number>;
+  getBlock(blockNumber: number): Promise<Block>;
+  getNextBlock(): Promise<NextBlock>;
+  initialize(): Promise<void>;
+  seekToBlock(blockNumber: number): Promise<void>;
+}

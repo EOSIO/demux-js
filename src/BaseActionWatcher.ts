@@ -1,15 +1,14 @@
 import { AbstractActionHandler } from './AbstractActionHandler'
-import { AbstractActionReader } from './AbstractActionReader'
 import { BunyanProvider, Logger, LogLevel } from './BunyanProvider'
-import { ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo } from './interfaces'
+import { ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo, IActionReader } from './interfaces'
 
 /**
- * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
+ * Coordinates implementations of `IActionReader`s and `AbstractActionHandler`s in
  * a polling loop.
  */
 export class BaseActionWatcher {
   /**
-   * @param actionReader    An instance of an implemented `AbstractActionReader`
+   * @param actionReader    An instance of an implemented `IActionReader`
    * @param actionHandler   An instance of an implemented `AbstractActionHandler`
    * @param options
    */
@@ -24,7 +23,7 @@ export class BaseActionWatcher {
   private clean: boolean = true
 
   constructor(
-    protected actionReader: AbstractActionReader,
+    protected actionReader: IActionReader,
     protected actionHandler: AbstractActionHandler,
     options: ActionWatcherOptions,
   ) {
