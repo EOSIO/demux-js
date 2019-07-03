@@ -1,4 +1,4 @@
-import { BunyanProvider, Logger } from './BunyanProvider'
+import { BunyanProvider, Logger, LogLevel } from './BunyanProvider'
 import {
   ImproperSeekToBlockError,
   ImproperStartAtBlockError,
@@ -13,7 +13,6 @@ import {
   NextBlock,
   ReaderInfo,
 } from './interfaces'
-import { LogLevel } from 'bunyan'
 
 const defaultBlock: Block = {
   blockInfo: {
@@ -43,6 +42,7 @@ export abstract class AbstractActionReader {
     const optionsWithDefaults = {
       startAtBlock: 1,
       onlyIrreversible: false,
+      logSource: 'AbstractActionReader',
       logLevel: 'info' as LogLevel,
       ...options,
     }
@@ -50,8 +50,7 @@ export abstract class AbstractActionReader {
     this.currentBlockNumber = optionsWithDefaults.startAtBlock - 1
     this.onlyIrreversible = optionsWithDefaults.onlyIrreversible
 
-    this.log = BunyanProvider.getLogger()
-    this.log.level(optionsWithDefaults.logLevel)
+    this.log = BunyanProvider.getLogger(optionsWithDefaults)
   }
 
   /**
