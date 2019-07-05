@@ -1,6 +1,11 @@
-import { LogLevel } from 'bunyan'
+import { LogLevel } from './BunyanProvider'
 
-export interface ActionReaderOptions {
+export interface LogOptions {
+  logSource?: string
+  logLevel?: LogLevel
+}
+
+export interface ActionReaderOptions extends LogOptions {
   /**
    * For positive values, this sets the first block that this will start at. For negative
    * values, this will start at (most recent block + startAtBlock), effectively tailing the
@@ -14,13 +19,11 @@ export interface ActionReaderOptions {
    * is the responsibility of the implementing class.
    */
   onlyIrreversible?: boolean
-  logLevel?: LogLevel
 }
 
-export interface ActionWatcherOptions {
+export interface ActionWatcherOptions extends LogOptions {
   pollInterval?: number
   velocitySampleSize?: number
-  logLevel?: LogLevel
 }
 
 export interface ExpressActionWatcherOptions extends ActionWatcherOptions {
@@ -31,10 +34,9 @@ export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
 }
 
-export interface ActionHandlerOptions {
+export interface ActionHandlerOptions extends LogOptions {
   effectRunMode?: EffectRunMode
   maxEffectErrors?: number
-  logLevel?: LogLevel
 }
 
 export interface Block {

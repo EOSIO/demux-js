@@ -1,4 +1,4 @@
-import { BunyanProvider, Logger } from './BunyanProvider'
+import { BunyanProvider, Logger, LogLevel } from './BunyanProvider'
 import {
   DuplicateHandlerVersionError,
   MismatchedBlockHashError,
@@ -20,7 +20,6 @@ import {
   VersionedAction,
 } from './interfaces'
 import { QueryablePromise, makeQuerablePromise } from './makeQueryablePromise'
-import { LogLevel } from 'bunyan'
 
 /**
  * Takes `block`s output from implementations of `AbstractActionReader` and processes their actions through the
@@ -56,6 +55,7 @@ export abstract class AbstractActionHandler {
   ) {
     const optionsWithDefaults = {
       effectRunMode: EffectRunMode.All,
+      logSource: 'AbstractActionHandler',
       logLevel: 'info' as LogLevel,
       maxEffectErrors: 100,
       ...options,
@@ -63,8 +63,7 @@ export abstract class AbstractActionHandler {
     this.initHandlerVersions(handlerVersions)
     this.effectRunMode = optionsWithDefaults.effectRunMode
     this.maxEffectErrors = optionsWithDefaults.maxEffectErrors
-    this.log = BunyanProvider.getLogger()
-    this.log.level(optionsWithDefaults.logLevel)
+    this.log = BunyanProvider.getLogger(optionsWithDefaults)
   }
 
   /**
