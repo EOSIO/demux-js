@@ -2,8 +2,9 @@
 // Disabling tslint's max classes rule here because it would add a lot of unnecessary separation for simple classes.
 
 export class MismatchedBlockHashError extends Error {
-  constructor() {
-    super('Block hashes do not match; block not part of current chain.')
+  constructor(currentBlock: number, expectedHash: string, actualHash: string) {
+    super(`Block hashes do not match; block not part of current chain.`
+          + ` Current block: ${currentBlock} Expected: ${expectedHash} Found: ${actualHash}`)
     Object.setPrototypeOf(this, MismatchedBlockHashError.prototype)
   }
 }
@@ -18,14 +19,14 @@ export class MissingHandlerVersionError extends Error {
 export class DuplicateHandlerVersionError extends Error {
   constructor(versionName: string) {
     super(`Handler version name '${versionName}' already exists. ` +
-          'Handler versions must have unique names.')
+      'Handler versions must have unique names.')
     Object.setPrototypeOf(this, DuplicateHandlerVersionError.prototype)
   }
 }
 
 export class ImproperStartAtBlockError extends Error {
-  constructor() {
-    super('Cannot seek to block before configured `startAtBlock` number.')
+  constructor(blockNumber: number, startAtBlock: number) {
+    super(`Cannot seek to block number ${blockNumber} before configured \`startAtBlock\` number ${startAtBlock}. `)
     Object.setPrototypeOf(this, ImproperStartAtBlockError.prototype)
   }
 }
@@ -71,7 +72,7 @@ class RethrownError extends Error {
   }
 
   private extendStack(error: Error) {
-    const messageLines =  (this.message.match(/\n/g) || []).length + 1
+    const messageLines = (this.message.match(/\n/g) || []).length + 1
     if (this.stack) {
       this.stack = this.stack.split('\n').slice(0, messageLines + 1).join('\n') + '\n' + error.stack
     }

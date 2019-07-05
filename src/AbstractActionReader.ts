@@ -165,7 +165,7 @@ export abstract class AbstractActionReader {
     const seekStart = Date.now()
     this.headBlockNumber = await this.getLatestNeededBlockNumber()
     if (blockNumber < this.startAtBlock) {
-      throw new ImproperStartAtBlockError()
+      throw new ImproperStartAtBlockError(blockNumber, this.startAtBlock)
     }
     if (blockNumber > this.headBlockNumber + 1) {
       throw new ImproperSeekToBlockError(blockNumber)
