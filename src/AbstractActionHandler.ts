@@ -110,7 +110,9 @@ export abstract class AbstractActionHandler {
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-        throw new MismatchedBlockHashError()
+        throw new MismatchedBlockHashError(blockInfo.blockNumber,
+                                           this.lastProcessedBlockHash,
+                                           blockInfo.previousBlockHash)
       }
     }
 
