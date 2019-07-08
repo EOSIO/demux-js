@@ -2,7 +2,7 @@ import express from 'express'
 import * as http from 'http'
 import { AbstractActionHandler } from './AbstractActionHandler'
 import { BaseActionWatcher } from './BaseActionWatcher'
-import { ExpressActionWatcherOptions, IActionReader } from "./interfaces";
+import { ExpressActionWatcherOptions, IActionReader } from './interfaces';
 
 /**
  * Exposes the BaseActionWatcher's API methods through a simple REST interface using Express
