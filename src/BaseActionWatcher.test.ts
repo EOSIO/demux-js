@@ -87,7 +87,7 @@ describe('BaseActionWatcher', () => {
       },
       totalTransferred: 66,
     })
-    expect(actionReader.currentBlockNumber).toBe(4)
+    expect(actionReader.info.currentBlockNumber).toBe(4)
   })
 
   it('processes blocks starting at block 3', async () => {
@@ -101,7 +101,7 @@ describe('BaseActionWatcher', () => {
       },
       totalTransferred: 24,
     })
-    expect(actionReaderStartAt3.currentBlockNumber).toBe(4)
+    expect(actionReaderStartAt3.info.currentBlockNumber).toBe(4)
   })
 
   it('processes blocks starting at block 3 (negative indexed)', async () => {
@@ -115,7 +115,7 @@ describe('BaseActionWatcher', () => {
       },
       totalTransferred: 24,
     })
-    expect(actionReaderNegative.currentBlockNumber).toBe(4)
+    expect(actionReaderNegative.info.currentBlockNumber).toBe(4)
   })
 
   it('processes blocks after seeing more blocks', async () => {
@@ -164,8 +164,8 @@ describe('BaseActionWatcher', () => {
     }
     await actionWatcher._checkForBlocks()
     expect(actionHandler.state.indexState.blockNumber).toEqual(4)
-    expect(actionReader.currentBlockNumber).toBe(4)
-    expect(actionReader.headBlockNumber).toBe(4)
+    expect(actionReader.info.currentBlockNumber).toBe(4)
+    expect(actionReader.info.headBlockNumber).toBe(4)
   })
 
   it('resolves fork', async () => {
@@ -175,8 +175,8 @@ describe('BaseActionWatcher', () => {
     actionReader.blockchain = blockchains.forked
     await actionWatcher._checkForBlocks()
     expect(actionHandler.state.indexState.blockNumber).toEqual(5)
-    expect(actionReader.currentBlockNumber).toBe(5)
-    expect(actionReader.headBlockNumber).toBe(5)
+    expect(actionReader.info.currentBlockNumber).toBe(5)
+    expect(actionReader.info.headBlockNumber).toBe(5)
   })
 
   it('gives the correct block velocity', () => {
