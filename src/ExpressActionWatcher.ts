@@ -8,8 +8,11 @@ import { ActionHandler, ActionReader, ExpressActionWatcherOptions } from './inte
  */
 export class ExpressActionWatcher extends BaseActionWatcher {
   /**
-   * @param port  The port to use for the Express server
+   * @param actionReader    An instance of an implemented `ActionReader`
+   * @param actionHandler   An instance of an implemented `ActionHandler`
+   * @param options
    */
+
   public express: express.Express = express() // How expressive
   protected port: number
   private server: http.Server | null = null

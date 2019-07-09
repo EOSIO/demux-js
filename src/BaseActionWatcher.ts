@@ -2,13 +2,13 @@ import { BunyanProvider, Logger, LogLevel } from './BunyanProvider'
 import { ActionHandler, ActionReader, ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo } from './interfaces'
 
 /**
- * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
+ * Coordinates implementations of `ActionReader`s and `ActionHandler`s in
  * a polling loop.
  */
 export class BaseActionWatcher {
   /**
-   * @param actionReader    An instance of an implemented `AbstractActionReader`
-   * @param actionHandler   An instance of an implemented `AbstractActionHandler`
+   * @param actionReader    An instance of an implemented `ActionReader`
+   * @param actionHandler   An instance of an implemented `ActionHandler`
    * @param options
    */
 
