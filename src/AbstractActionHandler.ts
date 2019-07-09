@@ -6,6 +6,7 @@ import {
 } from './errors'
 import {
   Action,
+  ActionHandler,
   ActionHandlerOptions,
   BlockInfo,
   CurriedEffectRun,
@@ -28,12 +29,12 @@ import { QueryablePromise, makeQuerablePromise } from './makeQueryablePromise'
  * `loadIndexState`. Implement `rollbackTo` to handle when a fork is encountered.
  *
  */
-export abstract class AbstractActionHandler {
-  public lastProcessedBlockNumber: number = 0
-  public lastProcessedBlockHash: string = ''
-  public lastIrreversibleBlockNumber: number = 0
-  public handlerVersionName: string = 'v1'
-  public isReplay: boolean = false
+export abstract class AbstractActionHandler implements ActionHandler {
+  protected lastProcessedBlockNumber: number = 0
+  protected lastProcessedBlockHash: string = ''
+  protected lastIrreversibleBlockNumber: number = 0
+  protected handlerVersionName: string = 'v1'
+  protected isReplay: boolean = false
   protected log: Logger
   protected effectRunMode: EffectRunMode
   protected initialized: boolean = false
@@ -130,7 +131,9 @@ export abstract class AbstractActionHandler {
     return {
       lastProcessedBlockNumber: this.lastProcessedBlockNumber,
       lastProcessedBlockHash: this.lastProcessedBlockHash,
+      lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
       handlerVersionName: this.handlerVersionName,
+      isReplay: this.isReplay,
       effectRunMode: this.effectRunMode,
       numberOfRunningEffects: effectInfo.numberOfRunningEffects,
       effectErrors: effectInfo.effectErrors,

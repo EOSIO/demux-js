@@ -1,5 +1,12 @@
 import { LogLevel } from './BunyanProvider'
 
+export interface ActionReader {
+  getNextBlock(): Promise<NextBlock>
+  initialize(): Promise<void>
+  seekToBlock(blockNumber: number): Promise<void>
+  readonly info: ReaderInfo
+}
+
 export interface LogOptions {
   logSource?: string
   logLevel?: LogLevel
@@ -32,6 +39,12 @@ export interface ExpressActionWatcherOptions extends ActionWatcherOptions {
 
 export interface JsonActionReaderOptions extends ActionReaderOptions {
   blockchain: Block[]
+}
+
+export interface ActionHandler {
+  handleBlock(nextBlock: NextBlock, isReplay: boolean): Promise<number | null>
+  initialize(): Promise<void>
+  readonly info: HandlerInfo
 }
 
 export interface ActionHandlerOptions extends LogOptions {
@@ -131,18 +144,20 @@ export interface EffectsInfo {
 export interface HandlerInfo {
   lastProcessedBlockNumber: number
   lastProcessedBlockHash: string
+  lastIrreversibleBlockNumber: number
   handlerVersionName: string
-  effectRunMode: EffectRunMode
-  numberOfRunningEffects: number
-  effectErrors: string[]
+  isReplay?: boolean
+  effectRunMode?: EffectRunMode
+  numberOfRunningEffects?: number
+  effectErrors?: string[]
 }
 
 export interface ReaderInfo {
   currentBlockNumber: number
   startAtBlock: number
   headBlockNumber: number
-  onlyIrreversible: boolean
-  lastIrreversibleBlockNumber: number
+  onlyIrreversible?: boolean
+  lastIrreversibleBlockNumber?: number
 }
 
 export enum EffectRunMode {
