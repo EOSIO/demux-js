@@ -9,6 +9,7 @@ const { blockchain, upgradeHandler } = blockchains
 
 describe('Action Handler', () => {
   let actionHandler: TestActionHandler
+  let noHashValidationActionHandler: TestActionHandler
   let noEffectActionHandler: TestActionHandler
   let deferredEffectActionHandler: TestActionHandler
   let immediateEffectActionHandler: TestActionHandler
@@ -131,6 +132,10 @@ describe('Action Handler', () => {
       handlerVersions,
       { logLevel: 'error' }
     )
+    noHashValidationActionHandler = new TestActionHandler(
+      handlerVersions,
+      { logLevel: 'error', validateBlockHashes: false }
+    )
     noEffectActionHandler = new TestActionHandler(
       handlerVersions,
       { logLevel: 'error', effectRunMode: EffectRunMode.None}
@@ -145,6 +150,7 @@ describe('Action Handler', () => {
     )
 
     actionHandler.isInitialized = true
+    noHashValidationActionHandler.isInitialized = true
     noEffectActionHandler.isInitialized = true
     deferredEffectActionHandler.isInitialized = true
     immediateEffectActionHandler.isInitialized = true
@@ -241,6 +247,25 @@ describe('Action Handler', () => {
 
     const result = actionHandler.handleBlock(nextBlock, false)
     await expect(result).rejects.toThrow(MismatchedBlockHashError)
+  })
+
+  it(`doesn't throw error if validateBlockHashes is false`, async () => {
+    await noHashValidationActionHandler.initialize()
+    noHashValidationActionHandler.setLastProcessedBlockNumber(3)
+    noHashValidationActionHandler.setLastProcessedBlockHash('asdfasdfasdf')
+    const blockMeta = {
+      isRollback: false,
+      isEarliestBlock: false,
+      isNewBlock: true,
+    }
+    const nextBlock = {
+      block: blockchain[3],
+      blockMeta,
+      lastIrreversibleBlockNumber: 1,
+    }
+
+    const result = noHashValidationActionHandler.handleBlock(nextBlock, false)
+    await expect(result).resolves.toBeNull()
   })
 
   it('upgrades the action handler correctly', async () => {
