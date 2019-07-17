@@ -33,14 +33,14 @@ describe('Action Handler', () => {
 
   beforeEach(() => {
     runUpdater = jest.fn()
-    runEffect = jest.fn()
+    runEffect = jest.fn().mockResolvedValue(undefined)
 
     notRunUpdater = jest.fn()
-    notRunEffect = jest.fn()
+    notRunEffect = jest.fn().mockResolvedValue(undefined)
 
-    startSlowEffect = jest.fn()
+    startSlowEffect = jest.fn().mockResolvedValue(undefined)
     finishSlowEffect = jest.fn()
-    startThrownEffect = jest.fn()
+    startThrownEffect = jest.fn().mockResolvedValue(undefined)
 
     runUpgradeUpdater = jest.fn().mockReturnValue('v2')
 
@@ -86,15 +86,15 @@ describe('Action Handler', () => {
           {
             actionType: 'testing::action',
             run: async () => {
-              startSlowEffect()
+              await startSlowEffect()
               await wait(100, finishSlowEffect)
             },
             deferUntilIrreversible: false,
           },
           {
             actionType: 'eosio.system::regproducer',
-            run: () => {
-              startThrownEffect()
+            run: async () => {
+              await startThrownEffect()
               throw Error('Thrown effect')
             }
           }
@@ -352,7 +352,7 @@ describe('Action Handler', () => {
     }
     await actionHandler.handleBlock(rollback2, false)
 
-    expect(actionHandler.lastProcessedBlockNumber).toEqual(2)
+    expect(actionHandler.info.lastProcessedBlockNumber).toEqual(2)
   })
 
   it(`doesn't run effects from orphaned blocks`, async () => {
@@ -540,6 +540,6 @@ describe('Action Handler', () => {
     expect(startThrownEffect).toHaveBeenCalled()
     expect(actionHandler.info.numberOfRunningEffects).toEqual(0)
     expect(actionHandler.info.effectErrors).toHaveLength(1)
-    expect(actionHandler.info.effectErrors[0].startsWith('Error: Thrown effect')).toBeTruthy()
+    expect(actionHandler.info.effectErrors![0].startsWith('Error: Thrown effect')).toBeTruthy()
   })
 })

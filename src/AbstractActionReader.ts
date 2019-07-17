@@ -6,6 +6,7 @@ import {
   UnresolvedForkError,
 } from './errors'
 import {
+  ActionReader,
   ActionReaderOptions,
   Block,
   BlockInfo,
@@ -27,10 +28,10 @@ const defaultBlock: Block = {
 /**
  * Reads blocks from a blockchain, outputting normalized `Block` objects.
  */
-export abstract class AbstractActionReader {
-  public startAtBlock: number
-  public headBlockNumber: number = 0
-  public currentBlockNumber: number
+export abstract class AbstractActionReader implements ActionReader {
+  protected startAtBlock: number
+  protected headBlockNumber: number = 0
+  protected currentBlockNumber: number
   protected onlyIrreversible: boolean
   protected currentBlockData: Block = defaultBlock
   protected lastIrreversibleBlockNumber: number = 0
@@ -52,23 +53,6 @@ export abstract class AbstractActionReader {
 
     this.log = BunyanProvider.getLogger(optionsWithDefaults)
   }
-
-  /**
-   * Loads the number of the latest block.
-   */
-  public abstract async getHeadBlockNumber(): Promise<number>
-
-  /**
-   * Loads the number of the most recent irreversible block.
-   */
-  public abstract async getLastIrreversibleBlockNumber(): Promise<number>
-
-  /**
-   * Loads a block with the given block number, returning a promise for a `Block`.
-   *
-   * @param blockNumber  The number of the block to load
-   */
-  public abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
    * Loads, processes, and returns the next block, updating all relevant state. Return value at index 0 is the `Block`
@@ -187,6 +171,23 @@ export abstract class AbstractActionReader {
       lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
     }
   }
+
+  /**
+   * Loads the number of the latest block.
+   */
+  protected abstract async getHeadBlockNumber(): Promise<number>
+
+  /**
+   * Loads the number of the most recent irreversible block.
+   */
+  protected abstract async getLastIrreversibleBlockNumber(): Promise<number>
+
+  /**
+   * Loads a block with the given block number, returning a promise for a `Block`.
+   *
+   * @param blockNumber  The number of the block to load
+   */
+  protected abstract async getBlock(blockNumber: number): Promise<Block>
 
   /**
    * Idempotently performs any required setup.
