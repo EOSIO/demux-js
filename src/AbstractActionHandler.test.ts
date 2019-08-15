@@ -134,7 +134,7 @@ describe('Action Handler', () => {
     )
     noHashValidationActionHandler = new TestActionHandler(
       handlerVersions,
-      { logLevel: 'error', validateBlockHashes: false }
+      { logLevel: 'error', validateBlocks: false }
     )
     noEffectActionHandler = new TestActionHandler(
       handlerVersions,
@@ -249,7 +249,7 @@ describe('Action Handler', () => {
     await expect(result).rejects.toThrow(MismatchedBlockHashError)
   })
 
-  it(`doesn't throw error if validateBlockHashes is false`, async () => {
+  it(`doesn't throw error if validateBlocks is false`, async () => {
     await noHashValidationActionHandler.initialize()
     noHashValidationActionHandler.setLastProcessedBlockNumber(3)
     noHashValidationActionHandler.setLastProcessedBlockHash('asdfasdfasdf')

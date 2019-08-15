@@ -43,7 +43,7 @@ export abstract class AbstractActionHandler implements ActionHandler {
   private runningEffects: Array<QueryablePromise<void>> = []
   private effectErrors: string[] = []
   private maxEffectErrors: number
-  private validateBlockHashes: boolean
+  private validateBlocks: boolean
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
@@ -60,14 +60,14 @@ export abstract class AbstractActionHandler implements ActionHandler {
       logSource: 'AbstractActionHandler',
       logLevel: 'info' as LogLevel,
       maxEffectErrors: 100,
-      validateBlockHashes: true,
+      validateBlocks: true,
       ...options,
     }
     this.initHandlerVersions(handlerVersions)
     this.effectRunMode = optionsWithDefaults.effectRunMode
     this.maxEffectErrors = optionsWithDefaults.maxEffectErrors
     this.log = BunyanProvider.getLogger(optionsWithDefaults)
-    this.validateBlockHashes = optionsWithDefaults.validateBlockHashes
+    this.validateBlocks = optionsWithDefaults.validateBlocks
   }
 
   /**
@@ -104,7 +104,7 @@ export abstract class AbstractActionHandler implements ActionHandler {
     }
     // Only check if this is the block we need if it's not the first block
     if (!isEarliestBlock) {
-      if (blockInfo.blockNumber !== nextBlockNeeded) {
+      if (blockInfo.blockNumber !== nextBlockNeeded && this.validateBlocks) {
         this.log.debug(
           `Got block ${blockInfo.blockNumber} but block ${nextBlockNeeded} is needed; ` +
           `requesting block ${nextBlockNeeded}`
@@ -112,7 +112,7 @@ export abstract class AbstractActionHandler implements ActionHandler {
         return nextBlockNeeded
       }
       // Block sequence consistency should be handled by the ActionReader instance
-      if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash && this.validateBlockHashes) {
+      if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash && this.validateBlocks) {
         throw new MismatchedBlockHashError(
           blockInfo.blockNumber,
           this.lastProcessedBlockHash,
