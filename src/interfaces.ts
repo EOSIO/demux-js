@@ -50,7 +50,7 @@ export interface ActionHandler {
 export interface ActionHandlerOptions extends LogOptions {
   effectRunMode?: EffectRunMode
   maxEffectErrors?: number
-  validateBlockHashes?: boolean
+  validateBlocks?: boolean
 }
 
 export interface Block {
