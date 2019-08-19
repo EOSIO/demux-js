@@ -103,8 +103,8 @@ export abstract class AbstractActionHandler implements ActionHandler {
       return nextBlockNeeded
     }
     // Only check if this is the block we need if it's not the first block
-    if (!isEarliestBlock) {
-      if (blockInfo.blockNumber !== nextBlockNeeded && this.validateBlocks) {
+    if (!isEarliestBlock && this.validateBlocks) {
+      if (blockInfo.blockNumber !== nextBlockNeeded) {
         this.log.debug(
           `Got block ${blockInfo.blockNumber} but block ${nextBlockNeeded} is needed; ` +
           `requesting block ${nextBlockNeeded}`
@@ -112,7 +112,7 @@ export abstract class AbstractActionHandler implements ActionHandler {
         return nextBlockNeeded
       }
       // Block sequence consistency should be handled by the ActionReader instance
-      if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash && this.validateBlocks) {
+      if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
         throw new MismatchedBlockHashError(
           blockInfo.blockNumber,
           this.lastProcessedBlockHash,
