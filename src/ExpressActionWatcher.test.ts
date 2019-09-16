@@ -59,6 +59,8 @@ describe('ExpressActionWatcher', () => {
       handler: {
         lastProcessedBlockHash: '',
         lastProcessedBlockNumber: 0,
+        isReplay: false,
+        lastIrreversibleBlockNumber: 0,
         handlerVersionName: 'v1',
         effectRunMode: 'all',
         effectErrors: [],
@@ -93,6 +95,7 @@ describe('ExpressActionWatcher', () => {
     expect(status.handler).toEqual({
       lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
       lastProcessedBlockNumber: 4,
+      isReplay: false,
       handlerVersionName: 'v1',
       effectRunMode: 'all',
       effectErrors: [],
@@ -122,6 +125,7 @@ describe('ExpressActionWatcher', () => {
     expect(status1.handler).toEqual({
       lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
       lastProcessedBlockNumber: 4,
+      isReplay: false,
       handlerVersionName: 'v1',
       effectRunMode: 'all',
       effectErrors: [],
@@ -141,6 +145,7 @@ describe('ExpressActionWatcher', () => {
     expect(status2.handler).toEqual({
       lastProcessedBlockHash: '0000000000000000000000000000000000000000000000000000000000000003',
       lastProcessedBlockNumber: 4,
+      isReplay: false,
       handlerVersionName: 'v1',
       effectRunMode: 'all',
       effectErrors: [],

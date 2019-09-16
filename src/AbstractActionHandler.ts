@@ -6,6 +6,7 @@ import {
 } from './errors'
 import {
   Action,
+  ActionHandler,
   ActionHandlerOptions,
   BlockInfo,
   CurriedEffectRun,
@@ -28,12 +29,12 @@ import { QueryablePromise, makeQuerablePromise } from './makeQueryablePromise'
  * `loadIndexState`. Implement `rollbackTo` to handle when a fork is encountered.
  *
  */
-export abstract class AbstractActionHandler {
-  public lastProcessedBlockNumber: number = 0
-  public lastProcessedBlockHash: string = ''
-  public lastIrreversibleBlockNumber: number = 0
-  public handlerVersionName: string = 'v1'
-  public isReplay: boolean = false
+export abstract class AbstractActionHandler implements ActionHandler {
+  protected lastProcessedBlockNumber: number = 0
+  protected lastProcessedBlockHash: string = ''
+  protected lastIrreversibleBlockNumber: number = 0
+  protected handlerVersionName: string = 'v1'
+  protected isReplay: boolean = false
   protected log: Logger
   protected effectRunMode: EffectRunMode
   protected initialized: boolean = false
@@ -42,6 +43,7 @@ export abstract class AbstractActionHandler {
   private runningEffects: Array<QueryablePromise<void>> = []
   private effectErrors: string[] = []
   private maxEffectErrors: number
+  private validateBlocks: boolean
 
   /**
    * @param handlerVersions  An array of `HandlerVersion`s that are to be used when processing blocks. The default
@@ -58,12 +60,14 @@ export abstract class AbstractActionHandler {
       logSource: 'AbstractActionHandler',
       logLevel: 'info' as LogLevel,
       maxEffectErrors: 100,
+      validateBlocks: true,
       ...options,
     }
     this.initHandlerVersions(handlerVersions)
     this.effectRunMode = optionsWithDefaults.effectRunMode
     this.maxEffectErrors = optionsWithDefaults.maxEffectErrors
     this.log = BunyanProvider.getLogger(optionsWithDefaults)
+    this.validateBlocks = optionsWithDefaults.validateBlocks
   }
 
   /**
@@ -99,7 +103,7 @@ export abstract class AbstractActionHandler {
       return nextBlockNeeded
     }
     // Only check if this is the block we need if it's not the first block
-    if (!isEarliestBlock) {
+    if (!isEarliestBlock && this.validateBlocks) {
       if (blockInfo.blockNumber !== nextBlockNeeded) {
         this.log.debug(
           `Got block ${blockInfo.blockNumber} but block ${nextBlockNeeded} is needed; ` +
@@ -109,9 +113,11 @@ export abstract class AbstractActionHandler {
       }
       // Block sequence consistency should be handled by the ActionReader instance
       if (blockInfo.previousBlockHash !== this.lastProcessedBlockHash) {
-        throw new MismatchedBlockHashError(blockInfo.blockNumber,
-                                           this.lastProcessedBlockHash,
-                                           blockInfo.previousBlockHash)
+        throw new MismatchedBlockHashError(
+          blockInfo.blockNumber,
+          this.lastProcessedBlockHash,
+          blockInfo.previousBlockHash
+        )
       }
     }
 
@@ -130,7 +136,9 @@ export abstract class AbstractActionHandler {
     return {
       lastProcessedBlockNumber: this.lastProcessedBlockNumber,
       lastProcessedBlockHash: this.lastProcessedBlockHash,
+      lastIrreversibleBlockNumber: this.lastIrreversibleBlockNumber,
       handlerVersionName: this.handlerVersionName,
+      isReplay: this.isReplay,
       effectRunMode: this.effectRunMode,
       numberOfRunningEffects: effectInfo.numberOfRunningEffects,
       effectErrors: effectInfo.effectErrors,

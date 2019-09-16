@@ -1,16 +1,14 @@
-import { AbstractActionHandler } from './AbstractActionHandler'
-import { AbstractActionReader } from './AbstractActionReader'
 import { BunyanProvider, Logger, LogLevel } from './BunyanProvider'
-import { ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo } from './interfaces'
+import { ActionHandler, ActionReader, ActionWatcherOptions, DemuxInfo, IndexingStatus, WatcherInfo } from './interfaces'
 
 /**
- * Coordinates implementations of `AbstractActionReader`s and `AbstractActionHandler`s in
+ * Coordinates implementations of `ActionReader`s and `ActionHandler`s in
  * a polling loop.
  */
 export class BaseActionWatcher {
   /**
-   * @param actionReader    An instance of an implemented `AbstractActionReader`
-   * @param actionHandler   An instance of an implemented `AbstractActionHandler`
+   * @param actionReader    An instance of an implemented `ActionReader`
+   * @param actionHandler   An instance of an implemented `ActionHandler`
    * @param options
    */
 
@@ -24,8 +22,8 @@ export class BaseActionWatcher {
   private clean: boolean = true
 
   constructor(
-    protected actionReader: AbstractActionReader,
-    protected actionHandler: AbstractActionHandler,
+    protected actionReader: ActionReader,
+    protected actionHandler: ActionHandler,
     options: ActionWatcherOptions,
   ) {
     const optionsWithDefaults = {
@@ -144,13 +142,13 @@ export class BaseActionWatcher {
    */
   protected async checkForBlocks(isReplay: boolean = false) {
     let headBlockNumber = 0
-    while (!headBlockNumber || this.actionReader.currentBlockNumber < headBlockNumber) {
+    while (!headBlockNumber || this.actionReader.info.currentBlockNumber < headBlockNumber) {
       if (this.shouldPause) {
         this.processIntervals = []
         return
       }
       const readStartTime = Date.now()
-      this.log.debug(`Processing block ${this.actionReader.currentBlockNumber + 1}...`)
+      this.log.debug(`Processing block ${this.actionReader.info.currentBlockNumber + 1}...`)
       const nextBlock = await this.actionReader.getNextBlock()
       const readDuration = Date.now() - readStartTime
       if (!nextBlock.blockMeta.isNewBlock) { break }
@@ -172,7 +170,7 @@ export class BaseActionWatcher {
         await this.actionReader.seekToBlock(nextBlockNumberNeeded)
       }
 
-      headBlockNumber = this.actionReader.headBlockNumber
+      headBlockNumber = this.actionReader.info.headBlockNumber
     }
   }
 
