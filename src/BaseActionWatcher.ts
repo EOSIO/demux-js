@@ -162,7 +162,15 @@ export class BaseActionWatcher {
       const handleDuration = handleEndTime - handleStartTime
       const processDuration = readDuration + handleDuration
       const blockNumber = nextBlock.block.blockInfo.blockNumber
-      this.log.info(`Processed block ${blockNumber} (${processDuration}ms; ${nextBlock.block.actions.length} actions)`)
+      if (blockNumber % 100 === 0) {
+        this.log.info(
+          `Processed block ${blockNumber} (${processDuration}ms; ${nextBlock.block.actions.length} actions)`
+        )
+      } else {
+        this.log.debug(
+          `Processed block ${blockNumber} (${processDuration}ms; ${nextBlock.block.actions.length} actions)`
+        )
+      }
       this.log.debug(`Block ${blockNumber} read time: ${readDuration}ms; Handle time: ${handleDuration}ms`)
       this.addProcessInterval(readStartTime, handleEndTime)
 
