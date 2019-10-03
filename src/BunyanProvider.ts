@@ -7,13 +7,14 @@ import { LogOptions } from './interfaces'
  */
 class BunyanProvider {
   /**
-   * Create an return a 'child' logger of the root Bunyan logger. The root logger
+   * Create and return a 'child' logger of the root Bunyan logger. The root logger
    * is created on the first call to `getLogger` using the current set configuration.
    * Subsequent calls to `configure` will be ignored.
    *
    * @param logOptions The source name and log level for the child logger
    */
-  public static getLogger(logOptions: LogOptions): Logger {
+  public static getLogger(logOptions?: LogOptions): Logger {
+    logOptions = logOptions || {}
     if (!BunyanProvider.loggerInstance) {
       BunyanProvider.loggerInstance = Logger.createLogger(BunyanProvider.rootConfig)
     }
