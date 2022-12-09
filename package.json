@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "bunyan": "1.8.12",
-    "express": "4.16.4"
+    "express": "4.17.3"
   },
   "scripts": {
     "build": "rm -rf dist/* && tsc",
